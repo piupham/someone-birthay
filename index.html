@@ -14,26 +14,23 @@
 
 <body>
 
-    <!-- Background -->
     <div class="background"></div>
 
-    <!-- Decorative stars -->
-    <div class="stars" id="stars" aria-hidden="true"></div>
+    <!-- Stars around the heart -->
+    <div class="stars" id="stars"></div>
 
-    <!-- Main scene -->
     <main class="scene">
 
-        <!-- Central heart -->
+        <!-- Main animated heart -->
         <div class="heart-container" id="heartContainer">
             <canvas id="heartCanvas"></canvas>
         </div>
 
         <!-- Birthday message -->
-        <section class="text-overlay">
+        <div class="text-overlay">
 
             <div class="recipient-name">
                 To the girl who kept waiting
-                <span class="sparkle">✦</span>
             </div>
 
             <div class="message">
@@ -45,91 +42,42 @@
                 <div>Happy Birthday Kik. ❤️</div>
             </div>
 
-        </section>
+        </div>
 
     </main>
 
+
     <!-- Theme Switcher -->
-    <div class="theme-switcher" role="toolbar" aria-label="Theme Switcher">
+    <div class="theme-switcher">
 
-        <button
-            class="theme-btn active"
-            data-theme="midnight"
-            title="Midnight Romance"
-            aria-label="Midnight Romance">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #ff0080, #7928ca);">
-            </span>
-
+        <button class="theme-btn active" data-theme="midnight">
+            <span class="theme-dot midnight-dot"></span>
             <span class="theme-name">Midnight</span>
         </button>
 
-
-        <button
-            class="theme-btn"
-            data-theme="golden"
-            title="Golden Sunset"
-            aria-label="Golden Sunset">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #ffcc66, #ff8c00);">
-            </span>
-
+        <button class="theme-btn" data-theme="golden">
+            <span class="theme-dot golden-dot"></span>
             <span class="theme-name">Golden</span>
         </button>
 
-
-        <button
-            class="theme-btn"
-            data-theme="cyber"
-            title="Cyber Love"
-            aria-label="Cyber Love">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
-            </span>
-
+        <button class="theme-btn" data-theme="cyber">
+            <span class="theme-dot cyber-dot"></span>
             <span class="theme-name">Cyber</span>
         </button>
 
-
-        <button
-            class="theme-btn"
-            data-theme="emerald"
-            title="Emerald Enchantment"
-            aria-label="Emerald Enchantment">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #00b09b, #96c93d);">
-            </span>
-
+        <button class="theme-btn" data-theme="emerald">
+            <span class="theme-dot emerald-dot"></span>
             <span class="theme-name">Emerald</span>
         </button>
 
-
-        <button
-            class="theme-btn"
-            data-theme="velvet"
-            title="Velvet Passion"
-            aria-label="Velvet Passion">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #ff0844, #e84393);">
-            </span>
-
+        <button class="theme-btn" data-theme="velvet">
+            <span class="theme-dot velvet-dot"></span>
             <span class="theme-name">Velvet</span>
         </button>
 
     </div>
 
 
-    <!-- JavaScript -->
     <script src="./script.js"></script>
 
 </body>
