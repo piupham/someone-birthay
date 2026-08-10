@@ -17,20 +17,18 @@
   <!-- Background -->
   <div class="background"></div>
 
-  <!-- Stars around the heart -->
-  <div class="stars" id="stars" aria-hidden="true"></div>
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
 
   <!-- Main scene -->
   <main class="scene">
-
-    <!-- Main animated heart -->
-    <div class="heart-container" id="heartContainer"></div>
 
     <!-- Birthday message -->
     <section class="text-overlay">
 
       <div class="recipient-name">
         To the girl who kept waiting
+        <span class="sparkle">✦</span>
       </div>
 
       <div class="message">
@@ -44,16 +42,20 @@
 
     </section>
 
+    <!-- Animated heart -->
+    <div class="heart-container">
+      <canvas id="heartCanvas"></canvas>
+    </div>
+
   </main>
 
-  <!-- Theme Switcher -->
+  <!-- Theme switcher -->
   <div class="theme-switcher" role="toolbar" aria-label="Theme Switcher">
 
     <button
       class="theme-btn active"
       data-theme="midnight"
-      title="Midnight Romance"
-      aria-label="Midnight Romance">
+      title="Midnight Romance">
 
       <span
         class="theme-dot"
@@ -61,27 +63,27 @@
       </span>
 
       <span class="theme-name">Midnight</span>
+
     </button>
 
     <button
       class="theme-btn"
       data-theme="golden"
-      title="Golden Sunset"
-      aria-label="Golden Sunset">
+      title="Golden Sunset">
 
       <span
         class="theme-dot"
-        style="background: linear-gradient(135deg, #ff9900, #ff0055);">
+        style="background: linear-gradient(135deg, #ffcc66, #ff8c00);">
       </span>
 
       <span class="theme-name">Golden</span>
+
     </button>
 
     <button
       class="theme-btn"
       data-theme="cyber"
-      title="Cyberpunk Love"
-      aria-label="Cyberpunk Love">
+      title="Cyber Love">
 
       <span
         class="theme-dot"
@@ -89,13 +91,13 @@
       </span>
 
       <span class="theme-name">Cyber</span>
+
     </button>
 
     <button
       class="theme-btn"
       data-theme="emerald"
-      title="Emerald Enchantment"
-      aria-label="Emerald Enchantment">
+      title="Emerald Enchantment">
 
       <span
         class="theme-dot"
@@ -103,13 +105,13 @@
       </span>
 
       <span class="theme-name">Emerald</span>
+
     </button>
 
     <button
       class="theme-btn"
       data-theme="velvet"
-      title="Velvet Passion"
-      aria-label="Velvet Passion">
+      title="Velvet Passion">
 
       <span
         class="theme-dot"
@@ -117,18 +119,11 @@
       </span>
 
       <span class="theme-name">Velvet</span>
+
     </button>
 
   </div>
 
-  <!-- Matter.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/pathseg@1.2.1/pathseg.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/poly-decomp@0.3.0/build/decomp.min.js"></script>
-
-  <!-- Main JavaScript -->
   <script src="./script.js"></script>
 
 </body>
