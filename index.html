@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
@@ -19,13 +20,18 @@
     <!-- Floating stars -->
     <div class="stars" id="stars" aria-hidden="true"></div>
 
-    <!-- Main scene -->
     <main class="scene">
 
-        <!-- Original Matter.js heart -->
-        <div class="heart-container">
-            <div id="heartCanvas"></div>
+        <!-- Heart -->
+        <div class="heart-container" id="heartContainer">
+
+            <!-- Soft glow behind heart -->
+            <div class="heart-glow"></div>
+
+            <canvas id="heartCanvas"></canvas>
+
         </div>
+
 
         <!-- Birthday message -->
         <section class="text-overlay">
@@ -36,15 +42,23 @@
             </h1>
 
             <div class="message">
+
                 <div>To the girl who kept waiting</div>
+
                 <div>From the bottom of my heart</div>
+
                 <div>May your special day full of love</div>
+
                 <div>From the moment you open your eyes</div>
+
                 <div>Until you sleep for the night</div>
+
                 <div>I'm glad it was you on March 8, 2026.</div>
+
                 <div class="final-line">
                     Happy Birthday Kik. <span>♥</span>
                 </div>
+
             </div>
 
         </section>
@@ -52,7 +66,7 @@
     </main>
 
 
-    <!-- Theme switcher -->
+    <!-- Theme buttons -->
     <div class="theme-switcher">
 
         <button class="theme-btn active" data-theme="midnight">
@@ -88,6 +102,7 @@
 
     </button>
 
+
     <audio
         id="birthdayMusic"
         src="./happy-birthday-music-box(chosic.com).mp3"
@@ -96,10 +111,6 @@
     </audio>
 
 
-    <!-- Matter.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
-
-    <!-- Main JS -->
     <script src="./script.js"></script>
 
 </body>
