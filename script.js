@@ -1,651 +1,630 @@
-"use strict";
+/* =========================
+   CANVAS HEART
+========================= */
 
-/* =========================================
-   HAPPY BIRTHDAY KIK
-   Heart + Stars + Music + Themes
-========================================= */
+const canvas = document.getElementById("heartCanvas");
+const ctx = canvas.getContext("2d");
 
-document.addEventListener("DOMContentLoaded", () => {
+let width = 0;
+let height = 0;
+let dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    /* =====================================
-       ELEMENTS
-    ===================================== */
+let particles = [];
+let outlineParticles = [];
 
-    const canvas = document.getElementById("heartCanvas");
-    const ctx = canvas.getContext("2d");
+const particleCount = 620;
+const outlineCount = 170;
 
-    const starsContainer = document.getElementById("stars");
-
-    const music = document.getElementById("birthdayMusic");
-    const musicButton = document.getElementById("musicButton");
-
-    const themeButtons =
-        document.querySelectorAll(".theme-btn");
+let animationTime = 0;
 
 
-    /* =====================================
-       THEME COLORS
-    ===================================== */
+/* =========================
+   THEME COLORS
+========================= */
 
-    const themes = {
+const themes = {
+    midnight: {
+        particle1: "#ff7bc8",
+        particle2: "#ff0080",
+        particle3: "#c77dff",
+        outline: "#ff7bc8"
+    },
 
-        midnight: [
-            "#ff0080",
-            "#7928ca",
-            "#ff1493",
-            "#ff69b4",
-            "#da70d6"
-        ],
+    golden: {
+        particle1: "#ffd36a",
+        particle2: "#ff9900",
+        particle3: "#ff6b35",
+        outline: "#ffd36a"
+    },
 
-        golden: [
-            "#ff9900",
-            "#ffaa00",
-            "#ff0055",
-            "#ff6600",
-            "#ffcc00"
-        ],
+    cyber: {
+        particle1: "#69efff",
+        particle2: "#00f2fe",
+        particle3: "#4facfe",
+        outline: "#69efff"
+    },
 
-        cyber: [
-            "#00f2fe",
-            "#4facfe",
-            "#7928ca",
-            "#00d2ff",
-            "#38f9d7"
-        ],
+    emerald: {
+        particle1: "#66f5c4",
+        particle2: "#00b09b",
+        particle3: "#96c93d",
+        outline: "#66f5c4"
+    },
 
-        emerald: [
-            "#00b09b",
-            "#96c93d",
-            "#00e6a8",
-            "#2ecc71",
-            "#55efc4"
-        ],
+    velvet: {
+        particle1: "#ff8fa6",
+        particle2: "#ff0844",
+        particle3: "#c0392b",
+        outline: "#ff8fa6"
+    }
+};
 
-        velvet: [
-            "#ff0844",
-            "#ffb199",
-            "#d63031",
-            "#e84118",
-            "#e84393"
-        ]
+let currentTheme = "midnight";
+
+
+/* =========================
+   HEART EQUATION
+========================= */
+
+function heartPoint(t, scale = 1) {
+    const x = 16 * Math.pow(Math.sin(t), 3);
+
+    const y =
+        13 * Math.cos(t) -
+        5 * Math.cos(2 * t) -
+        2 * Math.cos(3 * t) -
+        Math.cos(4 * t);
+
+    return {
+        x: x * scale,
+        y: -y * scale
     };
+}
 
 
-    let currentTheme =
-        localStorage.getItem("heartfill_theme")
-        || "midnight";
+/* =========================
+   RANDOM HEART POINT
+========================= */
 
-    if (!themes[currentTheme]) {
-        currentTheme = "midnight";
+function randomHeartPoint() {
+
+    const t = Math.random() * Math.PI * 2;
+
+    const point = heartPoint(t);
+
+    /*
+        sqrt() giúp phân bố hạt đều hơn,
+        tránh việc giữa tim quá rỗng.
+    */
+    const fill = Math.sqrt(Math.random());
+
+    return {
+        x: point.x * fill,
+        y: point.y * fill,
+        size: 0.8 + Math.random() * 2.2,
+        alpha: 0.25 + Math.random() * 0.65,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 1.4
+    };
+}
+
+
+/* =========================
+   CREATE PARTICLES
+========================= */
+
+function createParticles() {
+
+    particles = [];
+    outlineParticles = [];
+
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(randomHeartPoint());
     }
 
+    for (let i = 0; i < outlineCount; i++) {
 
-    /* =====================================
-       APPLY THEME
-    ===================================== */
+        const t =
+            (i / outlineCount) *
+            Math.PI *
+            2;
 
-    function applyTheme(theme) {
+        const point = heartPoint(t);
 
-        if (!themes[theme]) return;
-
-        currentTheme = theme;
-
-        document.body.dataset.theme = theme;
-
-        localStorage.setItem(
-            "heartfill_theme",
-            theme
-        );
-
-        themeButtons.forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.theme === theme
-            );
+        outlineParticles.push({
+            x: point.x,
+            y: point.y,
+            phase: Math.random() * Math.PI * 2
         });
-
-        createStars();
-
-        particles.forEach(particle => {
-
-            particle.color =
-                randomChoice(themes[currentTheme]);
-        });
     }
+}
 
 
-    themeButtons.forEach(button => {
+/* =========================
+   RESIZE
+========================= */
 
-        button.addEventListener("click", event => {
+function resizeCanvas() {
 
-            event.stopPropagation();
+    const rect = canvas.getBoundingClientRect();
 
-            applyTheme(button.dataset.theme);
-        });
-    });
+    width = rect.width;
+    height = rect.height;
 
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
 
-    /* =====================================
-       RANDOM HELPERS
-    ===================================== */
-
-    function random(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
-
-    function randomInt(min, max) {
-        return Math.floor(
-            Math.random() * (max - min + 1)
-        ) + min;
-    }
-
-
-    function randomChoice(array) {
-        return array[
-            Math.floor(Math.random() * array.length)
-        ];
-    }
-
-
-    /* =====================================
-       STARS
-    ===================================== */
-
-    function createStars() {
-
-        starsContainer.innerHTML = "";
-
-        const count =
-            window.innerWidth < 700
-                ? 75
-                : 140;
-
-        for (let i = 0; i < count; i++) {
-
-            const star =
-                document.createElement("div");
-
-            star.className = "star";
-
-            if (Math.random() < 0.12) {
-                star.classList.add("big");
-            }
-
-            star.style.left =
-                `${random(1, 99)}%`;
-
-            star.style.top =
-                `${random(1, 99)}%`;
-
-            star.style.setProperty(
-                "--duration",
-                `${random(1.2, 3.5)}s`
-            );
-
-            star.style.setProperty(
-                "--float-duration",
-                `${random(7, 18)}s`
-            );
-
-            star.style.setProperty(
-                "--delay",
-                `${random(-5, 0)}s`
-            );
-
-            star.style.setProperty(
-                "--move-x",
-                `${random(-30, 30)}px`
-            );
-
-            star.style.setProperty(
-                "--move-y",
-                `${random(-40, 40)}px`
-            );
-
-            starsContainer.appendChild(star);
-        }
-    }
-
-
-    createStars();
-
-
-    /* =====================================
-       CANVAS RESIZE
-    ===================================== */
-
-    let width = 0;
-    let height = 0;
-    let dpr = 1;
-
-
-    function resizeCanvas() {
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-        dpr =
-            Math.min(
-                window.devicePixelRatio || 1,
-                2
-            );
-
-        width = rect.width;
-        height = rect.height;
-
-        canvas.width =
-            Math.floor(width * dpr);
-
-        canvas.height =
-            Math.floor(height * dpr);
-
-        ctx.setTransform(
-            dpr,
-            0,
-            0,
-            dpr,
-            0,
-            0
-        );
-    }
-
-
-    resizeCanvas();
-
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            resizeCanvas();
-            createStars();
-        }
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
     );
+}
+
+window.addEventListener("resize", resizeCanvas);
 
 
-    /* =====================================
-       HEART FUNCTION
-    ===================================== */
+/* =========================
+   DRAW HEART OUTLINE
+========================= */
 
-    function heartX(t) {
+function drawHeartOutline(cx, cy, scale) {
 
-        return (
-            16 * Math.pow(Math.sin(t), 3)
-        );
-    }
+    const theme = themes[currentTheme];
 
+    ctx.beginPath();
 
-    function heartY(t) {
+    for (let i = 0; i <= 160; i++) {
 
-        return -(
-            13 * Math.cos(t)
-            - 5 * Math.cos(2 * t)
-            - 2 * Math.cos(3 * t)
-            - Math.cos(4 * t)
-        );
-    }
+        const t =
+            (i / 160) *
+            Math.PI *
+            2;
 
+        const p = heartPoint(t, scale);
 
-    /* =====================================
-       HEART PARTICLES
-    ===================================== */
+        const x = cx + p.x;
+        const y = cy + p.y;
 
-    const particles = [];
-
-    const PARTICLE_COUNT = 900;
-
-
-    function createHeartParticles() {
-
-        particles.length = 0;
-
-        const scale =
-            Math.min(width, height) / 34;
-
-        for (
-            let i = 0;
-            i < PARTICLE_COUNT;
-            i++
-        ) {
-
-            const t =
-                random(0, Math.PI * 2);
-
-            /*
-             * Random radius creates
-             * a filled heart.
-             */
-            const radius =
-                Math.sqrt(Math.random());
-
-            const x =
-                heartX(t) * scale * radius;
-
-            const y =
-                heartY(t) * scale * radius;
-
-            particles.push({
-
-                x: x,
-                y: y,
-
-                baseX: x,
-                baseY: y,
-
-                size: random(0.8, 2.3),
-
-                alpha: random(0.35, 1),
-
-                phase: random(
-                    0,
-                    Math.PI * 2
-                ),
-
-                speed: random(
-                    0.7,
-                    2
-                ),
-
-                color:
-                    randomChoice(
-                        themes[currentTheme]
-                    )
-            });
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
         }
     }
 
+    ctx.closePath();
 
-    createHeartParticles();
+    ctx.strokeStyle = theme.outline;
 
+    ctx.globalAlpha = 0.42;
 
-    /* =====================================
-       DRAW HEART
-    ===================================== */
+    ctx.lineWidth = 1.2;
 
-    let animationTime = 0;
+    ctx.shadowBlur = 12;
 
+    ctx.shadowColor = theme.outline;
 
-    function drawHeart() {
+    ctx.stroke();
 
-        animationTime += 0.016;
-
-        ctx.clearRect(
-            0,
-            0,
-            width,
-            height
-        );
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+}
 
 
-        const centerX =
-            width / 2;
+/* =========================
+   DRAW PARTICLES
+========================= */
 
-        const centerY =
-            height / 2 + 20;
+function drawParticles(cx, cy, scale) {
 
+    const theme = themes[currentTheme];
 
-        /*
-         * Gentle heartbeat.
-         */
-        const heartbeat =
-            1 +
-            Math.sin(animationTime * 2.4)
-            * 0.025;
+    for (const p of particles) {
 
+        const pulse =
+            Math.sin(
+                animationTime * p.speed +
+                p.phase
+            ) * 0.7;
 
-        ctx.save();
+        const x =
+            cx +
+            p.x * scale +
+            Math.sin(
+                animationTime * 0.7 +
+                p.phase
+            ) * 1.4;
 
-        ctx.translate(
-            centerX,
-            centerY
-        );
+        const y =
+            cy +
+            p.y * scale +
+            Math.cos(
+                animationTime * 0.55 +
+                p.phase
+            ) * 1.4;
 
-        ctx.scale(
-            heartbeat,
-            heartbeat
-        );
-
-
-        /* =================================
-           HEART GLOW
-        ================================= */
-
-        ctx.shadowBlur = 28;
-
-        ctx.shadowColor =
-            getComputedStyle(document.body)
-                .getPropertyValue("--accent")
-                .trim();
-
-
-        /* =================================
-           PARTICLES
-        ================================= */
-
-        for (const particle of particles) {
-
-            const wave =
-                Math.sin(
-                    animationTime *
-                    particle.speed +
-                    particle.phase
-                );
-
-            const floatX =
-                Math.cos(
-                    animationTime * 0.8 +
-                    particle.phase
-                ) * 1.4;
-
-            const floatY =
-                wave * 1.4;
-
-
-            const px =
-                particle.baseX +
-                floatX;
-
-            const py =
-                particle.baseY +
-                floatY;
-
-
-            const alpha =
-                Math.max(
-                    0.15,
-                    Math.min(
-                        1,
-                        particle.alpha +
-                        wave * 0.15
-                    )
-                );
-
-
-            ctx.globalAlpha = alpha;
-
-            ctx.fillStyle =
-                particle.color;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                px,
-                py,
-                particle.size,
-                0,
-                Math.PI * 2
+        const size =
+            Math.max(
+                0.4,
+                p.size + pulse * 0.25
             );
 
-            ctx.fill();
+        let color;
+
+        const random = p.phase % 3;
+
+        if (random < 1) {
+            color = theme.particle1;
+        } else if (random < 2) {
+            color = theme.particle2;
+        } else {
+            color = theme.particle3;
         }
-
-
-        /* =================================
-           HEART OUTLINE
-        ================================= */
-
-        ctx.globalAlpha = 0.3;
-
-        ctx.shadowBlur = 40;
-
-        ctx.strokeStyle =
-            getComputedStyle(document.body)
-                .getPropertyValue("--text")
-                .trim();
-
-        ctx.lineWidth = 1.5;
 
         ctx.beginPath();
 
+        ctx.arc(
+            x,
+            y,
+            size,
+            0,
+            Math.PI * 2
+        );
 
-        const scale =
-            Math.min(width, height) / 34;
+        ctx.fillStyle = color;
 
+        ctx.globalAlpha =
+            p.alpha *
+            (0.85 + pulse * 0.08);
 
-        for (
-            let i = 0;
-            i <= 200;
-            i++
-        ) {
+        ctx.shadowBlur = size > 2 ? 7 : 3;
 
-            const t =
-                (i / 200) *
-                Math.PI * 2;
+        ctx.shadowColor = color;
 
-            const x =
-                heartX(t) * scale;
-
-            const y =
-                heartY(t) * scale;
-
-
-            if (i === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
-        }
-
-        ctx.closePath();
-
-        ctx.stroke();
-
-        ctx.restore();
-
-        ctx.globalAlpha = 1;
-
-        requestAnimationFrame(drawHeart);
+        ctx.fill();
     }
 
-
-    /* =====================================
-       START HEART
-    ===================================== */
-
-    requestAnimationFrame(drawHeart);
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+}
 
 
-    /* =====================================
-       MUSIC
-    ===================================== */
+/* =========================
+   CENTER GLOW
+========================= */
 
-    let musicStarted = false;
+function drawCenterGlow(cx, cy, scale) {
 
+    const theme = themes[currentTheme];
 
-    async function startMusic() {
-
-        if (musicStarted) return;
-
-        try {
-
-            await music.play();
-
-            musicStarted = true;
-
-            musicButton.classList.add(
-                "playing"
-            );
-
-        } catch (error) {
-
-            /*
-             * Browser blocks autoplay.
-             * User can press the music button.
-             */
-            musicStarted = false;
-        }
-    }
-
-
-    musicButton.addEventListener(
-        "click",
-        async event => {
-
-            event.stopPropagation();
-
-            if (music.paused) {
-
-                try {
-
-                    await music.play();
-
-                    musicButton.classList.add(
-                        "playing"
-                    );
-
-                    musicStarted = true;
-
-                } catch (error) {
-
-                    console.log(
-                        "Music could not start."
-                    );
-                }
-
-            } else {
-
-                music.pause();
-
-                musicButton.classList.remove(
-                    "playing"
-                );
-            }
-        }
+    const gradient = ctx.createRadialGradient(
+        cx,
+        cy,
+        0,
+        cx,
+        cy,
+        scale * 9
     );
 
+    gradient.addColorStop(
+        0,
+        theme.particle1
+    );
+
+    gradient.addColorStop(
+        0.25,
+        theme.particle2
+    );
+
+    gradient.addColorStop(
+        1,
+        "transparent"
+    );
+
+    ctx.globalAlpha = 0.18;
+
+    ctx.fillStyle = gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        scale * 9,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+}
+
+
+/* =========================
+   ANIMATION
+========================= */
+
+function animate() {
+
+    animationTime += 0.016;
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
 
     /*
-     * Try to start music after
-     * the first interaction anywhere.
-     */
-    document.addEventListener(
+        Scale nhỏ hơn trước để
+        toàn bộ trái tim nằm trong khung.
+    */
+    const scale =
+        Math.min(
+            width / 36,
+            height / 31
+        ) * 0.88;
+
+    const cx = width / 2;
+
+    /*
+        Dịch tim xuống một chút
+        để không đè lên chữ.
+    */
+    const cy =
+        height / 2 + scale * 1.5;
+
+    drawCenterGlow(
+        cx,
+        cy,
+        scale
+    );
+
+    drawHeartOutline(
+        cx,
+        cy,
+        scale
+    );
+
+    drawParticles(
+        cx,
+        cy,
+        scale
+    );
+
+    requestAnimationFrame(animate);
+}
+
+
+/* =========================
+   STARS
+========================= */
+
+const starsContainer =
+    document.getElementById("stars");
+
+function createStars() {
+
+    starsContainer.innerHTML = "";
+
+    const count =
+        window.innerWidth < 700
+            ? 65
+            : 105;
+
+    for (let i = 0; i < count; i++) {
+
+        const star =
+            document.createElement("div");
+
+        star.className = "star";
+
+        const size =
+            Math.random() < 0.85
+                ? 1 + Math.random() * 2
+                : 2.5 + Math.random() * 2;
+
+        star.style.left =
+            Math.random() * 100 + "%";
+
+        star.style.top =
+            Math.random() * 100 + "%";
+
+        star.style.setProperty(
+            "--size",
+            size + "px"
+        );
+
+        star.style.setProperty(
+            "--opacity",
+            0.25 + Math.random() * 0.7
+        );
+
+        star.style.setProperty(
+            "--duration",
+            1.5 + Math.random() * 3 + "s"
+        );
+
+        star.style.setProperty(
+            "--float-duration",
+            8 + Math.random() * 15 + "s"
+        );
+
+        star.style.setProperty(
+            "--delay",
+            -Math.random() * 5 + "s"
+        );
+
+        star.style.setProperty(
+            "--move-x",
+            (Math.random() - 0.5) * 35 + "px"
+        );
+
+        star.style.setProperty(
+            "--move-y",
+            (Math.random() - 0.5) * 35 + "px"
+        );
+
+        starsContainer.appendChild(star);
+    }
+}
+
+
+/* =========================
+   THEME SWITCHING
+========================= */
+
+const themeButtons =
+    document.querySelectorAll(".theme-btn");
+
+themeButtons.forEach(button => {
+
+    button.addEventListener(
         "click",
         () => {
-            startMusic();
-        },
-        {
-            once: true
+
+            const theme =
+                button.dataset.theme;
+
+            currentTheme = theme;
+
+            document.body.dataset.theme =
+                theme;
+
+            themeButtons.forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
         }
     );
-
-
-    document.addEventListener(
-        "touchstart",
-        () => {
-            startMusic();
-        },
-        {
-            once: true
-        }
-    );
-
-
-    /* =====================================
-       INITIAL THEME
-    ===================================== */
-
-    applyTheme(currentTheme);
-
 });
+
+
+/* =========================
+   MUSIC
+========================= */
+
+const music =
+    document.getElementById("birthdayMusic");
+
+const musicButton =
+    document.getElementById("musicButton");
+
+let musicStarted = false;
+
+
+/*
+    Trình duyệt hiện nay thường chặn
+    autoplay có âm thanh.
+
+    Code sẽ thử tự phát ngay khi mở web.
+*/
+async function tryPlayMusic() {
+
+    try {
+
+        music.volume = 0.45;
+
+        await music.play();
+
+        musicStarted = true;
+
+        musicButton.classList.add("playing");
+
+    } catch (error) {
+
+        /*
+            Nếu browser chặn autoplay,
+            chờ người dùng tương tác.
+        */
+
+        musicStarted = false;
+
+        musicButton.classList.remove("playing");
+    }
+}
+
+
+/* Nút bật/tắt nhạc */
+
+musicButton.addEventListener(
+    "click",
+    async () => {
+
+        if (music.paused) {
+
+            try {
+
+                music.volume = 0.45;
+
+                await music.play();
+
+                musicButton.classList.add(
+                    "playing"
+                );
+
+            } catch (error) {
+
+                console.log(
+                    "Không thể phát nhạc:",
+                    error
+                );
+            }
+
+        } else {
+
+            music.pause();
+
+            musicButton.classList.remove(
+                "playing"
+            );
+        }
+    }
+);
+
+
+/*
+    Nếu autoplay bị chặn,
+    lần click đầu tiên vào trang sẽ
+    thử bật nhạc.
+*/
+
+document.addEventListener(
+    "click",
+    () => {
+
+        if (!musicStarted && music.paused) {
+            tryPlayMusic();
+        }
+
+    },
+    {
+        once: true
+    }
+);
+
+
+/* =========================
+   START
+========================= */
+
+resizeCanvas();
+
+createParticles();
+
+createStars();
+
+animate();
+
+tryPlayMusic();
+
+window.addEventListener(
+    "resize",
+    createStars
+);
