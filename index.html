@@ -2,83 +2,134 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
 
-    <title>Happy Birthday Kik</title>
+  <title>Happy Birthday Kik</title>
 
-    <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
-    <div class="background"></div>
+  <!-- Background -->
+  <div class="background"></div>
 
-    <!-- Stars around the heart -->
-    <div class="stars" id="stars"></div>
+  <!-- Stars around the heart -->
+  <div class="stars" id="stars" aria-hidden="true"></div>
 
-    <main class="scene">
+  <!-- Main scene -->
+  <main class="scene">
 
-        <!-- Main animated heart -->
-        <div class="heart-container" id="heartContainer">
-            <canvas id="heartCanvas"></canvas>
-        </div>
+    <!-- Main animated heart -->
+    <div class="heart-container" id="heartContainer"></div>
 
-        <!-- Birthday message -->
-        <div class="text-overlay">
+    <!-- Birthday message -->
+    <section class="text-overlay">
 
-            <div class="recipient-name">
-                To the girl who kept waiting
-            </div>
+      <div class="recipient-name">
+        To the girl who kept waiting
+      </div>
 
-            <div class="message">
-                <div>From the bottom of my heart</div>
-                <div>May your special day full of love</div>
-                <div>From the moment you open your eyes</div>
-                <div>Until you sleep for the night</div>
-                <div>I'm glad it was you on March 8, 2026.</div>
-                <div>Happy Birthday Kik. ❤️</div>
-            </div>
+      <div class="message">
+        <div>From the bottom of my heart</div>
+        <div>May your special day full of love</div>
+        <div>From the moment you open your eyes</div>
+        <div>Until you sleep for the night</div>
+        <div>I'm glad it was you on March 8, 2026.</div>
+        <div>Happy Birthday Kik. ❤️</div>
+      </div>
 
-        </div>
+    </section>
 
-    </main>
+  </main>
 
+  <!-- Theme Switcher -->
+  <div class="theme-switcher" role="toolbar" aria-label="Theme Switcher">
 
-    <!-- Theme Switcher -->
-    <div class="theme-switcher">
+    <button
+      class="theme-btn active"
+      data-theme="midnight"
+      title="Midnight Romance"
+      aria-label="Midnight Romance">
 
-        <button class="theme-btn active" data-theme="midnight">
-            <span class="theme-dot midnight-dot"></span>
-            <span class="theme-name">Midnight</span>
-        </button>
+      <span
+        class="theme-dot"
+        style="background: linear-gradient(135deg, #ff0080, #7928ca);">
+      </span>
 
-        <button class="theme-btn" data-theme="golden">
-            <span class="theme-dot golden-dot"></span>
-            <span class="theme-name">Golden</span>
-        </button>
+      <span class="theme-name">Midnight</span>
+    </button>
 
-        <button class="theme-btn" data-theme="cyber">
-            <span class="theme-dot cyber-dot"></span>
-            <span class="theme-name">Cyber</span>
-        </button>
+    <button
+      class="theme-btn"
+      data-theme="golden"
+      title="Golden Sunset"
+      aria-label="Golden Sunset">
 
-        <button class="theme-btn" data-theme="emerald">
-            <span class="theme-dot emerald-dot"></span>
-            <span class="theme-name">Emerald</span>
-        </button>
+      <span
+        class="theme-dot"
+        style="background: linear-gradient(135deg, #ff9900, #ff0055);">
+      </span>
 
-        <button class="theme-btn" data-theme="velvet">
-            <span class="theme-dot velvet-dot"></span>
-            <span class="theme-name">Velvet</span>
-        </button>
+      <span class="theme-name">Golden</span>
+    </button>
 
-    </div>
+    <button
+      class="theme-btn"
+      data-theme="cyber"
+      title="Cyberpunk Love"
+      aria-label="Cyberpunk Love">
 
+      <span
+        class="theme-dot"
+        style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
+      </span>
 
-    <script src="./script.js"></script>
+      <span class="theme-name">Cyber</span>
+    </button>
+
+    <button
+      class="theme-btn"
+      data-theme="emerald"
+      title="Emerald Enchantment"
+      aria-label="Emerald Enchantment">
+
+      <span
+        class="theme-dot"
+        style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+      </span>
+
+      <span class="theme-name">Emerald</span>
+    </button>
+
+    <button
+      class="theme-btn"
+      data-theme="velvet"
+      title="Velvet Passion"
+      aria-label="Velvet Passion">
+
+      <span
+        class="theme-dot"
+        style="background: linear-gradient(135deg, #ff0844, #ffb199);">
+      </span>
+
+      <span class="theme-name">Velvet</span>
+    </button>
+
+  </div>
+
+  <!-- Matter.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/pathseg@1.2.1/pathseg.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/poly-decomp@0.3.0/build/decomp.min.js"></script>
+
+  <!-- Main JavaScript -->
+  <script src="./script.js"></script>
 
 </body>
 
