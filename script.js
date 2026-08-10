@@ -1,10 +1,10 @@
 "use strict";
 
 /* =====================================================
-   THEME
+   THEME DATA
 ===================================================== */
 
-const themePalettes = {
+const themes = {
     midnight: {
         colors: [
             "#ff0080",
@@ -22,7 +22,8 @@ const themePalettes = {
             "#ffaa00",
             "#ffcc00",
             "#ff6600",
-            "#ff7733"
+            "#ff7733",
+            "#e67e22"
         ]
     },
 
@@ -60,66 +61,88 @@ const themePalettes = {
     }
 };
 
-let currentTheme =
-    localStorage.getItem("heartfill_theme") || "midnight";
 
-if (!themePalettes[currentTheme]) {
+/* =====================================================
+   CURRENT THEME
+===================================================== */
+
+let currentTheme =
+    localStorage.getItem("heartfill_theme");
+
+if (!themes[currentTheme]) {
     currentTheme = "midnight";
 }
 
-document.body.setAttribute("data-theme", currentTheme);
+document.body.dataset.theme =
+    currentTheme;
 
 
 /* =====================================================
    THEME BUTTONS
 ===================================================== */
 
-document.querySelectorAll(".theme-btn").forEach(button => {
+const themeButtons =
+    document.querySelectorAll(".theme-btn");
+
+function updateThemeButtons() {
+
+    themeButtons.forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.theme === currentTheme
+        );
+
+    });
+}
+
+themeButtons.forEach(button => {
 
     button.addEventListener("click", () => {
 
-        const theme = button.dataset.theme;
+        const theme =
+            button.dataset.theme;
 
-        if (!themePalettes[theme]) {
+        if (!themes[theme]) {
             return;
         }
 
         currentTheme = theme;
 
-        document.body.setAttribute(
-            "data-theme",
-            currentTheme
-        );
+        document.body.dataset.theme =
+            currentTheme;
 
         localStorage.setItem(
             "heartfill_theme",
             currentTheme
         );
 
-        document.querySelectorAll(".theme-btn")
-            .forEach(btn => {
-                btn.classList.toggle(
-                    "active",
-                    btn.dataset.theme === currentTheme
-                );
-            });
+        updateThemeButtons();
+
+        createHeart();
+
     });
+
 });
+
+updateThemeButtons();
 
 
 /* =====================================================
-   STARS AROUND THE HEART
+   STARS
 ===================================================== */
 
-const starsContainer =
+const stars =
     document.getElementById("stars");
 
 function createStars() {
 
-    starsContainer.innerHTML = "";
+    stars.innerHTML = "";
 
     const amount =
-        window.innerWidth < 700 ? 70 : 130;
+        window.innerWidth <= 700
+            ? 75
+            : 140;
 
     for (let i = 0; i < amount; i++) {
 
@@ -127,7 +150,7 @@ function createStars() {
             document.createElement("span");
 
         star.className =
-            Math.random() < 0.18
+            Math.random() < 0.15
                 ? "star big"
                 : "star";
 
@@ -139,30 +162,30 @@ function createStars() {
 
         star.style.setProperty(
             "--duration",
-            (1.5 + Math.random() * 3) + "s"
+            1.5 + Math.random() * 3 + "s"
         );
 
         star.style.setProperty(
             "--float-duration",
-            (5 + Math.random() * 10) + "s"
+            6 + Math.random() * 10 + "s"
         );
 
         star.style.setProperty(
             "--delay",
-            (-Math.random() * 5) + "s"
+            -Math.random() * 5 + "s"
         );
 
         star.style.setProperty(
             "--move-x",
-            (Math.random() * 60 - 30) + "px"
+            Math.random() * 60 - 30 + "px"
         );
 
         star.style.setProperty(
             "--move-y",
-            (Math.random() * 60 - 30) + "px"
+            Math.random() * 60 - 30 + "px"
         );
 
-        starsContainer.appendChild(star);
+        stars.appendChild(star);
     }
 }
 
@@ -175,7 +198,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   HEART CANVAS
+   CANVAS
 ===================================================== */
 
 const canvas =
@@ -184,13 +207,14 @@ const canvas =
 const ctx =
     canvas.getContext("2d");
 
-let width;
-let height;
+let width = 0;
+let height = 0;
+
 let particles = [];
 
 
 /* =====================================================
-   CANVAS SIZE
+   RESIZE CANVAS
 ===================================================== */
 
 function resizeCanvas() {
@@ -201,14 +225,17 @@ function resizeCanvas() {
     const ratio =
         window.devicePixelRatio || 1;
 
-    width = rect.width;
-    height = rect.height;
+    width =
+        rect.width;
+
+    height =
+        rect.height;
 
     canvas.width =
-        width * ratio;
+        Math.floor(width * ratio);
 
     canvas.height =
-        height * ratio;
+        Math.floor(height * ratio);
 
     ctx.setTransform(
         ratio,
@@ -219,7 +246,7 @@ function resizeCanvas() {
         0
     );
 
-    createHeartParticles();
+    createHeart();
 }
 
 window.addEventListener(
@@ -251,7 +278,7 @@ function heartPoint(t, scale) {
 
 
 /* =====================================================
-   PARTICLE
+   PARTICLE CLASS
 ===================================================== */
 
 class Particle {
@@ -267,16 +294,13 @@ class Particle {
         this.color = color;
 
         this.size =
-            1 + Math.random() * 2.2;
+            0.8 + Math.random() * 2.2;
 
-        this.angle =
+        this.phase =
             Math.random() * Math.PI * 2;
 
         this.speed =
-            0.005 + Math.random() * 0.015;
-
-        this.offset =
-            Math.random() * Math.PI * 2;
+            0.5 + Math.random() * 1.5;
 
         this.alpha =
             0.35 + Math.random() * 0.65;
@@ -284,28 +308,41 @@ class Particle {
 
     update(time) {
 
-        this.angle += this.speed;
-
         const wave =
             Math.sin(
-                time * 0.002 +
-                this.offset
+                time * 0.002 * this.speed +
+                this.phase
+            );
+
+        const wave2 =
+            Math.cos(
+                time * 0.0015 +
+                this.phase
             );
 
         this.x =
             this.baseX +
-            Math.cos(this.angle) *
-            wave *
-            2.5;
+            wave * 1.8;
 
         this.y =
             this.baseY +
-            Math.sin(this.angle) *
-            wave *
-            2.5;
+            wave2 * 1.8;
     }
 
     draw() {
+
+        ctx.save();
+
+        ctx.globalAlpha =
+            this.alpha;
+
+        ctx.fillStyle =
+            this.color;
+
+        ctx.shadowColor =
+            this.color;
+
+        ctx.shadowBlur = 10;
 
         ctx.beginPath();
 
@@ -317,72 +354,53 @@ class Particle {
             Math.PI * 2
         );
 
-        ctx.globalAlpha =
-            this.alpha;
-
-        ctx.fillStyle =
-            this.color;
-
-        ctx.shadowBlur = 12;
-
-        ctx.shadowColor =
-            this.color;
-
         ctx.fill();
 
-        ctx.globalAlpha = 1;
-
-        ctx.shadowBlur = 0;
+        ctx.restore();
     }
 }
 
 
 /* =====================================================
-   CREATE HEART PARTICLES
+   CREATE HEART
 ===================================================== */
 
-function createHeartParticles() {
+function createHeart() {
 
     particles = [];
+
+    if (width <= 0 || height <= 0) {
+        return;
+    }
 
     const centerX =
         width / 2;
 
     const centerY =
-        height / 2 + 30;
+        height / 2 + 35;
 
     const scale =
-        Math.min(
-            width,
-            height
-        ) / 38;
+        Math.min(width, height) / 40;
 
     const colors =
-        themePalettes[currentTheme].colors;
+        themes[currentTheme].colors;
 
-    /*
-       Tạo nhiều lớp hạt bên trong trái tim
-    */
+
+    /* Outer heart */
 
     for (
         let t = 0;
         t < Math.PI * 2;
-        t += 0.035
+        t += 0.025
     ) {
 
         const point =
             heartPoint(t, scale);
 
-        const x =
-            centerX + point.x;
-
-        const y =
-            centerY + point.y;
-
         particles.push(
             new Particle(
-                x,
-                y,
+                centerX + point.x,
+                centerY + point.y,
                 colors[
                     Math.floor(
                         Math.random() *
@@ -393,11 +411,10 @@ function createHeartParticles() {
         );
     }
 
-    /*
-       Các hạt phía trong trái tim
-    */
 
-    for (let i = 0; i < 950; i++) {
+    /* Inside heart */
+
+    for (let i = 0; i < 1200; i++) {
 
         const t =
             Math.random() *
@@ -406,18 +423,18 @@ function createHeartParticles() {
         const point =
             heartPoint(t, scale);
 
-        const ratio =
+        const factor =
             Math.sqrt(
                 Math.random()
-            ) * 0.95;
+            ) * 0.96;
 
         const x =
             centerX +
-            point.x * ratio;
+            point.x * factor;
 
         const y =
             centerY +
-            point.y * ratio;
+            point.y * factor;
 
         particles.push(
             new Particle(
@@ -436,25 +453,26 @@ function createHeartParticles() {
 
 
 /* =====================================================
-   DRAW HEART GLOW
+   DRAW HEART OUTLINE
 ===================================================== */
 
-function drawHeartGlow() {
+function drawHeartOutline() {
+
+    if (width <= 0 || height <= 0) {
+        return;
+    }
 
     const centerX =
         width / 2;
 
     const centerY =
-        height / 2 + 30;
+        height / 2 + 35;
 
     const scale =
-        Math.min(
-            width,
-            height
-        ) / 38;
+        Math.min(width, height) / 40;
 
     const colors =
-        themePalettes[currentTheme].colors;
+        themes[currentTheme].colors;
 
     ctx.save();
 
@@ -463,7 +481,7 @@ function drawHeartGlow() {
     for (
         let t = 0;
         t <= Math.PI * 2;
-        t += 0.025
+        t += 0.02
     ) {
 
         const point =
@@ -491,10 +509,10 @@ function drawHeartGlow() {
 
     ctx.globalAlpha = 0.9;
 
-    ctx.shadowBlur = 30;
-
     ctx.shadowColor =
         colors[0];
+
+    ctx.shadowBlur = 30;
 
     ctx.stroke();
 
@@ -506,9 +524,6 @@ function drawHeartGlow() {
    ANIMATION
 ===================================================== */
 
-let startTime =
-    performance.now();
-
 function animate(time) {
 
     ctx.clearRect(
@@ -518,14 +533,14 @@ function animate(time) {
         height
     );
 
-    drawHeartGlow();
+    drawHeartOutline();
 
-    particles.forEach(
-        particle => {
-            particle.update(time);
-            particle.draw();
-        }
-    );
+    for (const particle of particles) {
+
+        particle.update(time);
+
+        particle.draw();
+    }
 
     requestAnimationFrame(
         animate
@@ -534,7 +549,7 @@ function animate(time) {
 
 
 /* =====================================================
-   INITIALIZE
+   START
 ===================================================== */
 
 resizeCanvas();
@@ -542,24 +557,3 @@ resizeCanvas();
 requestAnimationFrame(
     animate
 );
-
-
-/* =====================================================
-   UPDATE HEART COLORS WHEN THEME CHANGES
-===================================================== */
-
-document.querySelectorAll(".theme-btn")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                setTimeout(() => {
-                    createHeartParticles();
-                }, 50);
-
-            }
-        );
-
-    });
