@@ -1,540 +1,408 @@
-"use strict";
+/* =========================================================
+   STAR FIELD
+   ========================================================= */
 
-(() => {
+const starsContainer = document.getElementById("stars");
 
-  const music = document.getElementById("birthdayMusic");
-  const musicButton = document.getElementById("musicButton");
+const STAR_COUNT = 110;
 
-  /* =========================
-     MUSIC
-  ========================= */
+for (let i = 0; i < STAR_COUNT; i++) {
 
-  let musicStarted = false;
+    const star = document.createElement("div");
 
-  function updateMusicButton() {
-    if (!music) return;
+    star.className = "star";
 
-    musicButton.textContent = music.paused ? "🎵" : "🔊";
-  }
+    const size = Math.random() < 0.85
+        ? Math.random() * 2 + 1
+        : Math.random() * 3 + 2;
 
-  async function startMusic() {
-    if (!music) return;
+    const opacity = Math.random() * 0.55 + 0.25;
+
+    const duration = Math.random() * 2.5 + 1.5;
+    const floatDuration = Math.random() * 20 + 15;
+
+    const delay = Math.random() * -8;
+
+    const moveX = (Math.random() - 0.5) * 80;
+    const moveY = (Math.random() - 0.5) * 80;
+
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+
+    star.style.setProperty("--size", `${size}px`);
+    star.style.setProperty("--opacity", opacity);
+    star.style.setProperty("--duration", `${duration}s`);
+    star.style.setProperty("--float-duration", `${floatDuration}s`);
+    star.style.setProperty("--delay", `${delay}s`);
+    star.style.setProperty("--move-x", `${moveX}px`);
+    star.style.setProperty("--move-y", `${moveY}px`);
+
+    starsContainer.appendChild(star);
+}
+
+
+/* =========================================================
+   HEART CANVAS
+   ========================================================= */
+
+const canvas = document.getElementById("heartCanvas");
+const ctx = canvas.getContext("2d");
+
+let width = 0;
+let height = 0;
+
+let particles = [];
+
+const heartContainer = document.getElementById("heartContainer");
+
+
+function resizeCanvas() {
+
+    const rect = heartContainer.getBoundingClientRect();
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    width = rect.width;
+    height = rect.height;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    createHeart();
+}
+
+
+function heartX(t) {
+
+    return 16 * Math.pow(Math.sin(t), 3);
+}
+
+
+function heartY(t) {
+
+    return (
+        13 * Math.cos(t)
+        - 5 * Math.cos(2 * t)
+        - 2 * Math.cos(3 * t)
+        - Math.cos(4 * t)
+    );
+}
+
+
+function createHeart() {
+
+    particles = [];
+
+    /*
+     * Giữ hình trái tim lớn, cân đối.
+     * Không ép scale quá nhỏ để tránh mất phần đáy.
+     */
+
+    const scale = Math.min(width, height) / 35;
+
+    const centerX = width / 2;
+    const centerY = height / 2 + scale * 1.5;
+
+    const particleCount = Math.min(
+        950,
+        Math.max(500, Math.floor(width * 1.15))
+    );
+
+
+    /* Viền trái tim */
+
+    for (let i = 0; i < 280; i++) {
+
+        const t = Math.random() * Math.PI * 2;
+
+        const x = centerX + heartX(t) * scale;
+        const y = centerY - heartY(t) * scale;
+
+        particles.push({
+            x,
+            y,
+            baseX: x,
+            baseY: y,
+
+            size: Math.random() * 1.5 + 0.8,
+
+            alpha: Math.random() * 0.5 + 0.35,
+
+            speed: Math.random() * 0.015 + 0.005,
+
+            phase: Math.random() * Math.PI * 2,
+
+            edge: true
+        });
+    }
+
+
+    /* Hạt bên trong trái tim */
+
+    let created = 0;
+
+    while (created < particleCount) {
+
+        const t = Math.random() * Math.PI * 2;
+
+        const fill = Math.sqrt(Math.random());
+
+        const x =
+            centerX +
+            heartX(t) * scale * fill;
+
+        const y =
+            centerY -
+            heartY(t) * scale * fill;
+
+        particles.push({
+            x,
+            y,
+            baseX: x,
+            baseY: y,
+
+            size: Math.random() * 1.7 + 0.7,
+
+            alpha: Math.random() * 0.65 + 0.2,
+
+            speed: Math.random() * 0.02 + 0.004,
+
+            phase: Math.random() * Math.PI * 2,
+
+            edge: false
+        });
+
+        created++;
+    }
+}
+
+
+function getParticleColor(index) {
+
+    const theme = document.body.dataset.theme;
+
+    if (theme === "golden") {
+        return index % 2
+            ? "255, 211, 106"
+            : "255, 153, 0";
+    }
+
+    if (theme === "cyber") {
+        return index % 2
+            ? "105, 239, 255"
+            : "79, 172, 254";
+    }
+
+    if (theme === "emerald") {
+        return index % 2
+            ? "102, 245, 196"
+            : "150, 201, 61";
+    }
+
+    return index % 2
+        ? "255, 123, 200"
+        : "255, 0, 128";
+}
+
+
+let time = 0;
+
+
+function animateHeart() {
+
+    requestAnimationFrame(animateHeart);
+
+    time += 0.015;
+
+    ctx.clearRect(0, 0, width, height);
+
+
+    particles.forEach((p, index) => {
+
+        const pulse =
+            Math.sin(time * 1.8 + p.phase) * 0.8;
+
+        const driftX =
+            Math.sin(time * p.speed * 40 + p.phase) * 1.2;
+
+        const driftY =
+            Math.cos(time * p.speed * 35 + p.phase) * 1.2;
+
+        const x =
+            p.baseX +
+            driftX +
+            pulse * 0.25;
+
+        const y =
+            p.baseY +
+            driftY;
+
+        const color = getParticleColor(index);
+
+        const alpha =
+            Math.max(
+                0.08,
+                Math.min(1, p.alpha + pulse * 0.05)
+            );
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            p.size + pulse * 0.15,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(${color}, ${alpha})`;
+
+        ctx.fill();
+    });
+}
+
+
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+
+animateHeart();
+
+
+/* =========================================================
+   THEME SWITCHER
+   ========================================================= */
+
+const themeButtons =
+    document.querySelectorAll(".theme-btn");
+
+
+themeButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const theme =
+            button.dataset.theme;
+
+        document.body.dataset.theme =
+            theme;
+
+
+        themeButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+    });
+});
+
+
+/* =========================================================
+   MUSIC
+   ========================================================= */
+
+const music =
+    document.getElementById("birthdayMusic");
+
+const musicButton =
+    document.getElementById("musicButton");
+
+const musicIcon =
+    document.getElementById("musicIcon");
+
+
+let musicStarted = false;
+
+
+function updateMusicUI() {
+
+    if (!music.paused) {
+
+        musicButton.classList.add("playing");
+
+        musicIcon.textContent = "♫";
+
+    } else {
+
+        musicButton.classList.remove("playing");
+
+        musicIcon.textContent = "♪";
+    }
+}
+
+
+async function startMusic() {
 
     try {
-      await music.play();
-      musicStarted = true;
-      updateMusicButton();
+
+        await music.play();
+
+        musicStarted = true;
+
+        updateMusicUI();
+
     } catch (error) {
-      updateMusicButton();
+
+        /*
+         * Trình duyệt chặn autoplay.
+         * Khi người dùng click lần đầu,
+         * nhạc sẽ được bật.
+         */
+
+        updateMusicUI();
     }
-  }
+}
 
-  if (musicButton) {
-    musicButton.addEventListener("click", async () => {
 
-      if (music.paused) {
+musicButton.addEventListener("click", async () => {
+
+    if (music.paused) {
+
         await startMusic();
-      } else {
+
+    } else {
+
         music.pause();
-        updateMusicButton();
-      }
 
-    });
-  }
-
-  /*
-    Trình duyệt thường chặn autoplay có tiếng.
-    Thử phát ngay khi trang load.
-  */
-
-  window.addEventListener("load", () => {
-    setTimeout(startMusic, 500);
-  });
-
-  /*
-    Nếu autoplay bị chặn,
-    lần tương tác đầu tiên của người dùng sẽ bật nhạc.
-  */
-
-  const unlockMusic = () => {
-    if (!musicStarted) {
-      startMusic();
+        updateMusicUI();
     }
+});
 
-    document.removeEventListener("click", unlockMusic);
-    document.removeEventListener("touchstart", unlockMusic);
-    document.removeEventListener("keydown", unlockMusic);
-  };
 
-  document.addEventListener("click", unlockMusic, {
-    once: true
-  });
+/*
+ * Thử autoplay khi mở trang.
+ * Nếu trình duyệt chặn thì nút nhạc vẫn hoạt động.
+ */
 
-  document.addEventListener("touchstart", unlockMusic, {
-    once: true
-  });
-
-  document.addEventListener("keydown", unlockMusic, {
-    once: true
-  });
-
-
-  /* =========================
-     THEME SYSTEM
-  ========================= */
-
-  const themePalettes = {
-
-    midnight: {
-      fill: "#ff2a85",
-      glow: "rgba(255,0,128,.6)"
-    },
-
-    golden: {
-      fill: "#ffaa00",
-      glow: "rgba(255,153,0,.6)"
-    },
-
-    cyber: {
-      fill: "#00f2fe",
-      glow: "rgba(0,242,254,.6)"
-    },
-
-    emerald: {
-      fill: "#00e6a8",
-      glow: "rgba(0,176,155,.6)"
-    },
-
-    velvet: {
-      fill: "#ff2855",
-      glow: "rgba(255,8,68,.6)"
-    }
-
-  };
-
-  const savedTheme =
-    localStorage.getItem("birthday_theme");
-
-  let currentTheme =
-    themePalettes[savedTheme]
-      ? savedTheme
-      : "midnight";
-
-
-  function applyTheme(theme) {
-
-    if (!themePalettes[theme]) return;
-
-    currentTheme = theme;
-
-    document.body.dataset.theme = theme;
-
-    localStorage.setItem(
-      "birthday_theme",
-      theme
-    );
-
-    document
-      .querySelectorAll(".theme-btn")
-      .forEach(button => {
-
-        button.classList.toggle(
-          "active",
-          button.dataset.theme === theme
-        );
-
-      });
-  }
-
-
-  document
-    .querySelectorAll(".theme-btn")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        applyTheme(
-          button.dataset.theme
-        );
-
-      });
-
-    });
-
-
-  applyTheme(currentTheme);
-
-
-  /* =========================
-     MATTER.JS CENTRAL HEART
-  ========================= */
-
-  if (!window.Matter) {
-    console.error("Matter.js failed to load.");
-    return;
-  }
-
-  const {
-    Engine,
-    Render,
-    Runner,
-    Common,
-    Bodies,
-    Body,
-    Composite,
-    Mouse,
-    MouseConstraint
-  } = Matter;
-
-
-  const width = 512;
-  const height = 512;
-
-  const engine = Engine.create();
-
-  const world = engine.world;
-
-  engine.gravity.scale = 0;
-  engine.gravity.x = 0;
-  engine.gravity.y = 0;
-
-
-  const render = Render.create({
-
-    element: document.body,
-
-    engine: engine,
-
-    options: {
-      width: width,
-      height: height,
-      wireframes: false,
-      background: "transparent",
-      pixelRatio: 1
-    }
-
-  });
-
-
-  /*
-    Central heart.
-    Dùng polygon nhiều điểm để giữ hình trái tim
-    mềm hơn và đẹp hơn.
-  */
-
-  const heartPath = [
-    { x: 0, y: -150 },
-
-    { x: -45, y: -185 },
-    { x: -100, y: -180 },
-    { x: -150, y: -140 },
-
-    { x: -175, y: -80 },
-    { x: -170, y: -20 },
-
-    { x: -145, y: 40 },
-    { x: -105, y: 90 },
-
-    { x: -55, y: 140 },
-    { x: 0, y: 185 },
-
-    { x: 55, y: 140 },
-    { x: 105, y: 90 },
-
-    { x: 145, y: 40 },
-    { x: 170, y: -20 },
-
-    { x: 175, y: -80 },
-    { x: 150, y: -140 },
-
-    { x: 100, y: -180 },
-    { x: 45, y: -185 }
-  ];
-
-
-  const initialColor =
-    themePalettes[currentTheme].fill;
-
-
-  const heart = Bodies.fromVertices(
-
-    width / 2,
-
-    height / 2 + 20,
-
-    [heartPath],
-
-    {
-      restitution: 0.65,
-
-      friction: 0.01,
-
-      frictionAir: 0.01,
-
-      density: 0.002,
-
-      render: {
-        fillStyle: initialColor,
-        strokeStyle: initialColor,
-        lineWidth: 2
-      }
-
-    },
-
-    true
-
-  );
-
-
-  Body.scale(
-    heart,
-    0.72,
-    0.72
-  );
-
-
-  Composite.add(
-    world,
-    heart
-  );
-
-
-  /* =========================
-     INVISIBLE WALLS
-  ========================= */
-
-  const wall = 30;
-
-  Composite.add(world, [
-
-    Bodies.rectangle(
-      width / 2,
-      -wall / 2,
-      width,
-      wall,
-      {
-        isStatic: true,
-        render: { visible: false }
-      }
-    ),
-
-    Bodies.rectangle(
-      width / 2,
-      height + wall / 2,
-      width,
-      wall,
-      {
-        isStatic: true,
-        render: { visible: false }
-      }
-    ),
-
-    Bodies.rectangle(
-      -wall / 2,
-      height / 2,
-      wall,
-      height,
-      {
-        isStatic: true,
-        render: { visible: false }
-      }
-    ),
-
-    Bodies.rectangle(
-      width + wall / 2,
-      height / 2,
-      wall,
-      height,
-      {
-        isStatic: true,
-        render: { visible: false }
-      }
-    )
-
-  ]);
-
-
-  /* =========================
-     MOUSE INTERACTION
-  ========================= */
-
-  const mouse =
-    Mouse.create(render.canvas);
-
-  const mouseConstraint =
-    MouseConstraint.create(
-      engine,
-      {
-        mouse: mouse,
-
-        constraint: {
-          stiffness: 0.15,
-
-          render: {
-            visible: false
-          }
-        }
-      }
-    );
-
-
-  Composite.add(
-    world,
-    mouseConstraint
-  );
-
-  render.mouse = mouse;
-
-
-  /* =========================
-     HEART MOTION
-  ========================= */
-
-  let angle = 0;
-
-  setInterval(() => {
-
-    angle += 0.018;
-
-    Body.setPosition(
-      heart,
-      {
-        x: width / 2 +
-          Math.sin(angle) * 4,
-
-        y: height / 2 +
-          20 +
-          Math.sin(angle * 1.5) * 5
-      }
-    );
-
-    Body.setAngle(
-      heart,
-      Math.sin(angle) * 0.025
-    );
-
-  }, 30);
-
-
-  /* =========================
-     FLOATING PARTICLES
-  ========================= */
-
-  function createParticle() {
-
-    const colors = {
-      midnight: ["#ff0080", "#ff69b4", "#da70d6"],
-      golden: ["#ff9900", "#ffcc00", "#ff7733"],
-      cyber: ["#00f2fe", "#4facfe", "#38f9d7"],
-      emerald: ["#00b09b", "#96c93d", "#55efc4"],
-      velvet: ["#ff0844", "#ffb199", "#e84393"]
-    };
-
-    const colorList =
-      colors[currentTheme];
-
-    const color =
-      Common.choose(colorList);
-
-
-    const particle =
-      Bodies.circle(
-
-        width / 2 +
-          Common.random(-25, 25),
-
-        height / 2 +
-          Common.random(-20, 20),
-
-        Common.random(2, 5),
-
-        {
-          restitution: 0.9,
-
-          friction: 0,
-
-          frictionAir: 0.01,
-
-          render: {
-            fillStyle: color,
-            strokeStyle: color,
-            lineWidth: 0
-          }
-        }
-
-      );
-
-
-    Body.setVelocity(
-      particle,
-      {
-        x: Common.random(-1.5, 1.5),
-        y: Common.random(-1.5, 1.5)
-      }
-    );
-
-
-    Composite.add(
-      world,
-      particle
-    );
-
+window.addEventListener("load", () => {
 
     setTimeout(() => {
-
-      Composite.remove(
-        world,
-        particle
-      );
-
-    }, 5000);
-
-  }
+        startMusic();
+    }, 500);
+});
 
 
-  setInterval(
-    createParticle,
-    180
-  );
+/*
+ * Một số trình duyệt cho phép phát nhạc
+ * ngay sau tương tác đầu tiên của người dùng.
+ */
 
+document.addEventListener(
+    "pointerdown",
+    () => {
 
-  /* =========================
-     UPDATE HEART COLOR
-  ========================= */
+        if (!musicStarted) {
+            startMusic();
+        }
 
-  setInterval(() => {
-
-    const color =
-      themePalettes[currentTheme].fill;
-
-    heart.render.fillStyle = color;
-    heart.render.strokeStyle = color;
-
-    heart.parts.forEach(part => {
-
-      part.render.fillStyle = color;
-      part.render.strokeStyle = color;
-
-    });
-
-  }, 100);
-
-
-  /* =========================
-     START MATTER
-  ========================= */
-
-  const runner =
-    Runner.create();
-
-  Runner.run(
-    runner,
-    engine
-  );
-
-  Render.run(
-    render
-  );
-
-
-})();
+    },
+    {
+        once: true
+    }
+);
