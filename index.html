@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
+    <link rel="shortcut icon" href="./favicon.webp" type="image/x-icon">
 
     <title>Happy Birthday Kik</title>
 
@@ -17,86 +17,72 @@
     <div class="background"></div>
 
     <!-- Stars -->
-    <div class="stars" id="stars" aria-hidden="true"></div>
+    <div class="stars" id="stars"></div>
 
-    <!-- Main scene -->
-    <main class="scene">
-
-        <!-- Birthday message -->
-        <section class="text-overlay">
-
-            <div class="message">
-                <div>To the girl who kept waiting</div>
-                <div>From the bottom of my heart</div>
-                <div>May your special day full of love</div>
-                <div>From the moment you open your eyes</div>
-                <div>Until you sleep for the night</div>
-                <div>I'm glad it was you on March 8, 2026.</div>
-                <div class="birthday-line">
-                    Happy Birthday Kik. <span>♥</span>
-                </div>
+    <!-- Birthday message -->
+    <div class="text-overlay">
+        <div class="message">
+            <div>To the girl who kept waiting</div>
+            <div>From the bottom of my heart</div>
+            <div>May your special day full of love</div>
+            <div>From the moment you open your eyes</div>
+            <div>Until you sleep for the night</div>
+            <div>I'm glad it was you on March 8, 2026.</div>
+            <div class="birthday-line">
+                Happy Birthday Kik. <span class="sparkle">♥</span>
             </div>
+        </div>
+    </div>
 
-        </section>
-
-
-        <!-- Animated heart -->
+    <!-- Main heart -->
+    <main class="scene">
         <div class="heart-container">
             <canvas id="heartCanvas"></canvas>
         </div>
-
-
-        <!-- Theme switcher -->
-        <div class="theme-switcher">
-
-            <button class="theme-btn active" data-theme="midnight">
-                <span class="theme-dot midnight-dot"></span>
-                <span class="theme-name">Midnight</span>
-            </button>
-
-            <button class="theme-btn" data-theme="golden">
-                <span class="theme-dot golden-dot"></span>
-                <span class="theme-name">Golden</span>
-            </button>
-
-            <button class="theme-btn" data-theme="cyber">
-                <span class="theme-dot cyber-dot"></span>
-                <span class="theme-name">Cyber</span>
-            </button>
-
-            <button class="theme-btn" data-theme="emerald">
-                <span class="theme-dot emerald-dot"></span>
-                <span class="theme-name">Emerald</span>
-            </button>
-
-            <button class="theme-btn" data-theme="velvet">
-                <span class="theme-dot velvet-dot"></span>
-                <span class="theme-name">Velvet</span>
-            </button>
-
-        </div>
-
-
-        <!-- Music button -->
-        <button id="musicButton" class="music-button">
-            ♪ Play Music
-        </button>
-
-
-        <!-- Music -->
-        <audio
-            id="birthdayMusic"
-            preload="auto"
-            loop
-        >
-            <source
-                src="./happy-birthday-music-box(chosic.com).mp3"
-                type="audio/mpeg"
-            >
-        </audio>
-
     </main>
 
+    <!-- Theme buttons -->
+    <div class="theme-switcher">
+
+        <button class="theme-btn active" data-theme="midnight">
+            <span class="theme-dot midnight-dot"></span>
+            <span>Midnight</span>
+        </button>
+
+        <button class="theme-btn" data-theme="golden">
+            <span class="theme-dot golden-dot"></span>
+            <span>Golden</span>
+        </button>
+
+        <button class="theme-btn" data-theme="cyber">
+            <span class="theme-dot cyber-dot"></span>
+            <span>Cyber</span>
+        </button>
+
+        <button class="theme-btn" data-theme="emerald">
+            <span class="theme-dot emerald-dot"></span>
+            <span>Emerald</span>
+        </button>
+
+        <button class="theme-btn" data-theme="velvet">
+            <span class="theme-dot velvet-dot"></span>
+            <span>Velvet</span>
+        </button>
+
+    </div>
+
+    <!-- Music -->
+    <audio id="birthdayMusic" loop preload="auto">
+        <source
+            src="./happy-birthday-music-box(chosic.com).mp3"
+            type="audio/mpeg"
+        >
+    </audio>
+
+    <!-- Music start button -->
+    <button id="musicButton" class="music-button">
+        ♫
+    </button>
 
     <script src="./script.js"></script>
 
