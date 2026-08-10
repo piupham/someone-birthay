@@ -86,7 +86,7 @@
                 },
                 !0
               )),
-              M.scale(n, 0.2, 0.2));
+              M.scale(n, 0.14, 0.14));
         });
         let i = function () {
           let t = structuredClone(n);
