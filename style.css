@@ -1,134 +1,36 @@
 :root {
-    --bg-1: #120d24;
-    --bg-2: #21152c;
+    --bg-1: #171229;
+    --bg-2: #090b18;
+    --bg-glow: rgba(255, 153, 0, 0.16);
 
-    --main-color: #ffbf5b;
-    --main-light: #ffe1a3;
-    --main-dark: #ff8c00;
+    --text-main: #ffd27a;
+    --text-soft: #ffc46b;
 
-    --text-color: #ffe7b0;
-    --particle-color: #ffb347;
-    --particle-light: #ffd27a;
+    --heart-main: #ffb52e;
+    --heart-glow: rgba(255, 170, 40, 0.72);
 
-    --glow: rgba(255, 177, 71, 0.65);
-    --soft-glow: rgba(255, 177, 71, 0.22);
+    --star-main: #ffb52e;
+    --star-glow: rgba(255, 170, 40, 0.65);
 
-    --ui-bg: rgba(15, 12, 24, 0.72);
-    --ui-border: rgba(255, 255, 255, 0.16);
+    --ui-bg: rgba(12, 12, 22, 0.72);
+    --ui-border: rgba(255, 255, 255, 0.18);
+
+    --transition: 0.35s ease;
 }
-
-
-/* =========================
-   THEMES
-   ========================= */
-
-body[data-theme="midnight"] {
-    --bg-1: #090412;
-    --bg-2: #1b0923;
-
-    --main-color: #ff0080;
-    --main-light: #ff72bd;
-    --main-dark: #7928ca;
-
-    --text-color: #e8a4ff;
-    --particle-color: #ff3d96;
-    --particle-light: #ff75ba;
-
-    --glow: rgba(255, 0, 128, 0.65);
-    --soft-glow: rgba(121, 40, 202, 0.25);
-}
-
-
-body[data-theme="golden"] {
-    --bg-1: #120d24;
-    --bg-2: #302018;
-
-    --main-color: #ffbf5b;
-    --main-light: #ffe1a3;
-    --main-dark: #ff8c00;
-
-    --text-color: #ffe7b0;
-    --particle-color: #ffb347;
-    --particle-light: #ffd27a;
-
-    --glow: rgba(255, 177, 71, 0.65);
-    --soft-glow: rgba(255, 140, 0, 0.24);
-}
-
-
-body[data-theme="cyber"] {
-    --bg-1: #07121f;
-    --bg-2: #102d3b;
-
-    --main-color: #4facfe;
-    --main-light: #9eeeff;
-    --main-dark: #00f2fe;
-
-    --text-color: #8edfff;
-    --particle-color: #4facfe;
-    --particle-light: #7defff;
-
-    --glow: rgba(0, 242, 254, 0.65);
-    --soft-glow: rgba(79, 172, 254, 0.24);
-}
-
-
-body[data-theme="emerald"] {
-    --bg-1: #061813;
-    --bg-2: #10291e;
-
-    --main-color: #62d69b;
-    --main-light: #a4f2c6;
-    --main-dark: #00b09b;
-
-    --text-color: #a7f0c8;
-    --particle-color: #65dca7;
-    --particle-light: #a0efca;
-
-    --glow: rgba(0, 176, 155, 0.65);
-    --soft-glow: rgba(150, 201, 61, 0.24);
-}
-
-
-body[data-theme="velvet"] {
-    --bg-1: #17070c;
-    --bg-2: #321018;
-
-    --main-color: #ff5c72;
-    --main-light: #ffb199;
-    --main-dark: #ff0844;
-
-    --text-color: #ffb3bd;
-    --particle-color: #ff5d73;
-    --particle-light: #ff9eaa;
-
-    --glow: rgba(255, 8, 68, 0.65);
-    --soft-glow: rgba(255, 177, 153, 0.22);
-}
-
-
-/* =========================
-   RESET
-   ========================= */
 
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
-
 
 html,
 body {
     width: 100%;
     height: 100%;
+    margin: 0;
     overflow: hidden;
 }
 
-
 body {
-    position: relative;
-
     font-family:
         "Trebuchet MS",
         "Segoe UI",
@@ -137,8 +39,8 @@ body {
 
     background:
         radial-gradient(
-            circle at 50% 45%,
-            var(--soft-glow),
+            circle at 50% 42%,
+            var(--bg-glow) 0%,
             transparent 42%
         ),
         linear-gradient(
@@ -147,197 +49,9 @@ body {
             var(--bg-2)
         );
 
-    color: var(--text-color);
-
-    transition:
-        background 0.8s ease,
-        color 0.5s ease;
+    color: var(--text-main);
+    transition: background var(--transition), color var(--transition);
 }
-
-
-/* =========================
-   BACKGROUND
-   ========================= */
-
-.background {
-    position: fixed;
-    inset: 0;
-
-    pointer-events: none;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            var(--soft-glow),
-            transparent 55%
-        );
-
-    opacity: 0.8;
-}
-
-
-/* =========================
-   STARS
-   ========================= */
-
-.stars {
-    position: fixed;
-    inset: 0;
-
-    pointer-events: none;
-    overflow: hidden;
-}
-
-
-.stars span {
-    position: absolute;
-
-    width: 6px;
-    height: 6px;
-
-    background: var(--main-light);
-
-    clip-path: polygon(
-        50% 0%,
-        61% 38%,
-        100% 50%,
-        61% 62%,
-        50% 100%,
-        39% 62%,
-        0% 50%,
-        39% 38%
-    );
-
-    filter: drop-shadow(0 0 7px var(--glow));
-
-    opacity: 0.6;
-
-    animation:
-        starFloat 5s ease-in-out infinite,
-        starBlink 3s ease-in-out infinite;
-}
-
-
-.stars span:nth-child(1) {
-    left: 8%;
-    top: 17%;
-    width: 18px;
-    height: 18px;
-    animation-delay: -1s;
-}
-
-.stars span:nth-child(2) {
-    left: 18%;
-    top: 29%;
-    width: 10px;
-    height: 10px;
-    animation-delay: -2s;
-}
-
-.stars span:nth-child(3) {
-    left: 31%;
-    top: 10%;
-    width: 7px;
-    height: 7px;
-    animation-delay: -3s;
-}
-
-.stars span:nth-child(4) {
-    left: 47%;
-    top: 21%;
-    width: 13px;
-    height: 13px;
-    animation-delay: -1.5s;
-}
-
-.stars span:nth-child(5) {
-    left: 61%;
-    top: 13%;
-    width: 8px;
-    height: 8px;
-    animation-delay: -4s;
-}
-
-.stars span:nth-child(6) {
-    left: 76%;
-    top: 26%;
-    width: 15px;
-    height: 15px;
-    animation-delay: -2.5s;
-}
-
-.stars span:nth-child(7) {
-    left: 90%;
-    top: 18%;
-    width: 7px;
-    height: 7px;
-    animation-delay: -1s;
-}
-
-.stars span:nth-child(8) {
-    left: 5%;
-    top: 65%;
-    width: 8px;
-    height: 8px;
-    animation-delay: -3s;
-}
-
-.stars span:nth-child(9) {
-    left: 18%;
-    top: 78%;
-    width: 14px;
-    height: 14px;
-    animation-delay: -1.2s;
-}
-
-.stars span:nth-child(10) {
-    left: 83%;
-    top: 69%;
-    width: 8px;
-    height: 8px;
-    animation-delay: -2s;
-}
-
-.stars span:nth-child(11) {
-    left: 94%;
-    top: 57%;
-    width: 11px;
-    height: 11px;
-    animation-delay: -4s;
-}
-
-.stars span:nth-child(12) {
-    left: 67%;
-    top: 78%;
-    width: 6px;
-    height: 6px;
-    animation-delay: -2s;
-}
-
-
-@keyframes starFloat {
-    0%,
-    100% {
-        transform: translateY(0) rotate(0deg);
-    }
-
-    50% {
-        transform: translateY(-12px) rotate(45deg);
-    }
-}
-
-
-@keyframes starBlink {
-    0%,
-    100% {
-        opacity: 0.3;
-    }
-
-    50% {
-        opacity: 0.85;
-    }
-}
-
 
 /* =========================
    MAIN SCENE
@@ -349,219 +63,189 @@ body {
     width: 100%;
     height: 100vh;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     overflow: hidden;
 }
 
+/* =========================
+   STARS
+   ========================= */
+
+.stars {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+
+    width: var(--size);
+    height: var(--size);
+
+    background: var(--star-main);
+
+    clip-path: polygon(
+        50% 0%,
+        61% 36%,
+        100% 50%,
+        61% 64%,
+        50% 100%,
+        39% 64%,
+        0% 50%,
+        39% 36%
+    );
+
+    opacity: var(--opacity);
+
+    filter:
+        drop-shadow(0 0 5px var(--star-glow))
+        drop-shadow(0 0 12px var(--star-glow));
+
+    animation:
+        starFloat var(--duration) ease-in-out infinite alternate,
+        starTwinkle var(--twinkle) ease-in-out infinite;
+}
+
+@keyframes starFloat {
+    from {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    to {
+        transform: translate3d(
+            var(--move-x),
+            var(--move-y),
+            0
+        ) rotate(180deg);
+    }
+}
+
+@keyframes starTwinkle {
+    0%,
+    100% {
+        opacity: var(--opacity);
+    }
+
+    50% {
+        opacity: calc(var(--opacity) * 0.35);
+    }
+}
 
 /* =========================
-   HEART CONTAINER
+   CENTRAL HEART
    ========================= */
 
 .heart-container {
     position: absolute;
 
     left: 50%;
-    top: 55%;
+    top: 47%;
 
-    width: min(480px, 72vw);
-    aspect-ratio: 1 / 1;
+    /*
+       Chỉ scale theo cùng một tỉ lệ.
+       Không dùng scaleX / scaleY nên trái tim
+       luôn giữ đúng tỉ lệ ban đầu.
+    */
+    width: 170px;
+    height: 170px;
 
     transform: translate(-50%, -50%);
 
-    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     z-index: 2;
+
+    pointer-events: none;
 }
 
-
-/* =========================
-   PARTICLES
-   ========================= */
-
-.heart-particle {
-    position: absolute;
-
-    width: var(--size);
-    height: var(--size);
-
-    left: 50%;
-    top: 50%;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle at 32% 28%,
-            var(--particle-light),
-            var(--particle-color) 55%,
-            var(--main-dark)
-        );
-
-    box-shadow:
-        0 0 8px var(--soft-glow),
-        inset 0 2px 4px rgba(255, 255, 255, 0.18);
-
-    opacity: 0;
-
-    transform:
-        translate(-50%, -50%)
-        translate(
-            var(--start-x),
-            var(--start-y)
-        )
-        scale(0.2);
-
-    animation:
-        formHeart 1.25s
-        cubic-bezier(0.2, 0.8, 0.2, 1)
-        forwards;
-
-    animation-delay: var(--delay);
-}
-
-
-@keyframes formHeart {
-    0% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            translate(
-                var(--start-x),
-                var(--start-y)
-            )
-            scale(0.2);
-    }
-
-    35% {
-        opacity: 0.65;
-    }
-
-    75% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0.92;
-
-        transform:
-            translate(-50%, -50%)
-            translate(
-                var(--target-x),
-                var(--target-y)
-            )
-            scale(1);
-    }
-}
-
-
-/* Gentle floating after forming */
-
-.heart-particle.formed {
-    animation:
-        particleFloat 4s ease-in-out infinite;
-}
-
-
-@keyframes particleFloat {
-    0%,
-    100% {
-        margin-top: 0;
-    }
-
-    50% {
-        margin-top: -4px;
-    }
-}
-
-
-/* =========================
-   CENTRAL HEART
-   ========================= */
-
-.center-heart {
-    position: absolute;
-
-    left: 50%;
-    top: 55%;
-
-    width: 76px;
-    height: 76px;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0);
-
-    z-index: 8;
-
-    animation:
-        heartAppear 1.2s
-        cubic-bezier(0.18, 0.89, 0.32, 1.28)
-        2.2s forwards;
-}
-
-
-.center-heart::before {
+/*
+   Vòng glow phía sau trái tim.
+*/
+.heart-container::before {
     content: "";
 
     position: absolute;
-    inset: -20px;
+
+    width: 105px;
+    height: 105px;
 
     border-radius: 50%;
 
-    background: var(--soft-glow);
+    background: var(--heart-main);
 
-    filter: blur(18px);
+    filter: blur(48px);
 
-    animation: heartGlow 2s ease-in-out infinite;
+    opacity: 0;
+
+    animation:
+        heartGlow 2.8s ease-in-out forwards,
+        heartPulse 2.8s ease-in-out 2.8s infinite;
 }
 
-
-.center-heart svg {
+.central-heart {
     position: relative;
 
-    width: 100%;
-    height: 100%;
+    width: 112px;
+    height: 112px;
 
     display: block;
 
-    fill: var(--main-light);
+    overflow: visible;
+
+    fill: var(--heart-main);
 
     filter:
-        drop-shadow(0 0 8px var(--main-color))
-        drop-shadow(0 0 20px var(--glow));
+        drop-shadow(0 0 6px var(--heart-glow))
+        drop-shadow(0 0 18px var(--heart-glow))
+        drop-shadow(0 0 35px var(--heart-glow));
+
+    /*
+       Giữ đúng tỉ lệ SVG.
+       Không kéo ngang / kéo dọc.
+    */
+    aspect-ratio: 1 / 1;
+
+    opacity: 0;
+
+    transform: scale(0.18);
+
+    transform-origin: center center;
 
     animation:
-        heartBeat 1.6s ease-in-out infinite;
+        heartAppear 2.4s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+        heartBeat 2.2s ease-in-out 2.4s infinite;
 }
-
 
 @keyframes heartAppear {
     0% {
         opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(0);
+        transform: scale(0.18);
+        filter:
+            drop-shadow(0 0 0 transparent);
     }
 
-    70% {
+    45% {
+        opacity: 0.7;
+        transform: scale(0.78);
+    }
+
+    75% {
         opacity: 1;
-        transform:
-            translate(-50%, -50%)
-            scale(1.12);
+        transform: scale(1.08);
     }
 
     100% {
         opacity: 1;
-        transform:
-            translate(-50%, -50%)
-            scale(1);
+        transform: scale(1);
     }
 }
-
 
 @keyframes heartBeat {
     0%,
@@ -570,7 +254,7 @@ body {
     }
 
     15% {
-        transform: scale(1.08);
+        transform: scale(1.06);
     }
 
     30% {
@@ -578,182 +262,121 @@ body {
     }
 
     45% {
-        transform: scale(1.05);
+        transform: scale(1.045);
+    }
+
+    60% {
+        transform: scale(1);
     }
 }
 
-
 @keyframes heartGlow {
+    0% {
+        opacity: 0;
+        transform: scale(0.35);
+    }
+
+    55% {
+        opacity: 0.8;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+}
+
+@keyframes heartPulse {
     0%,
     100% {
-        opacity: 0.45;
+        opacity: 0.42;
         transform: scale(0.9);
     }
 
     50% {
-        opacity: 0.85;
-        transform: scale(1.12);
+        opacity: 0.7;
+        transform: scale(1.08);
     }
 }
 
-
 /* =========================
-   TEXT
+   MESSAGE
    ========================= */
 
-.text-overlay {
+.message {
     position: absolute;
 
-    z-index: 10;
-
+    top: 6.5%;
     left: 50%;
-    top: 7%;
 
-    width: min(600px, 88vw);
+    width: min(620px, 88vw);
 
     transform: translateX(-50%);
 
     text-align: center;
 
+    z-index: 5;
+
     pointer-events: none;
-
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.35);
 }
-
 
 .recipient-name {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 
-    font-family:
-        "Segoe UI",
-        "Trebuchet MS",
-        sans-serif;
+    font-size: clamp(25px, 3vw, 38px);
 
-    font-size: clamp(26px, 3.2vw, 42px);
+    font-weight: 700;
 
-    font-weight: 800;
+    letter-spacing: 0.4px;
 
-    letter-spacing: 0.5px;
+    line-height: 1.2;
 
-    color: var(--main-light);
+    color: var(--text-main);
 
     text-shadow:
-        0 0 10px var(--glow),
-        0 3px 12px rgba(0, 0, 0, 0.35);
+        0 0 8px var(--heart-glow),
+        0 0 18px var(--heart-glow);
 }
 
-
-.sparkle {
-    display: inline-block;
-
-    margin-left: 5px;
-
-    animation:
-        sparklePulse 1.8s ease-in-out infinite;
-}
-
-
-@keyframes sparklePulse {
-    0%,
-    100% {
-        transform: scale(1) rotate(0deg);
-        opacity: 0.8;
-    }
-
-    50% {
-        transform: scale(1.2) rotate(15deg);
-        opacity: 1;
-    }
-}
-
-
-.message {
-    font-family:
-        "Segoe UI",
-        "Trebuchet MS",
-        sans-serif;
-
-    font-size: clamp(17px, 2vw, 25px);
-
-    line-height: 1.45;
+.message-lines {
+    font-size: clamp(17px, 1.7vw, 23px);
 
     font-weight: 600;
 
-    color: var(--text-color);
+    line-height: 1.55;
+
+    letter-spacing: 0.3px;
+
+    color: var(--text-soft);
+
+    text-shadow:
+        0 0 8px var(--heart-glow);
 }
 
-
-.message div {
-    opacity: 0;
-
-    animation:
-        textAppear 0.7s ease forwards;
-}
-
-
-.message div:nth-child(1) {
-    animation-delay: 0.3s;
-}
-
-.message div:nth-child(2) {
-    animation-delay: 0.5s;
-}
-
-.message div:nth-child(3) {
-    animation-delay: 0.7s;
-}
-
-.message div:nth-child(4) {
-    animation-delay: 0.9s;
-}
-
-.message div:nth-child(5) {
-    animation-delay: 1.1s;
-}
-
-
-@keyframes textAppear {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-.small-heart {
-    margin-top: 4px;
+.message-heart {
+    margin-top: 5px;
 
     font-size: 22px;
 
-    color: var(--main-color);
+    color: var(--heart-main);
 
     text-shadow:
-        0 0 12px var(--glow);
-
-    animation:
-        heartBeat 1.6s ease-in-out infinite;
+        0 0 8px var(--heart-glow),
+        0 0 18px var(--heart-glow);
 }
-
 
 /* =========================
    THEME SWITCHER
    ========================= */
 
 .theme-switcher {
-    position: fixed;
+    position: absolute;
 
     left: 50%;
-    bottom: 24px;
+    bottom: 28px;
 
     transform: translateX(-50%);
-
-    z-index: 30;
 
     display: flex;
     align-items: center;
@@ -761,51 +384,48 @@ body {
 
     padding: 7px;
 
-    border: 1px solid var(--ui-border);
+    border:
+        1px solid var(--ui-border);
 
     border-radius: 999px;
 
-    background: var(--ui-bg);
+    background:
+        rgba(10, 10, 20, 0.68);
 
     backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
 
     box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.3);
+        0 8px 30px rgba(0, 0, 0, 0.28);
+
+    z-index: 10;
 }
 
-
 .theme-btn {
+    border: 0;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    padding: 8px 12px;
+
+    border-radius: 999px;
+
     display: flex;
     align-items: center;
     gap: 8px;
 
-    border: 0;
-    outline: 0;
-
-    padding: 9px 13px;
-
-    border-radius: 999px;
-
-    color: rgba(255, 255, 255, 0.72);
-
-    background: transparent;
-
-    font-family:
-        "Segoe UI",
-        sans-serif;
-
+    font: inherit;
     font-size: 14px;
     font-weight: 600;
 
     cursor: pointer;
 
     transition:
-        background 0.3s ease,
-        color 0.3s ease,
-        transform 0.3s ease;
+        background var(--transition),
+        color var(--transition),
+        transform var(--transition);
 }
-
 
 .theme-btn:hover {
     color: white;
@@ -813,34 +433,122 @@ body {
     transform: translateY(-1px);
 }
 
-
 .theme-btn.active {
     color: white;
 
-    background: rgba(255, 255, 255, 0.12);
+    background:
+        rgba(255, 255, 255, 0.12);
 
     box-shadow:
-        inset 0 0 15px rgba(255, 255, 255, 0.06);
+        inset 0 0 12px rgba(255, 255, 255, 0.05);
 }
-
 
 .theme-dot {
     width: 17px;
     height: 17px;
 
-    flex: 0 0 17px;
-
     border-radius: 50%;
 
+    flex-shrink: 0;
+
     box-shadow:
-        0 0 9px rgba(255, 255, 255, 0.35);
+        0 0 9px rgba(255, 255, 255, 0.3);
 }
 
+/* =========================
+   MIDNIGHT
+   ========================= */
 
-.theme-name {
-    white-space: nowrap;
+body[data-theme="midnight"] {
+    --bg-1: #17102c;
+    --bg-2: #05030b;
+    --bg-glow: rgba(255, 0, 128, 0.16);
+
+    --text-main: #ff76c8;
+    --text-soft: #d76cff;
+
+    --heart-main: #ff3f9e;
+    --heart-glow: rgba(255, 0, 128, 0.7);
+
+    --star-main: #ff4fa8;
+    --star-glow: rgba(255, 0, 128, 0.65);
 }
 
+/* =========================
+   GOLDEN
+   ========================= */
+
+body[data-theme="golden"] {
+    --bg-1: #1b1420;
+    --bg-2: #08090e;
+    --bg-glow: rgba(255, 153, 0, 0.16);
+
+    --text-main: #ffd27a;
+    --text-soft: #ffc46b;
+
+    --heart-main: #ffb52e;
+    --heart-glow: rgba(255, 170, 40, 0.72);
+
+    --star-main: #ffb52e;
+    --star-glow: rgba(255, 170, 40, 0.65);
+}
+
+/* =========================
+   CYBER
+   ========================= */
+
+body[data-theme="cyber"] {
+    --bg-1: #09182a;
+    --bg-2: #03070e;
+    --bg-glow: rgba(0, 242, 254, 0.16);
+
+    --text-main: #8eeaff;
+    --text-soft: #63d7ff;
+
+    --heart-main: #4facfe;
+    --heart-glow: rgba(0, 242, 254, 0.7);
+
+    --star-main: #66e7ff;
+    --star-glow: rgba(0, 242, 254, 0.65);
+}
+
+/* =========================
+   EMERALD
+   ========================= */
+
+body[data-theme="emerald"] {
+    --bg-1: #0b201c;
+    --bg-2: #030907;
+    --bg-glow: rgba(0, 176, 155, 0.16);
+
+    --text-main: #83f4d4;
+    --text-soft: #71dfbd;
+
+    --heart-main: #45d8a9;
+    --heart-glow: rgba(0, 176, 155, 0.68);
+
+    --star-main: #63e7bc;
+    --star-glow: rgba(0, 176, 155, 0.65);
+}
+
+/* =========================
+   VELVET
+   ========================= */
+
+body[data-theme="velvet"] {
+    --bg-1: #241018;
+    --bg-2: #080506;
+    --bg-glow: rgba(255, 8, 68, 0.16);
+
+    --text-main: #ff9b9b;
+    --text-soft: #ffaaa5;
+
+    --heart-main: #ff526f;
+    --heart-glow: rgba(255, 8, 68, 0.7);
+
+    --star-main: #ff6680;
+    --star-glow: rgba(255, 8, 68, 0.65);
+}
 
 /* =========================
    RESPONSIVE
@@ -848,97 +556,79 @@ body {
 
 @media (max-width: 700px) {
 
-    .heart-container {
-        width: min(400px, 88vw);
-
-        top: 57%;
+    .message {
+        top: 5%;
     }
-
-
-    .center-heart {
-        top: 57%;
-
-        width: 60px;
-        height: 60px;
-    }
-
-
-    .text-overlay {
-        top: 6%;
-    }
-
 
     .recipient-name {
-        font-size: 27px;
+        font-size: 26px;
     }
 
-
-    .message {
+    .message-lines {
         font-size: 17px;
-        line-height: 1.38;
+        line-height: 1.48;
     }
 
+    .heart-container {
+        top: 48%;
+        width: 145px;
+        height: 145px;
+    }
+
+    .central-heart {
+        width: 92px;
+        height: 92px;
+    }
 
     .theme-switcher {
+        bottom: 15px;
+
         max-width: 94vw;
 
         overflow-x: auto;
 
-        justify-content: flex-start;
-
         scrollbar-width: none;
     }
-
 
     .theme-switcher::-webkit-scrollbar {
         display: none;
     }
 
-
     .theme-btn {
-        padding: 8px 10px;
+        padding: 7px 9px;
+        font-size: 12px;
     }
 
-
-    .theme-name {
-        font-size: 12px;
+    .theme-dot {
+        width: 14px;
+        height: 14px;
     }
 }
 
-
 @media (max-height: 700px) {
 
-    .text-overlay {
+    .message {
         top: 4%;
     }
 
-
     .recipient-name {
-        font-size: 27px;
-        margin-bottom: 5px;
+        font-size: 25px;
+        margin-bottom: 7px;
     }
 
-
-    .message {
+    .message-lines {
         font-size: 16px;
-        line-height: 1.3;
+        line-height: 1.4;
     }
-
 
     .heart-container {
-        top: 57%;
-
-        width: min(400px, 62vw);
+        top: 49%;
     }
 
-
-    .center-heart {
-        top: 57%;
-
-        width: 55px;
-        height: 55px;
+    .central-heart {
+        width: 86px;
+        height: 86px;
     }
-
 
     .theme-switcher {
         bottom: 12px;

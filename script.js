@@ -1,355 +1,164 @@
-/* =========================================
-   HEART PARTICLES
-   ========================================= */
-
-const heartContainer = document.getElementById("heartContainer");
-
-const PARTICLE_COUNT = 52;
-
-
-/*
- * Tạo vị trí hình trái tim.
- *
- * Công thức:
- * x = 16 sin³(t)
- * y = 13 cos(t)
- *      - 5 cos(2t)
- *      - 2 cos(3t)
- *      - cos(4t)
- *
- * Sau đó chuẩn hóa để hình trái tim luôn
- * nằm trong container hình vuông.
- */
-
-function createHeartPositions(count) {
-    const points = [];
-
-    for (let i = 0; i < count; i++) {
-        const t = (Math.PI * 2 * i) / count;
-
-        const x =
-            16 * Math.pow(Math.sin(t), 3);
-
-        const y =
-            13 * Math.cos(t)
-            - 5 * Math.cos(2 * t)
-            - 2 * Math.cos(3 * t)
-            - Math.cos(4 * t);
-
-        points.push({
-            x,
-            y
-        });
-    }
-
-    return points;
-}
-
-
-/*
- * Tạo thêm nhiều điểm bên trong trái tim.
- *
- * Điều này giúp trái tim không chỉ có
- * đường viền mà có cảm giác đầy đặn.
- */
-
-function fillHeart(points, extraCount) {
-    const result = [...points];
-
-    for (let i = 0; i < extraCount; i++) {
-
-        const angle =
-            Math.random() * Math.PI * 2;
-
-        const radius =
-            Math.sqrt(Math.random());
-
-        const t =
-            angle;
-
-        const x =
-            16 * Math.pow(Math.sin(t), 3);
-
-        const y =
-            13 * Math.cos(t)
-            - 5 * Math.cos(2 * t)
-            - 2 * Math.cos(3 * t)
-            - Math.cos(4 * t);
-
-        result.push({
-            x: x * radius,
-            y: y * radius
-        });
-    }
-
-    return result;
-}
-
-
-/*
- * Xáo trộn để các hạt xuất hiện
- * theo thứ tự tự nhiên hơn.
- */
-
-function shuffle(array) {
-
-    for (let i = array.length - 1; i > 0; i--) {
-
-        const j =
-            Math.floor(Math.random() * (i + 1));
-
-        [
-            array[i],
-            array[j]
-        ] = [
-            array[j],
-            array[i]
-        ];
-    }
-
-    return array;
-}
-
-
-/*
- * Tạo trái tim.
- */
-
-function buildHeart() {
-
-    heartContainer.innerHTML = "";
-
-    let points =
-        createHeartPositions(30);
-
-    points =
-        fillHeart(points, PARTICLE_COUNT - points.length);
-
-    points =
-        shuffle(points);
-
-
-    /*
-     * Kích thước hệ tọa độ.
-     *
-     * Giảm scale để trái tim vừa phải,
-     * chừa không gian cho phần chữ.
-     */
-
-    const scale = 13.2;
-
-
-    points.forEach((point, index) => {
-
-        const particle =
-            document.createElement("div");
-
-        particle.className =
-            "heart-particle";
-
-
-        /*
-         * Kích thước hạt ngẫu nhiên.
-         * Tất cả vẫn là hình tròn.
-         */
-
-        const size =
-            28 + Math.random() * 17;
-
-
-        /*
-         * Vị trí bắt đầu:
-         * nằm rải rác xung quanh màn hình.
-         */
-
-        const startX =
-            (Math.random() - 0.5) * 700;
-
-        const startY =
-            (Math.random() - 0.5) * 650;
-
-
-        /*
-         * Vị trí cuối cùng.
-         *
-         * Không scale X/Y riêng biệt nên
-         * hình trái tim không bị kéo dài.
-         */
-
-        const targetX =
-            point.x * scale;
-
-        const targetY =
-            -point.y * scale;
-
-
-        const delay =
-            0.04 * index
-            + Math.random() * 0.35;
-
-
-        particle.style.setProperty(
-            "--size",
-            `${size}px`
-        );
-
-        particle.style.setProperty(
-            "--start-x",
-            `${startX}px`
-        );
-
-        particle.style.setProperty(
-            "--start-y",
-            `${startY}px`
-        );
-
-        particle.style.setProperty(
-            "--target-x",
-            `${targetX}px`
-        );
-
-        particle.style.setProperty(
-            "--target-y",
-            `${targetY}px`
-        );
-
-        particle.style.setProperty(
-            "--delay",
-            `${delay}s`
-        );
-
-
-        heartContainer.appendChild(particle);
-
-
-        /*
-         * Sau khi hình thành xong,
-         * thêm hiệu ứng chuyển động rất nhẹ.
-         */
-
-        setTimeout(() => {
-
-            particle.classList.add("formed");
-
-        }, (delay + 1.25) * 1000);
-
-    });
-}
-
+"use strict";
 
 /* =========================================
-   THEME SWITCHER
+   THEME SYSTEM
    ========================================= */
 
-const themeButtons =
-    document.querySelectorAll(".theme-btn");
+const themeButtons = document.querySelectorAll(".theme-btn");
 
+const savedTheme = localStorage.getItem("birthday-theme");
 
-function setTheme(theme) {
+const defaultTheme = savedTheme || "golden";
 
-    document.body.dataset.theme =
-        theme;
+document.body.dataset.theme = defaultTheme;
 
+themeButtons.forEach((button) => {
+    const theme = button.dataset.theme;
 
-    themeButtons.forEach(button => {
+    button.classList.toggle(
+        "active",
+        theme === defaultTheme
+    );
 
-        const isActive =
-            button.dataset.theme === theme;
-
-        button.classList.toggle(
-            "active",
-            isActive
-        );
-
-    });
-
-
-    /*
-     * Lưu theme để lần sau mở trang
-     * vẫn giữ màu đã chọn.
-     */
-
-    try {
+    button.addEventListener("click", () => {
+        document.body.dataset.theme = theme;
 
         localStorage.setItem(
             "birthday-theme",
             theme
         );
 
-    } catch (error) {
-
-        // Không làm gì nếu localStorage bị chặn.
-
-    }
-}
-
-
-themeButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            setTheme(
-                button.dataset.theme
+        themeButtons.forEach((item) => {
+            item.classList.toggle(
+                "active",
+                item.dataset.theme === theme
             );
-
-        }
-    );
-
+        });
+    });
 });
 
 
 /* =========================================
-   INITIALIZE
+   STAR FIELD
    ========================================= */
 
-function initialize() {
+const starContainer = document.getElementById("stars");
 
-    /*
-     * Golden là theme mặc định
-     * vì đây là màu bạn thích.
-     */
+const STAR_COUNT = 24;
 
-    let savedTheme = "golden";
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
-    try {
+function createStar(index) {
+    const star = document.createElement("div");
 
-        const storedTheme =
-            localStorage.getItem(
-                "birthday-theme"
-            );
+    star.className = "star";
 
-        if (storedTheme) {
-            savedTheme = storedTheme;
-        }
+    const size = random(7, 25);
+    const left = random(2, 98);
+    const top = random(7, 93);
 
-    } catch (error) {
+    const duration = random(4, 9);
+    const twinkle = random(2.5, 5);
 
-        // Giữ Golden nếu không đọc được storage.
+    const moveX = random(-18, 18);
+    const moveY = random(-15, 15);
 
-    }
+    const opacity = random(0.25, 0.9);
 
+    star.style.left = `${left}%`;
+    star.style.top = `${top}%`;
 
-    setTheme(savedTheme);
+    star.style.setProperty(
+        "--size",
+        `${size}px`
+    );
 
-    buildHeart();
+    star.style.setProperty(
+        "--duration",
+        `${duration}s`
+    );
+
+    star.style.setProperty(
+        "--twinkle",
+        `${twinkle}s`
+    );
+
+    star.style.setProperty(
+        "--move-x",
+        `${moveX}px`
+    );
+
+    star.style.setProperty(
+        "--move-y",
+        `${moveY}px`
+    );
+
+    star.style.setProperty(
+        "--opacity",
+        opacity
+    );
+
+    star.style.animationDelay =
+        `${index * -0.25}s`;
+
+    return star;
+}
+
+for (let i = 0; i < STAR_COUNT; i += 1) {
+    starContainer.appendChild(
+        createStar(i)
+    );
 }
 
 
 /* =========================================
-   START
+   CENTRAL HEART
    ========================================= */
 
-if (document.readyState === "loading") {
+/*
+    Trái tim trung tâm được giữ độc lập với
+    các ngôi sao xung quanh.
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        initialize
+    Quan trọng:
+    - SVG có viewBox 32x32.
+    - width và height luôn bằng nhau.
+    - Không dùng scaleX / scaleY.
+    - Vì vậy khi thu nhỏ, hình trái tim
+      vẫn giữ nguyên tỉ lệ và không bị kéo dài.
+*/
+
+const heart = document.querySelector(
+    ".central-heart"
+);
+
+if (heart) {
+    heart.setAttribute(
+        "preserveAspectRatio",
+        "xMidYMid meet"
     );
-
-} else {
-
-    initialize();
-
 }
+
+
+/* =========================================
+   ACCESSIBILITY
+   ========================================= */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (event.key === "Escape") {
+            document.body.dataset.theme =
+                defaultTheme;
+
+            themeButtons.forEach((button) => {
+                button.classList.toggle(
+                    "active",
+                    button.dataset.theme === defaultTheme
+                );
+            });
+        }
+    }
+);

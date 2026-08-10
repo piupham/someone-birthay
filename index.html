@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
-
     <title>I Love You</title>
 
     <link rel="stylesheet" href="./style.css">
@@ -13,34 +13,14 @@
 
 <body>
 
-    <!-- Background -->
-    <div class="background"></div>
-
-    <!-- Decorative stars -->
-    <div class="stars" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-
-    <!-- Main heart area -->
     <main class="scene">
 
-        <!-- Heart made from circles -->
-        <div class="heart-container" id="heartContainer"></div>
+        <!-- Background stars -->
+        <div class="stars" id="stars"></div>
 
-        <!-- Central glowing heart -->
-        <div class="center-heart" aria-hidden="true">
-            <svg viewBox="0 0 32 32">
+        <!-- Central heart -->
+        <div class="heart-container" aria-hidden="true">
+            <svg class="central-heart" viewBox="0 0 32 32">
                 <path
                     d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594
                     -1.342-2.858-4.237-5.594-7.601-5.594
@@ -52,14 +32,13 @@
             </svg>
         </div>
 
-        <!-- Text -->
-        <section class="text-overlay">
+        <!-- Message -->
+        <section class="message">
             <div class="recipient-name">
-                For My Dearest Lishy
-                <span class="sparkle">✦</span>
+                For My Dearest Lishy ✨
             </div>
 
-            <div class="message">
+            <div class="message-lines">
                 <div>I love you.</div>
                 <div>I miss you.</div>
                 <div>I think of you.</div>
@@ -67,90 +46,75 @@
                 <div>every single day.</div>
             </div>
 
-            <div class="small-heart">♥</div>
+            <div class="message-heart">♥</div>
         </section>
 
+        <!-- Theme switcher -->
+        <div class="theme-switcher" role="toolbar" aria-label="Theme Switcher">
+
+            <button
+                class="theme-btn"
+                data-theme="midnight"
+                type="button"
+                aria-label="Midnight Romance">
+                <span
+                    class="theme-dot"
+                    style="background: linear-gradient(135deg, #ff0080, #7928ca);">
+                </span>
+                <span class="theme-name">Midnight</span>
+            </button>
+
+            <button
+                class="theme-btn active"
+                data-theme="golden"
+                type="button"
+                aria-label="Golden Sunset">
+                <span
+                    class="theme-dot"
+                    style="background: linear-gradient(135deg, #ff9900, #ff0055);">
+                </span>
+                <span class="theme-name">Golden</span>
+            </button>
+
+            <button
+                class="theme-btn"
+                data-theme="cyber"
+                type="button"
+                aria-label="Cyberpunk Love">
+                <span
+                    class="theme-dot"
+                    style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
+                </span>
+                <span class="theme-name">Cyber</span>
+            </button>
+
+            <button
+                class="theme-btn"
+                data-theme="emerald"
+                type="button"
+                aria-label="Emerald Enchantment">
+                <span
+                    class="theme-dot"
+                    style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+                </span>
+                <span class="theme-name">Emerald</span>
+            </button>
+
+            <button
+                class="theme-btn"
+                data-theme="velvet"
+                type="button"
+                aria-label="Velvet Passion">
+                <span
+                    class="theme-dot"
+                    style="background: linear-gradient(135deg, #ff0844, #ffb199);">
+                </span>
+                <span class="theme-name">Velvet</span>
+            </button>
+
+        </div>
+
     </main>
-
-    <!-- Theme Switcher -->
-    <div class="theme-switcher" role="toolbar" aria-label="Theme Switcher">
-
-        <button
-            class="theme-btn"
-            data-theme="midnight"
-            title="Midnight Romance"
-            aria-label="Midnight Romance">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #ff0080, #7928ca);">
-            </span>
-
-            <span class="theme-name">Midnight</span>
-        </button>
-
-
-        <button
-            class="theme-btn active"
-            data-theme="golden"
-            title="Golden Sunset"
-            aria-label="Golden Sunset">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #ffcc66, #ff8c00);">
-            </span>
-
-            <span class="theme-name">Golden</span>
-        </button>
-
-
-        <button
-            class="theme-btn"
-            data-theme="cyber"
-            title="Cyber Love"
-            aria-label="Cyber Love">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
-            </span>
-
-            <span class="theme-name">Cyber</span>
-        </button>
-
-
-        <button
-            class="theme-btn"
-            data-theme="emerald"
-            title="Emerald Enchantment"
-            aria-label="Emerald Enchantment">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #00b09b, #96c93d);">
-            </span>
-
-            <span class="theme-name">Emerald</span>
-        </button>
-
-
-        <button
-            class="theme-btn"
-            data-theme="velvet"
-            title="Velvet Passion"
-            aria-label="Velvet Passion">
-
-            <span
-                class="theme-dot"
-                style="background: linear-gradient(135deg, #ff0844, #ffb199);">
-            </span>
-
-            <span class="theme-name">Velvet</span>
-        </button>
-
-    </div>
-
 
     <script src="./script.js"></script>
 
