@@ -1,796 +1,565 @@
 "use strict";
 
-/* =========================================================
-   HAPPY BIRTHDAY KIK
-   Animated Particle Heart
-========================================================= */
+/* =====================================================
+   THEME
+===================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  const canvas = document.getElementById("heartCanvas");
-  const ctx = canvas.getContext("2d");
-
-  const starsContainer = document.getElementById("stars");
-  const themeButtons = document.querySelectorAll(".theme-btn");
-
-  /* =======================================================
-     THEME PALETTES
-  ======================================================= */
-
-  const themes = {
+const themePalettes = {
     midnight: {
-      colors: [
-        "#ff0080",
-        "#ff1493",
-        "#ff69b4",
-        "#da70d6",
-        "#c71585",
-        "#7928ca"
-      ]
+        colors: [
+            "#ff0080",
+            "#7928ca",
+            "#ff1493",
+            "#ff69b4",
+            "#da70d6",
+            "#c71585"
+        ]
     },
 
     golden: {
-      colors: [
-        "#ff9900",
-        "#ffaa00",
-        "#ffcc00",
-        "#ff7733",
-        "#ff0055",
-        "#e67e22"
-      ]
+        colors: [
+            "#ff9900",
+            "#ffaa00",
+            "#ffcc00",
+            "#ff6600",
+            "#ff7733"
+        ]
     },
 
     cyber: {
-      colors: [
-        "#00f2fe",
-        "#4facfe",
-        "#00d2ff",
-        "#38f9d7",
-        "#00c6ff",
-        "#a18cd1"
-      ]
+        colors: [
+            "#00f2fe",
+            "#4facfe",
+            "#00d2ff",
+            "#a18cd1",
+            "#38f9d7",
+            "#00c6ff"
+        ]
     },
 
     emerald: {
-      colors: [
-        "#00b09b",
-        "#96c93d",
-        "#00e6a8",
-        "#2ecc71",
-        "#1abc9c",
-        "#55efc4"
-      ]
+        colors: [
+            "#00b09b",
+            "#96c93d",
+            "#00e6a8",
+            "#2ecc71",
+            "#1abc9c",
+            "#55efc4"
+        ]
     },
 
     velvet: {
-      colors: [
-        "#ff0844",
-        "#ffb199",
-        "#d63031",
-        "#e84118",
-        "#c0392b",
-        "#e84393"
-      ]
+        colors: [
+            "#ff0844",
+            "#ffb199",
+            "#d63031",
+            "#e84118",
+            "#c0392b",
+            "#e84393"
+        ]
     }
-  };
+};
 
-  let currentTheme = localStorage.getItem("birthday_theme");
+let currentTheme =
+    localStorage.getItem("heartfill_theme") || "midnight";
 
-  if (!themes[currentTheme]) {
+if (!themePalettes[currentTheme]) {
     currentTheme = "midnight";
-  }
+}
 
-  let colors = themes[currentTheme].colors;
+document.body.setAttribute("data-theme", currentTheme);
 
-  /* =======================================================
-     CANVAS
-  ======================================================= */
 
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
+/* =====================================================
+   THEME BUTTONS
+===================================================== */
 
-  function resizeCanvas() {
+document.querySelectorAll(".theme-btn").forEach(button => {
 
-    const rect = canvas.getBoundingClientRect();
+    button.addEventListener("click", () => {
 
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const theme = button.dataset.theme;
+
+        if (!themePalettes[theme]) {
+            return;
+        }
+
+        currentTheme = theme;
+
+        document.body.setAttribute(
+            "data-theme",
+            currentTheme
+        );
+
+        localStorage.setItem(
+            "heartfill_theme",
+            currentTheme
+        );
+
+        document.querySelectorAll(".theme-btn")
+            .forEach(btn => {
+                btn.classList.toggle(
+                    "active",
+                    btn.dataset.theme === currentTheme
+                );
+            });
+    });
+});
+
+
+/* =====================================================
+   STARS AROUND THE HEART
+===================================================== */
+
+const starsContainer =
+    document.getElementById("stars");
+
+function createStars() {
+
+    starsContainer.innerHTML = "";
+
+    const amount =
+        window.innerWidth < 700 ? 70 : 130;
+
+    for (let i = 0; i < amount; i++) {
+
+        const star =
+            document.createElement("span");
+
+        star.className =
+            Math.random() < 0.18
+                ? "star big"
+                : "star";
+
+        star.style.left =
+            Math.random() * 100 + "%";
+
+        star.style.top =
+            Math.random() * 100 + "%";
+
+        star.style.setProperty(
+            "--duration",
+            (1.5 + Math.random() * 3) + "s"
+        );
+
+        star.style.setProperty(
+            "--float-duration",
+            (5 + Math.random() * 10) + "s"
+        );
+
+        star.style.setProperty(
+            "--delay",
+            (-Math.random() * 5) + "s"
+        );
+
+        star.style.setProperty(
+            "--move-x",
+            (Math.random() * 60 - 30) + "px"
+        );
+
+        star.style.setProperty(
+            "--move-y",
+            (Math.random() * 60 - 30) + "px"
+        );
+
+        starsContainer.appendChild(star);
+    }
+}
+
+createStars();
+
+window.addEventListener(
+    "resize",
+    createStars
+);
+
+
+/* =====================================================
+   HEART CANVAS
+===================================================== */
+
+const canvas =
+    document.getElementById("heartCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+let width;
+let height;
+let particles = [];
+
+
+/* =====================================================
+   CANVAS SIZE
+===================================================== */
+
+function resizeCanvas() {
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const ratio =
+        window.devicePixelRatio || 1;
 
     width = rect.width;
     height = rect.height;
 
-    canvas.width = Math.floor(width * dpr);
-    canvas.height = Math.floor(height * dpr);
+    canvas.width =
+        width * ratio;
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
+    canvas.height =
+        height * ratio;
 
-  resizeCanvas();
+    ctx.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+    );
 
-  window.addEventListener("resize", resizeCanvas);
+    createHeartParticles();
+}
 
-  /* =======================================================
-     HEART PARTICLES
-  ======================================================= */
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
 
-  const particles = [];
 
-  const PARTICLE_COUNT = 1300;
+/* =====================================================
+   HEART EQUATION
+===================================================== */
 
-  /*
-    Parametric heart equation
-
-    x = 16 sin³(t)
-
-    y =
-      13 cos(t)
-      - 5 cos(2t)
-      - 2 cos(3t)
-      - cos(4t)
-  */
-
-  function heartPoint(t, scale) {
+function heartPoint(t, scale) {
 
     const x =
-      16 *
-      Math.pow(Math.sin(t), 3);
+        16 * Math.pow(Math.sin(t), 3);
 
     const y =
-      13 * Math.cos(t) -
-      5 * Math.cos(2 * t) -
-      2 * Math.cos(3 * t) -
-      Math.cos(4 * t);
+        13 * Math.cos(t)
+        - 5 * Math.cos(2 * t)
+        - 2 * Math.cos(3 * t)
+        - Math.cos(4 * t);
 
     return {
-      x: x * scale,
-      y: -y * scale
+        x: x * scale,
+        y: -y * scale
     };
-  }
+}
 
-  function random(min, max) {
-    return Math.random() * (max - min) + min;
-  }
 
-  function randomColor() {
-    return colors[
-      Math.floor(Math.random() * colors.length)
-    ];
-  }
+/* =====================================================
+   PARTICLE
+===================================================== */
 
-  /*
-    Create particles inside the heart
-  */
+class Particle {
 
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    constructor(x, y, color) {
 
-    const t =
-      Math.random() * Math.PI * 2;
+        this.baseX = x;
+        this.baseY = y;
 
-    const fill =
-      Math.sqrt(Math.random());
+        this.x = x;
+        this.y = y;
 
-    const base = heartPoint(t, 1);
+        this.color = color;
 
-    const particle = {
+        this.size =
+            1 + Math.random() * 2.2;
 
-      t: t,
+        this.angle =
+            Math.random() * Math.PI * 2;
 
-      fill: fill,
+        this.speed =
+            0.005 + Math.random() * 0.015;
 
-      baseX: base.x,
-      baseY: base.y,
+        this.offset =
+            Math.random() * Math.PI * 2;
 
-      x: 0,
-      y: 0,
+        this.alpha =
+            0.35 + Math.random() * 0.65;
+    }
 
-      size: random(0.7, 2.2),
+    update(time) {
 
-      alpha: random(0.25, 0.95),
+        this.angle += this.speed;
 
-      speed: random(0.00015, 0.00065),
+        const wave =
+            Math.sin(
+                time * 0.002 +
+                this.offset
+            );
 
-      phase: random(0, Math.PI * 2),
+        this.x =
+            this.baseX +
+            Math.cos(this.angle) *
+            wave *
+            2.5;
 
-      drift: random(0.5, 2.5),
+        this.y =
+            this.baseY +
+            Math.sin(this.angle) *
+            wave *
+            2.5;
+    }
 
-      color: randomColor()
-    };
+    draw() {
 
-    particles.push(particle);
-  }
+        ctx.beginPath();
 
-  /* =======================================================
-     EXTRA OUTLINE PARTICLES
-  ======================================================= */
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
 
-  const outlineParticles = [];
+        ctx.globalAlpha =
+            this.alpha;
 
-  const OUTLINE_COUNT = 500;
+        ctx.fillStyle =
+            this.color;
 
-  for (let i = 0; i < OUTLINE_COUNT; i++) {
+        ctx.shadowBlur = 12;
 
-    const t =
-      (i / OUTLINE_COUNT) *
-      Math.PI *
-      2;
+        ctx.shadowColor =
+            this.color;
 
-    const point = heartPoint(t, 1);
+        ctx.fill();
 
-    outlineParticles.push({
+        ctx.globalAlpha = 1;
 
-      t: t,
+        ctx.shadowBlur = 0;
+    }
+}
 
-      x: point.x,
-      y: point.y,
 
-      size: random(1, 2.5),
+/* =====================================================
+   CREATE HEART PARTICLES
+===================================================== */
 
-      alpha: random(0.45, 1),
+function createHeartParticles() {
 
-      phase: random(0, Math.PI * 2),
+    particles = [];
 
-      speed: random(0.0002, 0.0007),
+    const centerX =
+        width / 2;
 
-      color: randomColor()
-    });
-  }
+    const centerY =
+        height / 2 + 30;
 
-  /* =======================================================
-     FLOATING PARTICLES
-  ======================================================= */
+    const scale =
+        Math.min(
+            width,
+            height
+        ) / 38;
 
-  const floatingParticles = [];
+    const colors =
+        themePalettes[currentTheme].colors;
 
-  for (let i = 0; i < 100; i++) {
+    /*
+       Tạo nhiều lớp hạt bên trong trái tim
+    */
 
-    floatingParticles.push({
+    for (
+        let t = 0;
+        t < Math.PI * 2;
+        t += 0.035
+    ) {
 
-      x: random(0, 1),
+        const point =
+            heartPoint(t, scale);
 
-      y: random(0, 1),
+        const x =
+            centerX + point.x;
 
-      size: random(0.5, 2),
+        const y =
+            centerY + point.y;
 
-      speed: random(0.00005, 0.0002),
+        particles.push(
+            new Particle(
+                x,
+                y,
+                colors[
+                    Math.floor(
+                        Math.random() *
+                        colors.length
+                    )
+                ]
+            )
+        );
+    }
 
-      phase: random(0, Math.PI * 2),
+    /*
+       Các hạt phía trong trái tim
+    */
 
-      color: randomColor(),
+    for (let i = 0; i < 950; i++) {
 
-      alpha: random(0.15, 0.7)
-    });
-  }
+        const t =
+            Math.random() *
+            Math.PI * 2;
 
-  /* =======================================================
-     DRAW GLOW
-  ======================================================= */
+        const point =
+            heartPoint(t, scale);
 
-  function drawGlow(cx, cy, scale, pulse) {
+        const ratio =
+            Math.sqrt(
+                Math.random()
+            ) * 0.95;
 
-    const glowSize =
-      scale * 18 * pulse;
+        const x =
+            centerX +
+            point.x * ratio;
 
-    const gradient =
-      ctx.createRadialGradient(
-        cx,
-        cy,
-        0,
-        cx,
-        cy,
-        glowSize
-      );
+        const y =
+            centerY +
+            point.y * ratio;
 
-    gradient.addColorStop(
-      0,
-      hexToRgba(colors[0], 0.20)
-    );
+        particles.push(
+            new Particle(
+                x,
+                y,
+                colors[
+                    Math.floor(
+                        Math.random() *
+                        colors.length
+                    )
+                ]
+            )
+        );
+    }
+}
 
-    gradient.addColorStop(
-      0.35,
-      hexToRgba(colors[0], 0.10)
-    );
 
-    gradient.addColorStop(
-      1,
-      "rgba(0,0,0,0)"
-    );
+/* =====================================================
+   DRAW HEART GLOW
+===================================================== */
 
-    ctx.fillStyle = gradient;
+function drawHeartGlow() {
+
+    const centerX =
+        width / 2;
+
+    const centerY =
+        height / 2 + 30;
+
+    const scale =
+        Math.min(
+            width,
+            height
+        ) / 38;
+
+    const colors =
+        themePalettes[currentTheme].colors;
+
+    ctx.save();
 
     ctx.beginPath();
 
-    ctx.arc(
-      cx,
-      cy,
-      glowSize,
-      0,
-      Math.PI * 2
-    );
+    for (
+        let t = 0;
+        t <= Math.PI * 2;
+        t += 0.025
+    ) {
 
-    ctx.fill();
-  }
+        const point =
+            heartPoint(t, scale);
 
-  /* =======================================================
-     HEX → RGBA
-  ======================================================= */
+        const x =
+            centerX + point.x;
 
-  function hexToRgba(hex, alpha) {
+        const y =
+            centerY + point.y;
 
-    const value = hex.replace("#", "");
+        if (t === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    }
 
-    const r =
-      parseInt(value.substring(0, 2), 16);
+    ctx.closePath();
 
-    const g =
-      parseInt(value.substring(2, 4), 16);
+    ctx.strokeStyle =
+        colors[0];
 
-    const b =
-      parseInt(value.substring(4, 6), 16);
+    ctx.lineWidth = 2;
 
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
+    ctx.globalAlpha = 0.9;
 
-  /* =======================================================
-     DRAW HEART
-  ======================================================= */
+    ctx.shadowBlur = 30;
 
-  let time = 0;
+    ctx.shadowColor =
+        colors[0];
 
-  function drawHeart() {
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+let startTime =
+    performance.now();
+
+function animate(time) {
 
     ctx.clearRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-    time += 1;
-
-    /*
-      Heart center
-    */
-
-    const cx = width / 2;
-
-    /*
-      Move heart slightly downward
-      so it does not cover the message
-    */
-
-    const cy = height * 0.56;
-
-    /*
-      Responsive scale
-    */
-
-    const scale =
-      Math.min(width, height) * 0.0175;
-
-    /*
-      Heart beat
-    */
-
-    const pulse =
-      1 +
-      Math.sin(time * 0.055) * 0.025;
-
-    const actualScale =
-      scale * pulse;
-
-    /* ---------------------------------------------
-       Large glow
-    --------------------------------------------- */
-
-    drawGlow(
-      cx,
-      cy,
-      actualScale,
-      pulse
-    );
-
-    /* ---------------------------------------------
-       Floating particles
-    --------------------------------------------- */
-
-    floatingParticles.forEach((p) => {
-
-      p.phase += p.speed * 10;
-
-      const x =
-        p.x * width +
-        Math.sin(p.phase) * 20;
-
-      const y =
-        p.y * height +
-        Math.cos(p.phase * 0.8) * 20;
-
-      ctx.beginPath();
-
-      ctx.globalAlpha = p.alpha;
-
-      ctx.fillStyle = p.color;
-
-      ctx.shadowBlur = 8;
-
-      ctx.shadowColor = p.color;
-
-      ctx.arc(
-        x,
-        y,
-        p.size,
         0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
-    });
-
-    /* ---------------------------------------------
-       Heart interior particles
-    --------------------------------------------- */
-
-    particles.forEach((p) => {
-
-      p.t += p.speed;
-
-      const point =
-        heartPoint(
-          p.t,
-          actualScale
-        );
-
-      /*
-        Fill interpolation.
-
-        Smaller fill = closer to center.
-        Larger fill = closer to outline.
-      */
-
-      let x =
-        point.x * p.fill;
-
-      let y =
-        point.y * p.fill;
-
-      /*
-        Add gentle organic movement
-      */
-
-      const wave =
-        Math.sin(
-          time * 0.025 +
-          p.phase
-        );
-
-      x +=
-        wave *
-        p.drift *
-        (1 - p.fill);
-
-      y +=
-        Math.cos(
-          time * 0.022 +
-          p.phase
-        ) *
-        p.drift *
-        (1 - p.fill);
-
-      const px = cx + x;
-      const py = cy + y;
-
-      const flicker =
-        0.65 +
-        Math.sin(
-          time * 0.05 +
-          p.phase
-        ) *
-        0.35;
-
-      ctx.globalAlpha =
-        Math.max(
-          0.08,
-          p.alpha * flicker
-        );
-
-      ctx.fillStyle = p.color;
-
-      ctx.shadowBlur =
-        p.size > 1.5 ? 10 : 5;
-
-      ctx.shadowColor =
-        p.color;
-
-      ctx.beginPath();
-
-      ctx.arc(
-        px,
-        py,
-        p.size,
         0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
-    });
-
-    /* ---------------------------------------------
-       Bright heart outline
-    --------------------------------------------- */
-
-    outlineParticles.forEach((p) => {
-
-      p.t += p.speed;
-
-      const point =
-        heartPoint(
-          p.t,
-          actualScale * 1.02
-        );
-
-      const wave =
-        Math.sin(
-          time * 0.045 +
-          p.phase
-        );
-
-      const px =
-        cx +
-        point.x +
-        wave * 1.3;
-
-      const py =
-        cy +
-        point.y +
-        Math.cos(
-          time * 0.04 +
-          p.phase
-        ) *
-        1.3;
-
-      const flicker =
-        0.7 +
-        Math.sin(
-          time * 0.06 +
-          p.phase
-        ) *
-        0.3;
-
-      ctx.globalAlpha =
-        p.alpha * flicker;
-
-      ctx.fillStyle =
-        p.color;
-
-      ctx.shadowBlur = 12;
-
-      ctx.shadowColor =
-        p.color;
-
-      ctx.beginPath();
-
-      ctx.arc(
-        px,
-        py,
-        p.size,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
-    });
-
-    /* ---------------------------------------------
-       Small glowing particles around heart
-    --------------------------------------------- */
-
-    for (let i = 0; i < 18; i++) {
-
-      const angle =
-        time * 0.002 +
-        i * (Math.PI * 2 / 18);
-
-      const radius =
-        Math.min(width, height) *
-        0.28;
-
-      const x =
-        cx +
-        Math.cos(angle) * radius;
-
-      const y =
-        cy +
-        Math.sin(angle) *
-        radius *
-        0.78;
-
-      const size =
-        1.2 +
-        Math.sin(
-          time * 0.04 + i
-        ) *
-        0.7;
-
-      ctx.globalAlpha = 0.55;
-
-      ctx.fillStyle =
-        colors[i % colors.length];
-
-      ctx.shadowBlur = 12;
-
-      ctx.shadowColor =
-        ctx.fillStyle;
-
-      ctx.beginPath();
-
-      ctx.arc(
-        x,
-        y,
-        size,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.fill();
-    }
-
-    ctx.globalAlpha = 1;
-
-    ctx.shadowBlur = 0;
-
-    requestAnimationFrame(drawHeart);
-  }
-
-  /* =======================================================
-     STARS
-  ======================================================= */
-
-  function createStars() {
-
-    starsContainer.innerHTML = "";
-
-    const count =
-      Math.min(
-        180,
-        Math.floor(
-          window.innerWidth *
-          window.innerHeight /
-          7000
-        )
-      );
-
-    for (let i = 0; i < count; i++) {
-
-      const star =
-        document.createElement("div");
-
-      star.className = "star";
-
-      star.style.left =
-        `${Math.random() * 100}%`;
-
-      star.style.top =
-        `${Math.random() * 100}%`;
-
-      star.style.width =
-        `${Math.random() * 2 + 1}px`;
-
-      star.style.height =
-        star.style.width;
-
-      star.style.setProperty(
-        "--duration",
-        `${1.5 + Math.random() * 4}s`
-      );
-
-      star.style.setProperty(
-        "--float-duration",
-        `${8 + Math.random() * 15}s`
-      );
-
-      star.style.setProperty(
-        "--delay",
-        `${Math.random() * 5}s`
-      );
-
-      star.style.setProperty(
-        "--move-x",
-        `${Math.random() * 30 - 15}px`
-      );
-
-      star.style.setProperty(
-        "--move-y",
-        `${Math.random() * 30 - 15}px`
-      );
-
-      starsContainer.appendChild(star);
-    }
-  }
-
-  createStars();
-
-  window.addEventListener(
-    "resize",
-    createStars
-  );
-
-  /* =======================================================
-     THEME
-  ======================================================= */
-
-  function applyTheme(themeName) {
-
-    if (!themes[themeName]) {
-      return;
-    }
-
-    currentTheme =
-      themeName;
-
-    colors =
-      themes[themeName].colors;
-
-    localStorage.setItem(
-      "birthday_theme",
-      themeName
+        width,
+        height
     );
 
-    document.body.setAttribute(
-      "data-theme",
-      themeName
+    drawHeartGlow();
+
+    particles.forEach(
+        particle => {
+            particle.update(time);
+            particle.draw();
+        }
     );
 
-    /*
-      Update particles with new colors
-    */
+    requestAnimationFrame(
+        animate
+    );
+}
 
-    particles.forEach((p) => {
-      p.color = randomColor();
-    });
 
-    outlineParticles.forEach((p) => {
-      p.color = randomColor();
-    });
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
-    floatingParticles.forEach((p) => {
-      p.color = randomColor();
-    });
+resizeCanvas();
 
-    /*
-      Update active button
-    */
+requestAnimationFrame(
+    animate
+);
 
-    themeButtons.forEach((button) => {
 
-      button.classList.toggle(
-        "active",
-        button.dataset.theme === themeName
-      );
+/* =====================================================
+   UPDATE HEART COLORS WHEN THEME CHANGES
+===================================================== */
 
-    });
-  }
+document.querySelectorAll(".theme-btn")
+    .forEach(button => {
 
-  themeButtons.forEach((button) => {
+        button.addEventListener(
+            "click",
+            () => {
 
-    button.addEventListener(
-      "click",
-      () => {
+                setTimeout(() => {
+                    createHeartParticles();
+                }, 50);
 
-        applyTheme(
-          button.dataset.theme
+            }
         );
 
-      }
-    );
-
-  });
-
-  /* =======================================================
-     START
-  ======================================================= */
-
-  applyTheme(currentTheme);
-
-  drawHeart();
-
-});
+    });
