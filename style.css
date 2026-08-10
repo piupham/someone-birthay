@@ -41,13 +41,21 @@ body {
 
     background:
         radial-gradient(
-            circle at 35% 50%,
-            color-mix(in srgb, var(--accent) 12%, transparent),
-            transparent 35%
+            circle at 28% 50%,
+            color-mix(
+                in srgb,
+                var(--accent) 12%,
+                transparent
+            ),
+            transparent 34%
         ),
         radial-gradient(
-            circle at 75% 45%,
-            color-mix(in srgb, var(--accent2) 12%, transparent),
+            circle at 72% 45%,
+            color-mix(
+                in srgb,
+                var(--accent2) 14%,
+                transparent
+            ),
             transparent 40%
         ),
         linear-gradient(
@@ -61,15 +69,17 @@ body {
 
 
 /* =========================================================
-   STARS
+   FLOATING STARS
    ========================================================= */
 
 .stars {
     position: fixed;
     inset: 0;
-    z-index: 2;
+
+    z-index: 3;
 
     pointer-events: none;
+
     overflow: hidden;
 }
 
@@ -86,8 +96,8 @@ body {
     opacity: var(--opacity);
 
     box-shadow:
-        0 0 5px rgba(255, 255, 255, 0.7),
-        0 0 12px rgba(255, 255, 255, 0.35);
+        0 0 5px rgba(255,255,255,0.8),
+        0 0 12px rgba(255,255,255,0.45);
 
     animation:
         starTwinkle var(--duration) ease-in-out infinite alternate,
@@ -96,20 +106,43 @@ body {
     animation-delay: var(--delay);
 }
 
+.star.star-cross::before,
+.star.star-cross::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 1px;
+    height: 180%;
+
+    background: rgba(255,255,255,0.8);
+
+    transform: translate(-50%, -50%);
+}
+
+.star.star-cross::after {
+    transform:
+        translate(-50%, -50%)
+        rotate(90deg);
+}
+
 @keyframes starTwinkle {
 
     0% {
         opacity: 0.15;
-        transform: scale(0.7);
+        transform: scale(0.65);
     }
 
     50% {
-        opacity: 0.5;
+        opacity: 0.65;
     }
 
     100% {
         opacity: 1;
-        transform: scale(1.5);
+        transform: scale(1.45);
     }
 }
 
@@ -120,7 +153,9 @@ body {
     }
 
     to {
-        translate: var(--move-x) var(--move-y);
+        translate:
+            var(--move-x)
+            var(--move-y);
     }
 }
 
@@ -131,60 +166,68 @@ body {
 
 .scene {
     position: relative;
-    z-index: 5;
 
     width: 100%;
     height: 100vh;
+
+    z-index: 5;
 
     pointer-events: none;
 }
 
 
 /* =========================================================
-   HEART
+   HEART CONTAINER
    ========================================================= */
 
 .heart-container {
     position: absolute;
 
-    left: 27%;
-    top: 53%;
+    left: 29%;
+    top: 51%;
 
-    width: min(55vw, 760px);
-    height: min(72vh, 680px);
+    width: min(62vw, 720px);
+    height: min(72vh, 650px);
 
     transform: translate(-50%, -50%);
 
-    z-index: 8;
+    z-index: 10;
 
     pointer-events: none;
 }
 
 #heartCanvas {
-    display: block;
+    position: absolute;
+
+    inset: 0;
 
     width: 100%;
     height: 100%;
+}
 
-    overflow: visible;
+#heartCanvas canvas {
+    display: block;
+
+    width: 100% !important;
+    height: 100% !important;
 }
 
 
 /* =========================================================
-   TEXT
+   BIRTHDAY MESSAGE
    ========================================================= */
 
 .text-overlay {
     position: absolute;
 
-    left: 68%;
+    left: 72%;
     top: 50%;
 
-    width: min(42vw, 650px);
+    width: min(42vw, 620px);
 
     transform: translate(-50%, -50%);
 
-    z-index: 20;
+    z-index: 30;
 
     text-align: center;
 
@@ -192,9 +235,9 @@ body {
 
     text-shadow:
         0 0 8px var(--text),
-        0 0 22px color-mix(
+        0 0 20px color-mix(
             in srgb,
-            var(--text) 60%,
+            var(--text) 55%,
             transparent
         );
 }
@@ -202,7 +245,7 @@ body {
 .birthday-title {
     margin-bottom: 28px;
 
-    font-size: clamp(30px, 3.2vw, 52px);
+    font-size: clamp(30px, 3.2vw, 50px);
 
     font-weight: 700;
 
@@ -220,7 +263,8 @@ body {
 
     color: white;
 
-    animation: titleSparkle 1.5s ease-in-out infinite;
+    animation:
+        titleSparkle 1.5s ease-in-out infinite;
 }
 
 @keyframes titleSparkle {
@@ -244,7 +288,7 @@ body {
 
     gap: 9px;
 
-    font-size: clamp(17px, 1.55vw, 24px);
+    font-size: clamp(16px, 1.45vw, 22px);
 
     line-height: 1.45;
 
@@ -252,15 +296,15 @@ body {
 
     text-shadow:
         0 0 7px var(--text),
-        0 0 16px color-mix(
+        0 0 15px color-mix(
             in srgb,
-            var(--text) 45%,
+            var(--text) 40%,
             transparent
         );
 }
 
 .final-line {
-    margin-top: 7px;
+    margin-top: 8px;
 
     font-weight: 600;
 
@@ -268,9 +312,12 @@ body {
 }
 
 .final-line span {
+    display: inline-block;
+
     color: white;
 
-    animation: heartGlow 1.4s ease-in-out infinite;
+    animation:
+        heartGlow 1.4s ease-in-out infinite;
 }
 
 @keyframes heartGlow {
@@ -283,7 +330,7 @@ body {
 
     50% {
         opacity: 1;
-        transform: scale(1.15);
+        transform: scale(1.2);
     }
 }
 
@@ -303,23 +350,27 @@ body {
     z-index: 100;
 
     display: flex;
+
     align-items: center;
 
     gap: 5px;
 
     padding: 7px;
 
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border:
+        1px solid
+        rgba(255,255,255,0.16);
 
     border-radius: 40px;
 
-    background: rgba(8, 10, 20, 0.8);
+    background:
+        rgba(8,10,20,0.8);
 
     backdrop-filter: blur(15px);
 
     box-shadow:
-        0 0 20px rgba(255, 255, 255, 0.05),
-        0 8px 30px rgba(0, 0, 0, 0.35);
+        0 0 20px rgba(255,255,255,0.05),
+        0 8px 30px rgba(0,0,0,0.35);
 }
 
 .theme-btn {
@@ -327,6 +378,7 @@ body {
     outline: 0;
 
     display: flex;
+
     align-items: center;
 
     gap: 8px;
@@ -337,7 +389,8 @@ body {
 
     background: transparent;
 
-    color: rgba(255, 255, 255, 0.75);
+    color:
+        rgba(255,255,255,0.75);
 
     font-family: inherit;
 
@@ -357,16 +410,19 @@ body {
 .theme-btn:hover {
     color: white;
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
 }
 
 .theme-btn.active {
     color: white;
 
-    background: rgba(255, 255, 255, 0.17);
+    background:
+        rgba(255,255,255,0.17);
 
     box-shadow:
-        0 0 14px color-mix(
+        0 0 14px
+        color-mix(
             in srgb,
             var(--accent) 45%,
             transparent
@@ -382,39 +438,44 @@ body {
     border-radius: 50%;
 
     box-shadow:
-        0 0 8px rgba(255, 255, 255, 0.35);
+        0 0 8px
+        rgba(255,255,255,0.35);
 }
 
 .midnight-dot {
-    background: linear-gradient(
-        135deg,
-        #7928ca,
-        #ff0080
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #7928ca,
+            #ff0080
+        );
 }
 
 .golden-dot {
-    background: linear-gradient(
-        135deg,
-        #ffd36a,
-        #ff9900
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #ffd36a,
+            #ff9900
+        );
 }
 
 .cyber-dot {
-    background: linear-gradient(
-        135deg,
-        #69efff,
-        #4facfe
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #69efff,
+            #4facfe
+        );
 }
 
 .emerald-dot {
-    background: linear-gradient(
-        135deg,
-        #66f5c4,
-        #96c93d
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #66f5c4,
+            #96c93d
+        );
 }
 
 
@@ -468,7 +529,7 @@ body[data-theme="emerald"] {
 
 
 /* =========================================================
-   MUSIC BUTTON
+   MUSIC
    ========================================================= */
 
 .music-button {
@@ -482,11 +543,14 @@ body[data-theme="emerald"] {
     width: 52px;
     height: 52px;
 
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border:
+        1px solid
+        rgba(255,255,255,0.18);
 
     border-radius: 50%;
 
-    background: rgba(8, 10, 20, 0.85);
+    background:
+        rgba(8,10,20,0.85);
 
     backdrop-filter: blur(12px);
 
@@ -495,13 +559,15 @@ body[data-theme="emerald"] {
     font-size: 25px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     cursor: pointer;
 
     box-shadow:
-        0 0 15px color-mix(
+        0 0 15px
+        color-mix(
             in srgb,
             var(--accent) 35%,
             transparent
@@ -516,7 +582,8 @@ body[data-theme="emerald"] {
     transform: scale(1.08);
 
     box-shadow:
-        0 0 25px color-mix(
+        0 0 25px
+        color-mix(
             in srgb,
             var(--accent) 55%,
             transparent
@@ -524,7 +591,8 @@ body[data-theme="emerald"] {
 }
 
 .music-button.playing {
-    animation: musicPulse 1.5s ease-in-out infinite;
+    animation:
+        musicPulse 1.5s ease-in-out infinite;
 }
 
 @keyframes musicPulse {
@@ -532,7 +600,8 @@ body[data-theme="emerald"] {
     0%,
     100% {
         box-shadow:
-            0 0 12px color-mix(
+            0 0 12px
+            color-mix(
                 in srgb,
                 var(--accent) 30%,
                 transparent
@@ -541,7 +610,8 @@ body[data-theme="emerald"] {
 
     50% {
         box-shadow:
-            0 0 28px color-mix(
+            0 0 28px
+            color-mix(
                 in srgb,
                 var(--accent) 70%,
                 transparent
@@ -558,9 +628,9 @@ body[data-theme="emerald"] {
 
     .heart-container {
         left: 50%;
-        top: 62%;
+        top: 64%;
 
-        width: 90vw;
+        width: 92vw;
         height: 52vh;
     }
 
@@ -574,13 +644,23 @@ body[data-theme="emerald"] {
     .birthday-title {
         margin-bottom: 15px;
 
-        font-size: clamp(26px, 7vw, 40px);
+        font-size:
+            clamp(
+                26px,
+                7vw,
+                40px
+            );
     }
 
     .message {
-        gap: 4px;
+        gap: 5px;
 
-        font-size: clamp(13px, 3.5vw, 18px);
+        font-size:
+            clamp(
+                13px,
+                3.5vw,
+                18px
+            );
     }
 
     .theme-switcher {
@@ -624,6 +704,7 @@ body[data-theme="emerald"] {
 
     .heart-container {
         top: 61%;
+
         height: 55vh;
     }
 
