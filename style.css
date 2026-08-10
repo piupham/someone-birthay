@@ -41,12 +41,12 @@ body {
     background:
         radial-gradient(
             circle at 50% 45%,
-            color-mix(in srgb, var(--accent) 12%, transparent),
-            transparent 30%
+            color-mix(in srgb, var(--accent) 10%, transparent),
+            transparent 32%
         ),
         radial-gradient(
-            circle at 50% 70%,
-            color-mix(in srgb, var(--accent2) 14%, transparent),
+            circle at 50% 72%,
+            color-mix(in srgb, var(--accent2) 12%, transparent),
             transparent 42%
         ),
         linear-gradient(
@@ -65,7 +65,7 @@ body {
 .stars {
     position: fixed;
     inset: 0;
-    z-index: 2;
+    z-index: 1;
 
     pointer-events: none;
     overflow: hidden;
@@ -74,62 +74,64 @@ body {
 .star {
     position: absolute;
 
-    width: 3px;
-    height: 3px;
+    width: var(--size);
+    height: var(--size);
 
     border-radius: 50%;
 
     background: white;
 
+    opacity: var(--opacity);
+
     box-shadow:
-        0 0 4px white,
-        0 0 10px var(--text);
+        0 0 5px rgba(255, 255, 255, 0.8),
+        0 0 12px rgba(255, 255, 255, 0.3);
 
     animation:
-        twinkle var(--duration) ease-in-out infinite alternate,
-        floatStar var(--float-duration) linear infinite;
+        starTwinkle var(--duration) ease-in-out infinite alternate,
+        starFloat var(--float-duration) linear infinite;
 
     animation-delay: var(--delay);
 }
 
-.star.big {
-    width: 5px;
-    height: 5px;
-
-    box-shadow:
-        0 0 5px white,
-        0 0 15px var(--text),
-        0 0 25px var(--accent);
-}
-
-@keyframes twinkle {
+@keyframes starTwinkle {
     0% {
         opacity: 0.15;
-        transform: scale(0.6);
+        transform: scale(0.7);
     }
 
     50% {
-        opacity: 0.7;
+        opacity: 0.55;
     }
 
     100% {
         opacity: 1;
-        transform: scale(1.5);
+        transform: scale(1.35);
     }
 }
 
-@keyframes floatStar {
-    0% {
+@keyframes starFloat {
+    from {
         translate: 0 0;
     }
 
-    50% {
+    to {
         translate: var(--move-x) var(--move-y);
     }
+}
 
-    100% {
-        translate: 0 0;
-    }
+/* =========================
+   MAIN SCENE
+========================= */
+
+.scene {
+    position: relative;
+    z-index: 5;
+
+    width: 100%;
+    height: 100vh;
+
+    pointer-events: none;
 }
 
 /* =========================
@@ -139,7 +141,7 @@ body {
 .text-overlay {
     position: absolute;
 
-    top: 5vh;
+    top: 4.5vh;
     left: 50%;
 
     width: min(90vw, 850px);
@@ -150,7 +152,13 @@ body {
 
     z-index: 20;
 
-    pointer-events: none;
+    text-shadow:
+        0 0 8px var(--text),
+        0 0 20px color-mix(
+            in srgb,
+            var(--text) 55%,
+            transparent
+        );
 }
 
 .message {
@@ -159,60 +167,46 @@ body {
 
     gap: 5px;
 
-    font-size: clamp(15px, 1.5vw, 21px);
-    line-height: 1.35;
+    font-size: clamp(16px, 1.6vw, 24px);
+
+    line-height: 1.4;
 
     color: var(--text-soft);
 
-    text-shadow:
-        0 0 6px var(--text),
-        0 0 14px color-mix(
-            in srgb,
-            var(--text) 45%,
-            transparent
-        );
-
-    animation: messageGlow 3s ease-in-out infinite alternate;
+    transition:
+        color 0.5s ease,
+        text-shadow 0.5s ease;
 }
 
-@keyframes messageGlow {
-    from {
-        opacity: 0.88;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-.birthday-line {
+.birthday {
     margin-top: 3px;
 
     color: var(--text);
 
-    font-weight: 500;
+    font-weight: 600;
+
+    text-shadow:
+        0 0 8px var(--text),
+        0 0 20px var(--text);
 }
 
-.sparkle {
+.birthday span {
+    color: #ffffff;
+
     display: inline-block;
 
-    margin-left: 4px;
-
-    color: white;
-
-    animation: sparkle 1.4s ease-in-out infinite;
+    animation:
+        heartBeat 1.5s ease-in-out infinite;
 }
 
-@keyframes sparkle {
+@keyframes heartBeat {
     0%,
     100% {
-        opacity: 0.45;
-        transform: scale(0.8);
+        transform: scale(1);
     }
 
     50% {
-        opacity: 1;
-        transform: scale(1.3);
+        transform: scale(1.25);
     }
 }
 
@@ -220,25 +214,14 @@ body {
    HEART
 ========================= */
 
-.scene {
-    position: relative;
-
-    width: 100%;
-    height: 100vh;
-
-    z-index: 5;
-
-    pointer-events: none;
-}
-
 .heart-container {
     position: absolute;
 
     left: 50%;
-    top: 54%;
+    top: 53%;
 
-    width: min(80vw, 800px);
-    height: min(62vh, 620px);
+    width: min(62vw, 620px);
+    height: min(52vh, 500px);
 
     transform: translate(-50%, -50%);
 
@@ -264,7 +247,7 @@ body {
     position: fixed;
 
     left: 50%;
-    bottom: 25px;
+    bottom: 24px;
 
     transform: translateX(-50%);
 
@@ -272,7 +255,8 @@ body {
 
     display: flex;
     align-items: center;
-    gap: 5px;
+
+    gap: 3px;
 
     padding: 7px;
 
@@ -295,6 +279,7 @@ body {
 
     display: flex;
     align-items: center;
+
     gap: 8px;
 
     padding: 9px 13px;
@@ -303,10 +288,9 @@ body {
 
     background: transparent;
 
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.72);
 
     font-family: inherit;
-
     font-size: 14px;
     font-weight: 600;
 
@@ -321,16 +305,17 @@ body {
 
 .theme-btn:hover {
     color: white;
+
     transform: translateY(-2px);
 }
 
 .theme-btn.active {
     color: white;
 
-    background: rgba(255, 255, 255, 0.17);
+    background: rgba(255, 255, 255, 0.15);
 
     box-shadow:
-        0 0 12px color-mix(
+        0 0 15px color-mix(
             in srgb,
             var(--accent) 45%,
             transparent
@@ -360,15 +345,15 @@ body {
 .golden-dot {
     background: linear-gradient(
         135deg,
-        #ff9900,
-        #ff0055
+        #ffd36a,
+        #ff5500
     );
 }
 
 .cyber-dot {
     background: linear-gradient(
         135deg,
-        #00f2fe,
+        #69efff,
         #4facfe
     );
 }
@@ -376,7 +361,7 @@ body {
 .emerald-dot {
     background: linear-gradient(
         135deg,
-        #00b09b,
+        #66f5c4,
         #96c93d
     );
 }
@@ -384,9 +369,13 @@ body {
 .velvet-dot {
     background: linear-gradient(
         135deg,
-        #ff0844,
+        #ff8fa6,
         #c0392b
     );
+}
+
+.theme-name {
+    white-space: nowrap;
 }
 
 /* =========================
@@ -396,54 +385,79 @@ body {
 .music-button {
     position: fixed;
 
-    right: 22px;
-    bottom: 22px;
-
-    width: 46px;
-    height: 46px;
+    right: 24px;
+    bottom: 24px;
 
     z-index: 110;
+
+    width: 54px;
+    height: 54px;
 
     border: 1px solid rgba(255, 255, 255, 0.18);
 
     border-radius: 50%;
 
-    background: rgba(10, 10, 20, 0.78);
+    background: rgba(5, 8, 15, 0.8);
 
     color: white;
 
-    font-size: 21px;
+    font-size: 22px;
 
     cursor: pointer;
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
 
     box-shadow:
         0 0 15px color-mix(
             in srgb,
-            var(--accent) 45%,
+            var(--accent) 30%,
             transparent
         );
 
     transition:
         transform 0.3s ease,
+        box-shadow 0.3s ease,
         background 0.3s ease;
 }
 
 .music-button:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
+
+    box-shadow:
+        0 0 25px color-mix(
+            in srgb,
+            var(--accent) 55%,
+            transparent
+        );
 }
 
 .music-button.playing {
-    background: color-mix(
-        in srgb,
-        var(--accent) 35%,
-        rgba(10, 10, 20, 0.78)
-    );
+    animation: musicPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+    0%,
+    100% {
+        box-shadow:
+            0 0 12px color-mix(
+                in srgb,
+                var(--accent) 35%,
+                transparent
+            );
+    }
+
+    50% {
+        box-shadow:
+            0 0 28px color-mix(
+                in srgb,
+                var(--accent) 70%,
+                transparent
+            );
+    }
 }
 
 /* =========================
-   THEMES
+   MIDNIGHT
 ========================= */
 
 body[data-theme="midnight"] {
@@ -457,6 +471,10 @@ body[data-theme="midnight"] {
     --accent2: #7928ca;
 }
 
+/* =========================
+   GOLDEN
+========================= */
+
 body[data-theme="golden"] {
     --bg1: #120b03;
     --bg2: #2a1604;
@@ -467,6 +485,10 @@ body[data-theme="golden"] {
     --accent: #ff9900;
     --accent2: #ff0055;
 }
+
+/* =========================
+   CYBER
+========================= */
 
 body[data-theme="cyber"] {
     --bg1: #020b12;
@@ -479,6 +501,10 @@ body[data-theme="cyber"] {
     --accent2: #4facfe;
 }
 
+/* =========================
+   EMERALD
+========================= */
+
 body[data-theme="emerald"] {
     --bg1: #03110e;
     --bg2: #06251d;
@@ -489,6 +515,10 @@ body[data-theme="emerald"] {
     --accent: #00b09b;
     --accent2: #96c93d;
 }
+
+/* =========================
+   VELVET
+========================= */
 
 body[data-theme="velvet"] {
     --bg1: #120305;
@@ -508,26 +538,29 @@ body[data-theme="velvet"] {
 @media (max-width: 700px) {
 
     .text-overlay {
-        top: 4vh;
+        top: 3vh;
+
         width: 94vw;
     }
 
     .message {
         font-size: 14px;
+
         gap: 4px;
     }
 
     .heart-container {
-        top: 54%;
+        top: 53%;
 
-        width: 100vw;
-        height: 56vh;
+        width: 94vw;
+        height: 50vh;
     }
 
     .theme-switcher {
+        left: 50%;
         bottom: 12px;
 
-        max-width: 92vw;
+        max-width: 88vw;
 
         overflow-x: auto;
 
@@ -536,6 +569,7 @@ body[data-theme="velvet"] {
 
     .theme-btn {
         padding: 8px 10px;
+
         font-size: 12px;
     }
 
@@ -546,7 +580,12 @@ body[data-theme="velvet"] {
 
     .music-button {
         right: 12px;
-        bottom: 72px;
+        bottom: 78px;
+
+        width: 48px;
+        height: 48px;
+
+        font-size: 19px;
     }
 }
 
@@ -557,11 +596,16 @@ body[data-theme="velvet"] {
     }
 
     .heart-container {
-        top: 55%;
-        height: 56vh;
+        top: 54%;
+
+        height: 48vh;
     }
 
     .theme-switcher {
         bottom: 8px;
+    }
+
+    .music-button {
+        bottom: 70px;
     }
 }
