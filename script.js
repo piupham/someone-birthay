@@ -1,630 +1,540 @@
-/* =========================
-   CANVAS HEART
-========================= */
+"use strict";
 
-const canvas = document.getElementById("heartCanvas");
-const ctx = canvas.getContext("2d");
+(() => {
 
-let width = 0;
-let height = 0;
-let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const music = document.getElementById("birthdayMusic");
+  const musicButton = document.getElementById("musicButton");
 
-let particles = [];
-let outlineParticles = [];
+  /* =========================
+     MUSIC
+  ========================= */
 
-const particleCount = 620;
-const outlineCount = 170;
+  let musicStarted = false;
 
-let animationTime = 0;
+  function updateMusicButton() {
+    if (!music) return;
+
+    musicButton.textContent = music.paused ? "🎵" : "🔊";
+  }
+
+  async function startMusic() {
+    if (!music) return;
+
+    try {
+      await music.play();
+      musicStarted = true;
+      updateMusicButton();
+    } catch (error) {
+      updateMusicButton();
+    }
+  }
+
+  if (musicButton) {
+    musicButton.addEventListener("click", async () => {
+
+      if (music.paused) {
+        await startMusic();
+      } else {
+        music.pause();
+        updateMusicButton();
+      }
+
+    });
+  }
+
+  /*
+    Trình duyệt thường chặn autoplay có tiếng.
+    Thử phát ngay khi trang load.
+  */
+
+  window.addEventListener("load", () => {
+    setTimeout(startMusic, 500);
+  });
+
+  /*
+    Nếu autoplay bị chặn,
+    lần tương tác đầu tiên của người dùng sẽ bật nhạc.
+  */
+
+  const unlockMusic = () => {
+    if (!musicStarted) {
+      startMusic();
+    }
+
+    document.removeEventListener("click", unlockMusic);
+    document.removeEventListener("touchstart", unlockMusic);
+    document.removeEventListener("keydown", unlockMusic);
+  };
+
+  document.addEventListener("click", unlockMusic, {
+    once: true
+  });
+
+  document.addEventListener("touchstart", unlockMusic, {
+    once: true
+  });
+
+  document.addEventListener("keydown", unlockMusic, {
+    once: true
+  });
 
 
-/* =========================
-   THEME COLORS
-========================= */
+  /* =========================
+     THEME SYSTEM
+  ========================= */
 
-const themes = {
+  const themePalettes = {
+
     midnight: {
-        particle1: "#ff7bc8",
-        particle2: "#ff0080",
-        particle3: "#c77dff",
-        outline: "#ff7bc8"
+      fill: "#ff2a85",
+      glow: "rgba(255,0,128,.6)"
     },
 
     golden: {
-        particle1: "#ffd36a",
-        particle2: "#ff9900",
-        particle3: "#ff6b35",
-        outline: "#ffd36a"
+      fill: "#ffaa00",
+      glow: "rgba(255,153,0,.6)"
     },
 
     cyber: {
-        particle1: "#69efff",
-        particle2: "#00f2fe",
-        particle3: "#4facfe",
-        outline: "#69efff"
+      fill: "#00f2fe",
+      glow: "rgba(0,242,254,.6)"
     },
 
     emerald: {
-        particle1: "#66f5c4",
-        particle2: "#00b09b",
-        particle3: "#96c93d",
-        outline: "#66f5c4"
+      fill: "#00e6a8",
+      glow: "rgba(0,176,155,.6)"
     },
 
     velvet: {
-        particle1: "#ff8fa6",
-        particle2: "#ff0844",
-        particle3: "#c0392b",
-        outline: "#ff8fa6"
-    }
-};
-
-let currentTheme = "midnight";
-
-
-/* =========================
-   HEART EQUATION
-========================= */
-
-function heartPoint(t, scale = 1) {
-    const x = 16 * Math.pow(Math.sin(t), 3);
-
-    const y =
-        13 * Math.cos(t) -
-        5 * Math.cos(2 * t) -
-        2 * Math.cos(3 * t) -
-        Math.cos(4 * t);
-
-    return {
-        x: x * scale,
-        y: -y * scale
-    };
-}
-
-
-/* =========================
-   RANDOM HEART POINT
-========================= */
-
-function randomHeartPoint() {
-
-    const t = Math.random() * Math.PI * 2;
-
-    const point = heartPoint(t);
-
-    /*
-        sqrt() giúp phân bố hạt đều hơn,
-        tránh việc giữa tim quá rỗng.
-    */
-    const fill = Math.sqrt(Math.random());
-
-    return {
-        x: point.x * fill,
-        y: point.y * fill,
-        size: 0.8 + Math.random() * 2.2,
-        alpha: 0.25 + Math.random() * 0.65,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.5 + Math.random() * 1.4
-    };
-}
-
-
-/* =========================
-   CREATE PARTICLES
-========================= */
-
-function createParticles() {
-
-    particles = [];
-    outlineParticles = [];
-
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(randomHeartPoint());
+      fill: "#ff2855",
+      glow: "rgba(255,8,68,.6)"
     }
 
-    for (let i = 0; i < outlineCount; i++) {
+  };
 
-        const t =
-            (i / outlineCount) *
-            Math.PI *
-            2;
+  const savedTheme =
+    localStorage.getItem("birthday_theme");
 
-        const point = heartPoint(t);
-
-        outlineParticles.push({
-            x: point.x,
-            y: point.y,
-            phase: Math.random() * Math.PI * 2
-        });
-    }
-}
+  let currentTheme =
+    themePalettes[savedTheme]
+      ? savedTheme
+      : "midnight";
 
 
-/* =========================
-   RESIZE
-========================= */
+  function applyTheme(theme) {
 
-function resizeCanvas() {
+    if (!themePalettes[theme]) return;
 
-    const rect = canvas.getBoundingClientRect();
+    currentTheme = theme;
 
-    width = rect.width;
-    height = rect.height;
+    document.body.dataset.theme = theme;
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
+    localStorage.setItem(
+      "birthday_theme",
+      theme
     );
-}
 
-window.addEventListener("resize", resizeCanvas);
+    document
+      .querySelectorAll(".theme-btn")
+      .forEach(button => {
 
-
-/* =========================
-   DRAW HEART OUTLINE
-========================= */
-
-function drawHeartOutline(cx, cy, scale) {
-
-    const theme = themes[currentTheme];
-
-    ctx.beginPath();
-
-    for (let i = 0; i <= 160; i++) {
-
-        const t =
-            (i / 160) *
-            Math.PI *
-            2;
-
-        const p = heartPoint(t, scale);
-
-        const x = cx + p.x;
-        const y = cy + p.y;
-
-        if (i === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
-    }
-
-    ctx.closePath();
-
-    ctx.strokeStyle = theme.outline;
-
-    ctx.globalAlpha = 0.42;
-
-    ctx.lineWidth = 1.2;
-
-    ctx.shadowBlur = 12;
-
-    ctx.shadowColor = theme.outline;
-
-    ctx.stroke();
-
-    ctx.shadowBlur = 0;
-    ctx.globalAlpha = 1;
-}
-
-
-/* =========================
-   DRAW PARTICLES
-========================= */
-
-function drawParticles(cx, cy, scale) {
-
-    const theme = themes[currentTheme];
-
-    for (const p of particles) {
-
-        const pulse =
-            Math.sin(
-                animationTime * p.speed +
-                p.phase
-            ) * 0.7;
-
-        const x =
-            cx +
-            p.x * scale +
-            Math.sin(
-                animationTime * 0.7 +
-                p.phase
-            ) * 1.4;
-
-        const y =
-            cy +
-            p.y * scale +
-            Math.cos(
-                animationTime * 0.55 +
-                p.phase
-            ) * 1.4;
-
-        const size =
-            Math.max(
-                0.4,
-                p.size + pulse * 0.25
-            );
-
-        let color;
-
-        const random = p.phase % 3;
-
-        if (random < 1) {
-            color = theme.particle1;
-        } else if (random < 2) {
-            color = theme.particle2;
-        } else {
-            color = theme.particle3;
-        }
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            y,
-            size,
-            0,
-            Math.PI * 2
+        button.classList.toggle(
+          "active",
+          button.dataset.theme === theme
         );
 
-        ctx.fillStyle = color;
+      });
+  }
 
-        ctx.globalAlpha =
-            p.alpha *
-            (0.85 + pulse * 0.08);
 
-        ctx.shadowBlur = size > 2 ? 7 : 3;
+  document
+    .querySelectorAll(".theme-btn")
+    .forEach(button => {
 
-        ctx.shadowColor = color;
+      button.addEventListener("click", () => {
 
-        ctx.fill();
+        applyTheme(
+          button.dataset.theme
+        );
+
+      });
+
+    });
+
+
+  applyTheme(currentTheme);
+
+
+  /* =========================
+     MATTER.JS CENTRAL HEART
+  ========================= */
+
+  if (!window.Matter) {
+    console.error("Matter.js failed to load.");
+    return;
+  }
+
+  const {
+    Engine,
+    Render,
+    Runner,
+    Common,
+    Bodies,
+    Body,
+    Composite,
+    Mouse,
+    MouseConstraint
+  } = Matter;
+
+
+  const width = 512;
+  const height = 512;
+
+  const engine = Engine.create();
+
+  const world = engine.world;
+
+  engine.gravity.scale = 0;
+  engine.gravity.x = 0;
+  engine.gravity.y = 0;
+
+
+  const render = Render.create({
+
+    element: document.body,
+
+    engine: engine,
+
+    options: {
+      width: width,
+      height: height,
+      wireframes: false,
+      background: "transparent",
+      pixelRatio: 1
     }
 
-    ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
-}
-
-
-/* =========================
-   CENTER GLOW
-========================= */
-
-function drawCenterGlow(cx, cy, scale) {
-
-    const theme = themes[currentTheme];
-
-    const gradient = ctx.createRadialGradient(
-        cx,
-        cy,
-        0,
-        cx,
-        cy,
-        scale * 9
-    );
-
-    gradient.addColorStop(
-        0,
-        theme.particle1
-    );
+  });
 
-    gradient.addColorStop(
-        0.25,
-        theme.particle2
-    );
 
-    gradient.addColorStop(
-        1,
-        "transparent"
-    );
+  /*
+    Central heart.
+    Dùng polygon nhiều điểm để giữ hình trái tim
+    mềm hơn và đẹp hơn.
+  */
 
-    ctx.globalAlpha = 0.18;
+  const heartPath = [
+    { x: 0, y: -150 },
 
-    ctx.fillStyle = gradient;
+    { x: -45, y: -185 },
+    { x: -100, y: -180 },
+    { x: -150, y: -140 },
 
-    ctx.beginPath();
+    { x: -175, y: -80 },
+    { x: -170, y: -20 },
 
-    ctx.arc(
-        cx,
-        cy,
-        scale * 9,
-        0,
-        Math.PI * 2
-    );
+    { x: -145, y: 40 },
+    { x: -105, y: 90 },
 
-    ctx.fill();
+    { x: -55, y: 140 },
+    { x: 0, y: 185 },
 
-    ctx.globalAlpha = 1;
-}
+    { x: 55, y: 140 },
+    { x: 105, y: 90 },
 
+    { x: 145, y: 40 },
+    { x: 170, y: -20 },
 
-/* =========================
-   ANIMATION
-========================= */
+    { x: 175, y: -80 },
+    { x: 150, y: -140 },
 
-function animate() {
+    { x: 100, y: -180 },
+    { x: 45, y: -185 }
+  ];
 
-    animationTime += 0.016;
 
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
+  const initialColor =
+    themePalettes[currentTheme].fill;
 
-    /*
-        Scale nhỏ hơn trước để
-        toàn bộ trái tim nằm trong khung.
-    */
-    const scale =
-        Math.min(
-            width / 36,
-            height / 31
-        ) * 0.88;
-
-    const cx = width / 2;
 
-    /*
-        Dịch tim xuống một chút
-        để không đè lên chữ.
-    */
-    const cy =
-        height / 2 + scale * 1.5;
+  const heart = Bodies.fromVertices(
 
-    drawCenterGlow(
-        cx,
-        cy,
-        scale
-    );
+    width / 2,
 
-    drawHeartOutline(
-        cx,
-        cy,
-        scale
-    );
+    height / 2 + 20,
 
-    drawParticles(
-        cx,
-        cy,
-        scale
-    );
+    [heartPath],
 
-    requestAnimationFrame(animate);
-}
+    {
+      restitution: 0.65,
 
+      friction: 0.01,
 
-/* =========================
-   STARS
-========================= */
+      frictionAir: 0.01,
 
-const starsContainer =
-    document.getElementById("stars");
+      density: 0.002,
 
-function createStars() {
-
-    starsContainer.innerHTML = "";
-
-    const count =
-        window.innerWidth < 700
-            ? 65
-            : 105;
-
-    for (let i = 0; i < count; i++) {
-
-        const star =
-            document.createElement("div");
-
-        star.className = "star";
-
-        const size =
-            Math.random() < 0.85
-                ? 1 + Math.random() * 2
-                : 2.5 + Math.random() * 2;
-
-        star.style.left =
-            Math.random() * 100 + "%";
-
-        star.style.top =
-            Math.random() * 100 + "%";
-
-        star.style.setProperty(
-            "--size",
-            size + "px"
-        );
-
-        star.style.setProperty(
-            "--opacity",
-            0.25 + Math.random() * 0.7
-        );
-
-        star.style.setProperty(
-            "--duration",
-            1.5 + Math.random() * 3 + "s"
-        );
-
-        star.style.setProperty(
-            "--float-duration",
-            8 + Math.random() * 15 + "s"
-        );
-
-        star.style.setProperty(
-            "--delay",
-            -Math.random() * 5 + "s"
-        );
-
-        star.style.setProperty(
-            "--move-x",
-            (Math.random() - 0.5) * 35 + "px"
-        );
-
-        star.style.setProperty(
-            "--move-y",
-            (Math.random() - 0.5) * 35 + "px"
-        );
-
-        starsContainer.appendChild(star);
-    }
-}
-
-
-/* =========================
-   THEME SWITCHING
-========================= */
-
-const themeButtons =
-    document.querySelectorAll(".theme-btn");
-
-themeButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        () => {
-
-            const theme =
-                button.dataset.theme;
-
-            currentTheme = theme;
-
-            document.body.dataset.theme =
-                theme;
-
-            themeButtons.forEach(btn => {
-                btn.classList.remove("active");
-            });
-
-            button.classList.add("active");
-        }
-    );
-});
-
-
-/* =========================
-   MUSIC
-========================= */
-
-const music =
-    document.getElementById("birthdayMusic");
-
-const musicButton =
-    document.getElementById("musicButton");
-
-let musicStarted = false;
-
-
-/*
-    Trình duyệt hiện nay thường chặn
-    autoplay có âm thanh.
-
-    Code sẽ thử tự phát ngay khi mở web.
-*/
-async function tryPlayMusic() {
-
-    try {
-
-        music.volume = 0.45;
-
-        await music.play();
-
-        musicStarted = true;
-
-        musicButton.classList.add("playing");
-
-    } catch (error) {
-
-        /*
-            Nếu browser chặn autoplay,
-            chờ người dùng tương tác.
-        */
-
-        musicStarted = false;
-
-        musicButton.classList.remove("playing");
-    }
-}
-
-
-/* Nút bật/tắt nhạc */
-
-musicButton.addEventListener(
-    "click",
-    async () => {
-
-        if (music.paused) {
-
-            try {
-
-                music.volume = 0.45;
-
-                await music.play();
-
-                musicButton.classList.add(
-                    "playing"
-                );
-
-            } catch (error) {
-
-                console.log(
-                    "Không thể phát nhạc:",
-                    error
-                );
-            }
-
-        } else {
-
-            music.pause();
-
-            musicButton.classList.remove(
-                "playing"
-            );
-        }
-    }
-);
-
-
-/*
-    Nếu autoplay bị chặn,
-    lần click đầu tiên vào trang sẽ
-    thử bật nhạc.
-*/
-
-document.addEventListener(
-    "click",
-    () => {
-
-        if (!musicStarted && music.paused) {
-            tryPlayMusic();
-        }
+      render: {
+        fillStyle: initialColor,
+        strokeStyle: initialColor,
+        lineWidth: 2
+      }
 
     },
-    {
-        once: true
-    }
-);
+
+    true
+
+  );
 
 
-/* =========================
-   START
-========================= */
+  Body.scale(
+    heart,
+    0.72,
+    0.72
+  );
 
-resizeCanvas();
 
-createParticles();
+  Composite.add(
+    world,
+    heart
+  );
 
-createStars();
 
-animate();
+  /* =========================
+     INVISIBLE WALLS
+  ========================= */
 
-tryPlayMusic();
+  const wall = 30;
 
-window.addEventListener(
-    "resize",
-    createStars
-);
+  Composite.add(world, [
+
+    Bodies.rectangle(
+      width / 2,
+      -wall / 2,
+      width,
+      wall,
+      {
+        isStatic: true,
+        render: { visible: false }
+      }
+    ),
+
+    Bodies.rectangle(
+      width / 2,
+      height + wall / 2,
+      width,
+      wall,
+      {
+        isStatic: true,
+        render: { visible: false }
+      }
+    ),
+
+    Bodies.rectangle(
+      -wall / 2,
+      height / 2,
+      wall,
+      height,
+      {
+        isStatic: true,
+        render: { visible: false }
+      }
+    ),
+
+    Bodies.rectangle(
+      width + wall / 2,
+      height / 2,
+      wall,
+      height,
+      {
+        isStatic: true,
+        render: { visible: false }
+      }
+    )
+
+  ]);
+
+
+  /* =========================
+     MOUSE INTERACTION
+  ========================= */
+
+  const mouse =
+    Mouse.create(render.canvas);
+
+  const mouseConstraint =
+    MouseConstraint.create(
+      engine,
+      {
+        mouse: mouse,
+
+        constraint: {
+          stiffness: 0.15,
+
+          render: {
+            visible: false
+          }
+        }
+      }
+    );
+
+
+  Composite.add(
+    world,
+    mouseConstraint
+  );
+
+  render.mouse = mouse;
+
+
+  /* =========================
+     HEART MOTION
+  ========================= */
+
+  let angle = 0;
+
+  setInterval(() => {
+
+    angle += 0.018;
+
+    Body.setPosition(
+      heart,
+      {
+        x: width / 2 +
+          Math.sin(angle) * 4,
+
+        y: height / 2 +
+          20 +
+          Math.sin(angle * 1.5) * 5
+      }
+    );
+
+    Body.setAngle(
+      heart,
+      Math.sin(angle) * 0.025
+    );
+
+  }, 30);
+
+
+  /* =========================
+     FLOATING PARTICLES
+  ========================= */
+
+  function createParticle() {
+
+    const colors = {
+      midnight: ["#ff0080", "#ff69b4", "#da70d6"],
+      golden: ["#ff9900", "#ffcc00", "#ff7733"],
+      cyber: ["#00f2fe", "#4facfe", "#38f9d7"],
+      emerald: ["#00b09b", "#96c93d", "#55efc4"],
+      velvet: ["#ff0844", "#ffb199", "#e84393"]
+    };
+
+    const colorList =
+      colors[currentTheme];
+
+    const color =
+      Common.choose(colorList);
+
+
+    const particle =
+      Bodies.circle(
+
+        width / 2 +
+          Common.random(-25, 25),
+
+        height / 2 +
+          Common.random(-20, 20),
+
+        Common.random(2, 5),
+
+        {
+          restitution: 0.9,
+
+          friction: 0,
+
+          frictionAir: 0.01,
+
+          render: {
+            fillStyle: color,
+            strokeStyle: color,
+            lineWidth: 0
+          }
+        }
+
+      );
+
+
+    Body.setVelocity(
+      particle,
+      {
+        x: Common.random(-1.5, 1.5),
+        y: Common.random(-1.5, 1.5)
+      }
+    );
+
+
+    Composite.add(
+      world,
+      particle
+    );
+
+
+    setTimeout(() => {
+
+      Composite.remove(
+        world,
+        particle
+      );
+
+    }, 5000);
+
+  }
+
+
+  setInterval(
+    createParticle,
+    180
+  );
+
+
+  /* =========================
+     UPDATE HEART COLOR
+  ========================= */
+
+  setInterval(() => {
+
+    const color =
+      themePalettes[currentTheme].fill;
+
+    heart.render.fillStyle = color;
+    heart.render.strokeStyle = color;
+
+    heart.parts.forEach(part => {
+
+      part.render.fillStyle = color;
+      part.render.strokeStyle = color;
+
+    });
+
+  }, 100);
+
+
+  /* =========================
+     START MATTER
+  ========================= */
+
+  const runner =
+    Runner.create();
+
+  Runner.run(
+    runner,
+    engine
+  );
+
+  Render.run(
+    render
+  );
+
+
+})();
