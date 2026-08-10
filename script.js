@@ -1,432 +1,796 @@
 "use strict";
 
-!(function () {
-  let e, n, r, i, o, a;
-  let l = 512,
-    s = 512;
+/* =========================================================
+   HAPPY BIRTHDAY KIK
+   Animated Particle Heart
+========================================================= */
 
-  let c = Matter.Engine,
-    d = Matter.Render,
-    u = Matter.Runner,
-    f = Matter.Common,
-    p = Matter.MouseConstraint,
-    m = Matter.Mouse,
-    h = Matter.Composite,
-    y = Matter.Bodies,
-    M = Matter.Body,
-    v = Matter.Svg;
+document.addEventListener("DOMContentLoaded", () => {
 
-  const svg_terrain =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512px' height='512px' viewBox='0 0 512 512'%3E%3Cpath id='パス' fill='none' stroke='black' stroke-width='1' d='M 256.75,151.50 C 256.75,151.50 263.33,132.67 263.33,132.67 263.33,132.67 272.00,110.67 272.00,110.67 272.00,110.67 283.33,97.33 283.33,97.33 283.33,97.33 296.67,81.33 296.67,81.33 296.67,81.33 314.67,66.00 314.67,66.00 314.67,66.00 332.67,56.67 332.67,56.67 332.67,56.67 350.67,52.00 350.67,52.00 350.67,52.00 374.00,46.00 374.00,46.00 374.00,46.00 392.67,47.33 392.67,47.33 392.67,47.33 416.67,51.33 416.67,51.33 416.67,51.33 435.33,57.33 435.33,57.33 435.33,57.33 456.67,67.33 456.67,67.33 456.67,67.33 472.00,80.00 472.00,80.00 472.00,80.00 485.33,96.67 485.33,96.67 485.33,96.67 495.33,114.67 495.33,114.67 495.33,114.67 504.00,132.67 504.00,132.67 504.00,132.67 510.00,152.67 510.00,152.67 510.00,152.67 509.33,176.00 509.33,176.00 509.33,176.00 508.00,207.33 508.00,207.33 508.00,207.33 497.33,252.67 497.33,252.67 497.33,252.67 484.00,285.33 484.00,285.33 484.00,285.33 467.33,318.00 467.33,318.00 467.33,318.00 446.67,343.33 446.67,343.33 446.67,343.33 426.67,365.33 426.67,365.33 426.67,365.33 404.67,384.67 404.67,384.67 404.67,384.67 380.67,402.00 380.67,402.00 380.67,402.00 358.67,418.67 358.67,418.67 358.67,418.67 328.67,433.33 328.67,433.33 328.67,433.33 307.33,446.67 307.33,446.67 307.33,446.67 284.67,454.00 284.67,454.00 284.67,454.00 257.33,464.67 257.33,464.67 257.33,464.67 224.00,450.67 224.00,450.67 224.00,450.67 194.00,438.67 194.00,438.67 194.00,438.67 173.33,428.00 173.33,428.00 173.33,428.00 146.00,412.00 146.00,412.00 146.00,412.00 122.67,393.33 122.67,393.33 122.67,393.33 95.33,374.00 95.33,374.00 95.33,374.00 72.00,351.33 72.00,351.33 72.00,351.33 50.67,325.33 50.67,325.33 50.67,325.33 39.33,307.33 39.33,307.33 39.33,307.33 25.33,285.33 25.33,285.33 25.33,285.33 14.00,259.33 14.00,259.33 14.00,259.33 4.00,229.33 4.00,229.33 4.00,229.33 2.00,209.33 2.00,209.33 2.00,209.33 0.67,175.33 0.67,175.33 0.67,175.33 2.67,151.33 2.67,151.33 2.67,151.33 10.67,126.67 10.67,126.67 10.67,126.67 19.33,110.00 19.33,110.00 19.33,110.00 34.00,85.33 34.00,85.33 34.00,85.33 52.00,71.33 52.00,71.33 52.00,71.33 76.00,56.67 76.00,56.67 76.00,56.67 106.67,45.33 106.67,45.33 106.67,45.33 132.00,45.33 132.00,45.33 132.00,45.33 161.33,50.67 161.33,50.67 161.33,50.67 178.67,56.67 178.67,56.67 178.67,56.67 198.67,67.33 198.67,67.33 198.67,67.33 216.67,78.67 216.67,78.67 216.67,78.67 230.00,95.33 230.00,95.33 230.00,95.33 240.00,110.67 240.00,110.67 240.00,110.67 248.53,129.37 248.53,129.37 248.53,129.37 251.65,140.15 251.65,140.15 251.65,140.15 255.75,151.50 255.75,151.50 255.75,151.50 259.33,0.67 259.33,0.67 259.33,0.67 0.28,0.57 0.28,0.57 0.28,0.57 -0.85,511.81 -0.85,511.81 -0.85,511.81 511.52,511.81 511.52,511.81 511.52,511.81 512.00,-0.50 512.00,-0.50 512.00,-0.50 263.00,0.50 263.00,0.50 263.00,0.50 256.75,151.50 256.75,151.50 Z' /%3E%3C/svg%3E";
+  const canvas = document.getElementById("heartCanvas");
+  const ctx = canvas.getContext("2d");
 
-  const svg_heart =
-    "data:image/svg+xml,%3Csvg id='_x32_' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='512px' height='512px' viewBox='0 0 512 512' style='width: 512px; height: 512px; opacity: 1;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0%7Bfill:%234B4B4B;%7D %3C/style%3E%3Cg%3E%3Cpath class='st0' d='M384,46.469c-70.688,0-128,57.313-128,128.016c0-70.703-57.313-128.016-128-128.016S0,103.781,0,174.484 c0,66.484,31.313,193.391,218.563,276.234c11.844,5.25,35.703,14.469,35.703,14.469c0.547,0.219,1.141,0.344,1.734,0.344 s1.188-0.125,1.734-0.344c0,0,23.859-9.219,35.703-14.469C480.688,367.875,512,240.969,512,174.484 C512,103.781,454.688,46.469,384,46.469z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E";
+  const starsContainer = document.getElementById("stars");
+  const themeButtons = document.querySelectorAll(".theme-btn");
 
-  let themePalettes = {
+  /* =======================================================
+     THEME PALETTES
+  ======================================================= */
+
+  const themes = {
     midnight: {
-      g: [
+      colors: [
         "#ff0080",
-        "#7928ca",
         "#ff1493",
         "#ff69b4",
         "#da70d6",
         "#c71585",
-        "#ff007f"
-      ],
-      S: ["#c71585", "#dc143c", "#fa8072"]
+        "#7928ca"
+      ]
     },
 
     golden: {
-      g: [
+      colors: [
         "#ff9900",
         "#ffaa00",
-        "#ff0055",
-        "#ff6600",
         "#ffcc00",
         "#ff7733",
+        "#ff0055",
         "#e67e22"
-      ],
-      S: ["#d35400", "#e74c3c", "#f39c12"]
+      ]
     },
 
     cyber: {
-      g: [
+      colors: [
         "#00f2fe",
         "#4facfe",
-        "#7928ca",
         "#00d2ff",
-        "#a18cd1",
         "#38f9d7",
-        "#00c6ff"
-      ],
-      S: ["#2575fc", "#6a11cb", "#00c6ff"]
+        "#00c6ff",
+        "#a18cd1"
+      ]
     },
 
     emerald: {
-      g: [
+      colors: [
         "#00b09b",
         "#96c93d",
         "#00e6a8",
         "#2ecc71",
         "#1abc9c",
-        "#10ac84",
         "#55efc4"
-      ],
-      S: ["#009432", "#05c46b", "#10ac84"]
+      ]
     },
 
     velvet: {
-      g: [
+      colors: [
         "#ff0844",
         "#ffb199",
         "#d63031",
         "#e84118",
         "#c0392b",
-        "#b2bec3",
         "#e84393"
-      ],
-      S: ["#9b59b6", "#8e44ad", "#c0392b"]
+      ]
     }
   };
 
-  let savedTheme =
-    typeof localStorage !== "undefined"
-      ? localStorage.getItem("heartfill_theme")
-      : null;
+  let currentTheme = localStorage.getItem("birthday_theme");
 
-  let currentTheme =
-    savedTheme && themePalettes[savedTheme]
-      ? savedTheme
-      : "midnight";
+  if (!themes[currentTheme]) {
+    currentTheme = "midnight";
+  }
 
-  let g = [...themePalettes[currentTheme].g];
-  let S = [...themePalettes[currentTheme].S];
+  let colors = themes[currentTheme].colors;
 
-  function applyTheme(themeKey) {
-    if (!themePalettes[themeKey]) return;
+  /* =======================================================
+     CANVAS
+  ======================================================= */
 
-    currentTheme = themeKey;
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
 
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem("heartfill_theme", themeKey);
-    }
+  function resizeCanvas() {
 
-    document.body.setAttribute("data-theme", themeKey);
+    const rect = canvas.getBoundingClientRect();
 
-    g.length = 0;
-    g.push(...themePalettes[themeKey].g);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    S.length = 0;
-    S.push(...themePalettes[themeKey].S);
+    width = rect.width;
+    height = rect.height;
 
-    if (e) {
-      let bodies = h.allBodies(e);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
 
-      bodies.forEach(function (body) {
-        if (!body.isStatic) {
-          let newColor = f.choose(g);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
 
-          body.render.fillStyle = newColor;
-          body.render.strokeStyle = newColor;
+  resizeCanvas();
 
-          if (body.parts && body.parts.length > 1) {
-            body.parts.forEach(function (part) {
-              part.render.fillStyle = newColor;
-              part.render.strokeStyle = newColor;
-            });
-          }
-        }
-      });
-    }
+  window.addEventListener("resize", resizeCanvas);
 
-    document.querySelectorAll(".theme-btn").forEach(function (btn) {
-      if (btn.dataset.theme === themeKey) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
+  /* =======================================================
+     HEART PARTICLES
+  ======================================================= */
+
+  const particles = [];
+
+  const PARTICLE_COUNT = 1300;
+
+  /*
+    Parametric heart equation
+
+    x = 16 sin³(t)
+
+    y =
+      13 cos(t)
+      - 5 cos(2t)
+      - 2 cos(3t)
+      - cos(4t)
+  */
+
+  function heartPoint(t, scale) {
+
+    const x =
+      16 *
+      Math.pow(Math.sin(t), 3);
+
+    const y =
+      13 * Math.cos(t) -
+      5 * Math.cos(2 * t) -
+      2 * Math.cos(3 * t) -
+      Math.cos(4 * t);
+
+    return {
+      x: x * scale,
+      y: -y * scale
+    };
+  }
+
+  function random(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function randomColor() {
+    return colors[
+      Math.floor(Math.random() * colors.length)
+    ];
+  }
+
+  /*
+    Create particles inside the heart
+  */
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+    const t =
+      Math.random() * Math.PI * 2;
+
+    const fill =
+      Math.sqrt(Math.random());
+
+    const base = heartPoint(t, 1);
+
+    const particle = {
+
+      t: t,
+
+      fill: fill,
+
+      baseX: base.x,
+      baseY: base.y,
+
+      x: 0,
+      y: 0,
+
+      size: random(0.7, 2.2),
+
+      alpha: random(0.25, 0.95),
+
+      speed: random(0.00015, 0.00065),
+
+      phase: random(0, Math.PI * 2),
+
+      drift: random(0.5, 2.5),
+
+      color: randomColor()
+    };
+
+    particles.push(particle);
+  }
+
+  /* =======================================================
+     EXTRA OUTLINE PARTICLES
+  ======================================================= */
+
+  const outlineParticles = [];
+
+  const OUTLINE_COUNT = 500;
+
+  for (let i = 0; i < OUTLINE_COUNT; i++) {
+
+    const t =
+      (i / OUTLINE_COUNT) *
+      Math.PI *
+      2;
+
+    const point = heartPoint(t, 1);
+
+    outlineParticles.push({
+
+      t: t,
+
+      x: point.x,
+      y: point.y,
+
+      size: random(1, 2.5),
+
+      alpha: random(0.45, 1),
+
+      phase: random(0, Math.PI * 2),
+
+      speed: random(0.0002, 0.0007),
+
+      color: randomColor()
     });
   }
+
+  /* =======================================================
+     FLOATING PARTICLES
+  ======================================================= */
+
+  const floatingParticles = [];
+
+  for (let i = 0; i < 100; i++) {
+
+    floatingParticles.push({
+
+      x: random(0, 1),
+
+      y: random(0, 1),
+
+      size: random(0.5, 2),
+
+      speed: random(0.00005, 0.0002),
+
+      phase: random(0, Math.PI * 2),
+
+      color: randomColor(),
+
+      alpha: random(0.15, 0.7)
+    });
+  }
+
+  /* =======================================================
+     DRAW GLOW
+  ======================================================= */
+
+  function drawGlow(cx, cy, scale, pulse) {
+
+    const glowSize =
+      scale * 18 * pulse;
+
+    const gradient =
+      ctx.createRadialGradient(
+        cx,
+        cy,
+        0,
+        cx,
+        cy,
+        glowSize
+      );
+
+    gradient.addColorStop(
+      0,
+      hexToRgba(colors[0], 0.20)
+    );
+
+    gradient.addColorStop(
+      0.35,
+      hexToRgba(colors[0], 0.10)
+    );
+
+    gradient.addColorStop(
+      1,
+      "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle = gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      cx,
+      cy,
+      glowSize,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+  }
+
+  /* =======================================================
+     HEX → RGBA
+  ======================================================= */
+
+  function hexToRgba(hex, alpha) {
+
+    const value = hex.replace("#", "");
+
+    const r =
+      parseInt(value.substring(0, 2), 16);
+
+    const g =
+      parseInt(value.substring(2, 4), 16);
+
+    const b =
+      parseInt(value.substring(4, 6), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  /* =======================================================
+     DRAW HEART
+  ======================================================= */
+
+  let time = 0;
+
+  function drawHeart() {
+
+    ctx.clearRect(
+      0,
+      0,
+      width,
+      height
+    );
+
+    time += 1;
+
+    /*
+      Heart center
+    */
+
+    const cx = width / 2;
+
+    /*
+      Move heart slightly downward
+      so it does not cover the message
+    */
+
+    const cy = height * 0.56;
+
+    /*
+      Responsive scale
+    */
+
+    const scale =
+      Math.min(width, height) * 0.0175;
+
+    /*
+      Heart beat
+    */
+
+    const pulse =
+      1 +
+      Math.sin(time * 0.055) * 0.025;
+
+    const actualScale =
+      scale * pulse;
+
+    /* ---------------------------------------------
+       Large glow
+    --------------------------------------------- */
+
+    drawGlow(
+      cx,
+      cy,
+      actualScale,
+      pulse
+    );
+
+    /* ---------------------------------------------
+       Floating particles
+    --------------------------------------------- */
+
+    floatingParticles.forEach((p) => {
+
+      p.phase += p.speed * 10;
+
+      const x =
+        p.x * width +
+        Math.sin(p.phase) * 20;
+
+      const y =
+        p.y * height +
+        Math.cos(p.phase * 0.8) * 20;
+
+      ctx.beginPath();
+
+      ctx.globalAlpha = p.alpha;
+
+      ctx.fillStyle = p.color;
+
+      ctx.shadowBlur = 8;
+
+      ctx.shadowColor = p.color;
+
+      ctx.arc(
+        x,
+        y,
+        p.size,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+    });
+
+    /* ---------------------------------------------
+       Heart interior particles
+    --------------------------------------------- */
+
+    particles.forEach((p) => {
+
+      p.t += p.speed;
+
+      const point =
+        heartPoint(
+          p.t,
+          actualScale
+        );
+
+      /*
+        Fill interpolation.
+
+        Smaller fill = closer to center.
+        Larger fill = closer to outline.
+      */
+
+      let x =
+        point.x * p.fill;
+
+      let y =
+        point.y * p.fill;
+
+      /*
+        Add gentle organic movement
+      */
+
+      const wave =
+        Math.sin(
+          time * 0.025 +
+          p.phase
+        );
+
+      x +=
+        wave *
+        p.drift *
+        (1 - p.fill);
+
+      y +=
+        Math.cos(
+          time * 0.022 +
+          p.phase
+        ) *
+        p.drift *
+        (1 - p.fill);
+
+      const px = cx + x;
+      const py = cy + y;
+
+      const flicker =
+        0.65 +
+        Math.sin(
+          time * 0.05 +
+          p.phase
+        ) *
+        0.35;
+
+      ctx.globalAlpha =
+        Math.max(
+          0.08,
+          p.alpha * flicker
+        );
+
+      ctx.fillStyle = p.color;
+
+      ctx.shadowBlur =
+        p.size > 1.5 ? 10 : 5;
+
+      ctx.shadowColor =
+        p.color;
+
+      ctx.beginPath();
+
+      ctx.arc(
+        px,
+        py,
+        p.size,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+    });
+
+    /* ---------------------------------------------
+       Bright heart outline
+    --------------------------------------------- */
+
+    outlineParticles.forEach((p) => {
+
+      p.t += p.speed;
+
+      const point =
+        heartPoint(
+          p.t,
+          actualScale * 1.02
+        );
+
+      const wave =
+        Math.sin(
+          time * 0.045 +
+          p.phase
+        );
+
+      const px =
+        cx +
+        point.x +
+        wave * 1.3;
+
+      const py =
+        cy +
+        point.y +
+        Math.cos(
+          time * 0.04 +
+          p.phase
+        ) *
+        1.3;
+
+      const flicker =
+        0.7 +
+        Math.sin(
+          time * 0.06 +
+          p.phase
+        ) *
+        0.3;
+
+      ctx.globalAlpha =
+        p.alpha * flicker;
+
+      ctx.fillStyle =
+        p.color;
+
+      ctx.shadowBlur = 12;
+
+      ctx.shadowColor =
+        p.color;
+
+      ctx.beginPath();
+
+      ctx.arc(
+        px,
+        py,
+        p.size,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+    });
+
+    /* ---------------------------------------------
+       Small glowing particles around heart
+    --------------------------------------------- */
+
+    for (let i = 0; i < 18; i++) {
+
+      const angle =
+        time * 0.002 +
+        i * (Math.PI * 2 / 18);
+
+      const radius =
+        Math.min(width, height) *
+        0.28;
+
+      const x =
+        cx +
+        Math.cos(angle) * radius;
+
+      const y =
+        cy +
+        Math.sin(angle) *
+        radius *
+        0.78;
+
+      const size =
+        1.2 +
+        Math.sin(
+          time * 0.04 + i
+        ) *
+        0.7;
+
+      ctx.globalAlpha = 0.55;
+
+      ctx.fillStyle =
+        colors[i % colors.length];
+
+      ctx.shadowBlur = 12;
+
+      ctx.shadowColor =
+        ctx.fillStyle;
+
+      ctx.beginPath();
+
+      ctx.arc(
+        x,
+        y,
+        size,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+
+    ctx.shadowBlur = 0;
+
+    requestAnimationFrame(drawHeart);
+  }
+
+  /* =======================================================
+     STARS
+  ======================================================= */
+
+  function createStars() {
+
+    starsContainer.innerHTML = "";
+
+    const count =
+      Math.min(
+        180,
+        Math.floor(
+          window.innerWidth *
+          window.innerHeight /
+          7000
+        )
+      );
+
+    for (let i = 0; i < count; i++) {
+
+      const star =
+        document.createElement("div");
+
+      star.className = "star";
+
+      star.style.left =
+        `${Math.random() * 100}%`;
+
+      star.style.top =
+        `${Math.random() * 100}%`;
+
+      star.style.width =
+        `${Math.random() * 2 + 1}px`;
+
+      star.style.height =
+        star.style.width;
+
+      star.style.setProperty(
+        "--duration",
+        `${1.5 + Math.random() * 4}s`
+      );
+
+      star.style.setProperty(
+        "--float-duration",
+        `${8 + Math.random() * 15}s`
+      );
+
+      star.style.setProperty(
+        "--delay",
+        `${Math.random() * 5}s`
+      );
+
+      star.style.setProperty(
+        "--move-x",
+        `${Math.random() * 30 - 15}px`
+      );
+
+      star.style.setProperty(
+        "--move-y",
+        `${Math.random() * 30 - 15}px`
+      );
+
+      starsContainer.appendChild(star);
+    }
+  }
+
+  createStars();
+
+  window.addEventListener(
+    "resize",
+    createStars
+  );
+
+  /* =======================================================
+     THEME
+  ======================================================= */
+
+  function applyTheme(themeName) {
+
+    if (!themes[themeName]) {
+      return;
+    }
+
+    currentTheme =
+      themeName;
+
+    colors =
+      themes[themeName].colors;
+
+    localStorage.setItem(
+      "birthday_theme",
+      themeName
+    );
+
+    document.body.setAttribute(
+      "data-theme",
+      themeName
+    );
+
+    /*
+      Update particles with new colors
+    */
+
+    particles.forEach((p) => {
+      p.color = randomColor();
+    });
+
+    outlineParticles.forEach((p) => {
+      p.color = randomColor();
+    });
+
+    floatingParticles.forEach((p) => {
+      p.color = randomColor();
+    });
+
+    /*
+      Update active button
+    */
+
+    themeButtons.forEach((button) => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.theme === themeName
+      );
+
+    });
+  }
+
+  themeButtons.forEach((button) => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        applyTheme(
+          button.dataset.theme
+        );
+
+      }
+    );
+
+  });
+
+  /* =======================================================
+     START
+  ======================================================= */
 
   applyTheme(currentTheme);
 
-  function bindThemeButtons() {
-    document.querySelectorAll(".theme-btn").forEach(function (btn) {
-      btn.onclick = function (event) {
-        event.stopPropagation();
-        applyTheme(btn.dataset.theme);
-      };
-    });
-  }
+  drawHeart();
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bindThemeButtons);
-  } else {
-    bindThemeButtons();
-  }
-
-  document.addEventListener("click", function (event) {
-    const btn = event.target.closest(".theme-btn");
-
-    if (btn && btn.dataset && btn.dataset.theme) {
-      applyTheme(btn.dataset.theme);
-    }
-  });
-
-  function startAnimation() {
-    o = l / 2;
-    a = s / 2;
-
-    n = c.create();
-    e = n.world;
-
-    r = d.create({
-      element: document.body,
-      engine: n,
-      options: {
-        width: l,
-        height: s,
-        wireframes: false,
-        background: "transparent",
-        pixelRatio: window.devicePixelRatio || 1
-      }
-    });
-
-    i = u.create();
-
-    n.gravity.scale = 0;
-    n.gravity.x = 0;
-    n.gravity.y = 0;
-
-    function queryAll(root, selector) {
-      return Array.prototype.slice.call(
-        root.querySelectorAll(selector)
-      );
-    }
-
-    function loadSVG(data) {
-      return fetch(data)
-        .then(function (response) {
-          if (!response.ok) {
-            throw new Error("SVG could not be loaded.");
-          }
-
-          return response.text();
-        })
-        .then(function (text) {
-          return new DOMParser().parseFromString(
-            text,
-            "image/svg+xml"
-          );
-        });
-    }
-
-    /*
-     * Tạo phần biên hình trái tim lớn
-     */
-    loadSVG(svg_terrain)
-      .then(function (terrainSVG) {
-        let paths = queryAll(terrainSVG, "path");
-
-        let vertices = paths.map(function (path) {
-          return v.pathToVertices(path, 30);
-        });
-
-        let terrain = y.fromVertices(
-          256,
-          200,
-          vertices,
-          {
-            isStatic: true,
-            render: {
-              fillStyle: "transparent",
-              strokeStyle: "transparent",
-              lineWidth: 0
-            }
-          },
-          true
-        );
-
-        h.add(e, terrain);
-
-        o = terrain.position.x;
-        a = terrain.position.y;
-      })
-      .catch(function (error) {
-        console.error("Terrain SVG error:", error);
-      });
-
-    let heartBody = null;
-
-    /*
-     * Tải hình trái tim
-     */
-    loadSVG(svg_heart)
-      .then(function (heartSVG) {
-        let paths = queryAll(heartSVG, "path");
-
-        let vertices = paths.map(function (path) {
-          return v.pathToVertices(path, 30);
-        });
-
-        heartBody = y.fromVertices(
-          o,
-          1.5 * a,
-          vertices,
-          {
-            restitution: 0,
-            friction: 0,
-            frictionStatic: 0,
-            frictionAir: 0,
-            mass: 20,
-            render: {
-              fillStyle: f.choose(g),
-              strokeStyle: f.choose(g),
-              lineWidth: 0
-            }
-          },
-          true
-        );
-
-        M.scale(heartBody, 0.2, 0.2);
-
-        /*
-         * Chỉ bắt đầu hiệu ứng sau khi
-         * trái tim đã tải hoàn tất.
-         */
-        startHeartRain();
-      })
-      .catch(function (error) {
-        console.error("Heart SVG error:", error);
-      });
-
-    /*
-     * Tạo một trái tim mới
-     */
-    function createHeart() {
-      if (!heartBody) return;
-
-      let heart = structuredClone(heartBody);
-
-      heart.id = f.nextId();
-
-      heart.position.x = o;
-      heart.position.y = 1.5 * a;
-
-      let color = f.choose(g);
-
-      heart.render.fillStyle = color;
-      heart.render.strokeStyle = color;
-
-      if (heart.parts) {
-        heart.parts.forEach(function (part) {
-          part.render.fillStyle = color;
-          part.render.strokeStyle = color;
-        });
-      }
-
-      M.setAngle(
-        heart,
-        Math.round(360 * Math.random()),
-        false
-      );
-
-      M.setVelocity(heart, {
-        x: f.random(-5, 5),
-        y: f.random(-5, -1)
-      });
-
-      h.add(e, heart);
-    }
-
-    /*
-     * Tạo trái tim liên tục
-     */
-    function startHeartRain() {
-      setInterval(function () {
-        createHeart();
-      }, 650);
-    }
-
-    /*
-     * Các hạt nhỏ bay xung quanh
-     */
-    setTimeout(function () {
-      let count = 0;
-
-      let interval = setInterval(function () {
-        let color = f.choose(g);
-
-        let smallHeart = y.circle(
-          o,
-          a,
-          12,
-          {
-            restitution: 0,
-            friction: 0,
-            frictionStatic: 0,
-            frictionAir: 0,
-            mass: 10,
-            render: {
-              fillStyle: color,
-              strokeStyle: color,
-              lineWidth: 0
-            }
-          }
-        );
-
-        M.setVelocity(smallHeart, {
-          x: f.random(-1, 1),
-          y: f.random(-1, 1)
-        });
-
-        h.add(e, smallHeart);
-
-        count++;
-
-        if (count >= 60) {
-          clearInterval(interval);
-        }
-      }, 100);
-    }, 2000);
-
-    /*
-     * Điều khiển bằng chuột
-     */
-    let mouse = m.create(r.canvas);
-
-    let mouseConstraint = p.create(n, {
-      mouse: mouse,
-      constraint: {
-        stiffness: 0.2,
-        render: {
-          visible: false
-        }
-      }
-    });
-
-    h.add(e, mouseConstraint);
-
-    r.mouse = mouse;
-
-    d.lookAt(r, {
-      min: {
-        x: 0,
-        y: 0
-      },
-      max: {
-        x: l,
-        y: s
-      }
-    });
-
-    u.run(i, n);
-    d.run(r);
-  }
-
-  window.onload = function () {
-    startAnimation();
-    bindThemeButtons();
-    applyTheme(currentTheme);
-  };
-})();
+});
