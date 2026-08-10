@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
+
     <title>Happy Birthday Kik</title>
 
     <link rel="stylesheet" href="./style.css">
@@ -18,11 +19,12 @@
     <!-- Floating stars -->
     <div class="stars" id="stars" aria-hidden="true"></div>
 
+    <!-- Main scene -->
     <main class="scene">
 
-        <!-- Animated heart -->
-        <div class="heart-container" id="heartContainer">
-            <canvas id="heartCanvas"></canvas>
+        <!-- Original Matter.js heart -->
+        <div class="heart-container">
+            <div id="heartCanvas"></div>
         </div>
 
         <!-- Birthday message -->
@@ -40,14 +42,17 @@
                 <div>From the moment you open your eyes</div>
                 <div>Until you sleep for the night</div>
                 <div>I'm glad it was you on March 8, 2026.</div>
-                <div class="final-line">Happy Birthday Kik. <span>♥</span></div>
+                <div class="final-line">
+                    Happy Birthday Kik. <span>♥</span>
+                </div>
             </div>
 
         </section>
 
     </main>
 
-    <!-- Theme buttons -->
+
+    <!-- Theme switcher -->
     <div class="theme-switcher">
 
         <button class="theme-btn active" data-theme="midnight">
@@ -72,9 +77,15 @@
 
     </div>
 
+
     <!-- Music -->
-    <button class="music-button" id="musicButton" aria-label="Toggle music">
+    <button
+        class="music-button"
+        id="musicButton"
+        aria-label="Toggle music">
+
         <span id="musicIcon">♫</span>
+
     </button>
 
     <audio
@@ -84,6 +95,11 @@
         preload="auto">
     </audio>
 
+
+    <!-- Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
+
+    <!-- Main JS -->
     <script src="./script.js"></script>
 
 </body>
