@@ -4,81 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Birthday ❤️</title>
+    <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
 
-    <link rel="stylesheet" href="style.css">
+    <title>I Love You</title>
+
+    <link rel="stylesheet" href="./style.css">
 </head>
 
-<body data-theme="cyber">
+<body>
 
     <!-- Background -->
-    <div class="background-glow"></div>
+    <div class="background"></div>
 
-    <!-- Stars -->
-    <div class="stars" id="stars"></div>
+    <!-- Decorative stars -->
+    <div class="stars" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
-    <!-- Main content -->
-    <main class="birthday-card">
+    <!-- Main heart area -->
+    <main class="scene">
+
+        <!-- Heart made from circles -->
+        <div class="heart-container" id="heartContainer"></div>
+
+        <!-- Central glowing heart -->
+        <div class="center-heart" aria-hidden="true">
+            <svg viewBox="0 0 32 32">
+                <path
+                    d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594
+                    -1.342-2.858-4.237-5.594-7.601-5.594
+                    -4.637 0-8.4 3.764-8.4 8.401
+                    0 9.433 9.516 11.906 16.001 21.232
+                    6.13-9.268 15.999-12.1 15.999-21.232
+                    0-4.637-3.763-8.401-8.4-8.401z">
+                </path>
+            </svg>
+        </div>
 
         <!-- Text -->
         <section class="text-overlay">
-
             <div class="recipient-name">
-                To the girl who kept waiting ✨
+                For My Dearest Lishy
+                <span class="sparkle">✦</span>
             </div>
 
             <div class="message">
-                <div>From the bottom of my heart</div>
-                <div>May your special day full of love</div>
-                <div>From the moment you open your eyes</div>
-                <div>Until you sleep for the night</div>
-                <div>I'm glad it was you on March 8, 2026.</div>
-
-                <div class="happy">
-                    Happy Birthday. 💙
-                </div>
+                <div>I love you.</div>
+                <div>I miss you.</div>
+                <div>I think of you.</div>
+                <div>And I choose you…</div>
+                <div>every single day.</div>
             </div>
 
+            <div class="small-heart">♥</div>
         </section>
-
-        <!-- Central heart -->
-        <div class="heart-container">
-            <canvas id="heartCanvas"></canvas>
-        </div>
 
     </main>
 
-    <!-- Theme switcher -->
-    <div class="theme-switcher">
+    <!-- Theme Switcher -->
+    <div class="theme-switcher" role="toolbar" aria-label="Theme Switcher">
 
-        <button class="theme-btn" data-theme="midnight">
-            <span class="theme-dot midnight-dot"></span>
+        <button
+            class="theme-btn"
+            data-theme="midnight"
+            title="Midnight Romance"
+            aria-label="Midnight Romance">
+
+            <span
+                class="theme-dot"
+                style="background: linear-gradient(135deg, #ff0080, #7928ca);">
+            </span>
+
             <span class="theme-name">Midnight</span>
         </button>
 
-        <button class="theme-btn" data-theme="golden">
-            <span class="theme-dot golden-dot"></span>
+
+        <button
+            class="theme-btn active"
+            data-theme="golden"
+            title="Golden Sunset"
+            aria-label="Golden Sunset">
+
+            <span
+                class="theme-dot"
+                style="background: linear-gradient(135deg, #ffcc66, #ff8c00);">
+            </span>
+
             <span class="theme-name">Golden</span>
         </button>
 
-        <button class="theme-btn active" data-theme="cyber">
-            <span class="theme-dot cyber-dot"></span>
+
+        <button
+            class="theme-btn"
+            data-theme="cyber"
+            title="Cyber Love"
+            aria-label="Cyber Love">
+
+            <span
+                class="theme-dot"
+                style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
+            </span>
+
             <span class="theme-name">Cyber</span>
         </button>
 
-        <button class="theme-btn" data-theme="emerald">
-            <span class="theme-dot emerald-dot"></span>
+
+        <button
+            class="theme-btn"
+            data-theme="emerald"
+            title="Emerald Enchantment"
+            aria-label="Emerald Enchantment">
+
+            <span
+                class="theme-dot"
+                style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+            </span>
+
             <span class="theme-name">Emerald</span>
         </button>
 
-        <button class="theme-btn" data-theme="velvet">
-            <span class="theme-dot velvet-dot"></span>
+
+        <button
+            class="theme-btn"
+            data-theme="velvet"
+            title="Velvet Passion"
+            aria-label="Velvet Passion">
+
+            <span
+                class="theme-dot"
+                style="background: linear-gradient(135deg, #ff0844, #ffb199);">
+            </span>
+
             <span class="theme-name">Velvet</span>
         </button>
 
     </div>
 
-    <script src="script.js"></script>
+
+    <script src="./script.js"></script>
 
 </body>
 </html>
