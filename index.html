@@ -1,172 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.webp" type="image/x-icon">
+    <title>Happy Birthday Kik</title>
 
-  <title>Happy Birthday Kik</title>
-
-  <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body data-theme="midnight">
 
-  <!-- Background -->
-  <div class="background"></div>
+    <!-- Background -->
+    <div class="background"></div>
 
-  <!-- Decorative animated hearts -->
-  <div class="bubbles" aria-hidden="true">
+    <!-- Floating stars -->
+    <div class="stars" id="stars" aria-hidden="true"></div>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+    <main class="scene">
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        <!-- Animated heart -->
+        <div class="heart-container" id="heartContainer">
+            <canvas id="heartCanvas"></canvas>
+        </div>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        <!-- Birthday message -->
+        <section class="text-overlay">
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+            <h1 class="birthday-title">
+                Happy Birthday Kik
+                <span class="title-sparkle">✦</span>
+            </h1>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+            <div class="message">
+                <div>To the girl who kept waiting</div>
+                <div>From the bottom of my heart</div>
+                <div>May your special day full of love</div>
+                <div>From the moment you open your eyes</div>
+                <div>Until you sleep for the night</div>
+                <div>I'm glad it was you on March 8, 2026.</div>
+                <div class="final-line">Happy Birthday Kik. <span>♥</span></div>
+            </div>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        </section>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+    </main>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+    <!-- Theme buttons -->
+    <div class="theme-switcher">
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        <button class="theme-btn active" data-theme="midnight">
+            <span class="theme-dot midnight-dot"></span>
+            <span>Midnight</span>
+        </button>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        <button class="theme-btn" data-theme="golden">
+            <span class="theme-dot golden-dot"></span>
+            <span>Golden</span>
+        </button>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        <button class="theme-btn" data-theme="cyber">
+            <span class="theme-dot cyber-dot"></span>
+            <span>Cyber</span>
+        </button>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
+        <button class="theme-btn" data-theme="emerald">
+            <span class="theme-dot emerald-dot"></span>
+            <span>Emerald</span>
+        </button>
 
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-    <div class="bubble"><svg class="heart" viewBox="0 0 32 32">
-      <path d="M23.6 2c-3.363 0-6.258 2.736-7.599 5.594C14.659 4.736 11.764 2 8.4 2 3.763 2 0 5.764 0 10.401c0 9.433 9.516 11.906 16.001 21.232C22.131 22.365 32 19.533 32 10.401 32 5.764 28.237 2 23.6 2z"/>
-    </svg></div>
-
-  </div>
-
-  <!-- Main birthday message -->
-  <div class="text-overlay">
-
-    <div class="recipient-name">
-      Happy Birthday Kik ✨
     </div>
 
-    <div class="message">
-      <div>To the girl who kept waiting</div>
-      <div>From the bottom of my heart</div>
-      <div>May your special day full of love</div>
-      <div>From the moment you open your eyes</div>
-      <div>Until you sleep for the night</div>
-      <div>I'm glad it was you on March 8, 2026.</div>
-      <div>Happy Birthday Kik. ❤️</div>
-    </div>
-
-  </div>
-
-  <!-- Music -->
-  <audio id="birthdayMusic" loop preload="auto">
-    <source src="happy-birthday-music-box(chosic.com).mp3" type="audio/mpeg">
-  </audio>
-
-  <button id="musicButton" class="music-button" aria-label="Toggle music">
-    🎵
-  </button>
-
-  <!-- Theme switcher -->
-  <div class="theme-switcher">
-
-    <button class="theme-btn active" data-theme="midnight">
-      <span class="theme-dot midnight-dot"></span>
-      <span>Midnight</span>
+    <!-- Music -->
+    <button class="music-button" id="musicButton" aria-label="Toggle music">
+        <span id="musicIcon">♫</span>
     </button>
 
-    <button class="theme-btn" data-theme="golden">
-      <span class="theme-dot golden-dot"></span>
-      <span>Golden</span>
-    </button>
+    <audio
+        id="birthdayMusic"
+        src="./happy-birthday-music-box(chosic.com).mp3"
+        loop
+        preload="auto">
+    </audio>
 
-    <button class="theme-btn" data-theme="cyber">
-      <span class="theme-dot cyber-dot"></span>
-      <span>Cyber</span>
-    </button>
-
-    <button class="theme-btn" data-theme="emerald">
-      <span class="theme-dot emerald-dot"></span>
-      <span>Emerald</span>
-    </button>
-
-    <button class="theme-btn" data-theme="velvet">
-      <span class="theme-dot velvet-dot"></span>
-      <span>Velvet</span>
-    </button>
-
-  </div>
-
-  <!-- Matter.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-
-  <script src="./script.js"></script>
+    <script src="./script.js"></script>
 
 </body>
 </html>
