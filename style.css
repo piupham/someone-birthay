@@ -1,4 +1,4 @@
-- {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -70,8 +70,8 @@ body {
 
 .star {
   position: absolute;
-  width: 2px;
-  height: 2px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
   background: white;
   opacity: 0.5;
@@ -81,6 +81,10 @@ body {
     floatStar var(--float-duration) linear infinite;
 
   animation-delay: var(--delay);
+
+  box-shadow:
+    0 0 5px white,
+    0 0 10px var(--text);
 }
 
 @keyframes twinkle {
@@ -97,11 +101,11 @@ body {
 
 @keyframes floatStar {
   from {
-    translate: 0 0;
+    transform: translate(0, 0);
   }
 
   to {
-    translate: var(--move-x) var(--move-y);
+    transform: translate(var(--move-x), var(--move-y));
   }
 }
 
@@ -386,7 +390,6 @@ body[data-theme="velvet"] {
 ========================= */
 
 @media (max-width: 700px) {
-
   .text-overlay {
     top: 4vh;
     width: 94vw;
@@ -409,11 +412,8 @@ body[data-theme="velvet"] {
 
   .theme-switcher {
     bottom: 12px;
-
     max-width: 96vw;
-
     overflow-x: auto;
-
     justify-content: flex-start;
   }
 
@@ -429,7 +429,6 @@ body[data-theme="velvet"] {
 }
 
 @media (max-height: 650px) {
-
   .text-overlay {
     top: 2vh;
   }
