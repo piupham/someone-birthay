@@ -1,20 +1,19 @@
 :root {
-    --bg-1: #050b18;
-    --bg-2: #101a2e;
-    --bg-glow: rgba(0, 242, 254, 0.18);
+    --bg-color: #030814;
 
-    --text-main: #72d8ff;
-    --text-soft: #9bdfff;
+    --bg-glow-1: rgba(0, 242, 254, 0.18);
+    --bg-glow-2: rgba(79, 172, 254, 0.16);
+
+    --text-1: #00f2fe;
+    --text-2: #4facfe;
 
     --heart-1: #00f2fe;
     --heart-2: #4facfe;
-    --heart-glow: rgba(0, 242, 254, 0.75);
+    --heart-3: #7928ca;
 
-    --star-1: #00f2fe;
-    --star-2: #4facfe;
+    --star-color: #00f2fe;
 
-    --panel: rgba(8, 15, 30, 0.72);
-    --border: rgba(150, 220, 255, 0.25);
+    --ui-active-glow: rgba(0, 242, 254, 0.6);
 }
 
 
@@ -22,88 +21,98 @@
    THEMES
 ========================= */
 
-body[data-theme="midnight"] {
-    --bg-1: #080313;
-    --bg-2: #17062a;
-    --bg-glow: rgba(255, 0, 128, 0.20);
+[data-theme="midnight"] {
+    --bg-color: #030008;
 
-    --text-main: #d85cff;
-    --text-soft: #b56cff;
+    --bg-glow-1: rgba(255, 0, 128, 0.18);
+    --bg-glow-2: rgba(121, 40, 202, 0.22);
+
+    --text-1: #ff0080;
+    --text-2: #7928ca;
 
     --heart-1: #ff0080;
-    --heart-2: #7928ca;
-    --heart-glow: rgba(255, 0, 128, 0.75);
+    --heart-2: #ff1493;
+    --heart-3: #7928ca;
 
-    --star-1: #ff4da6;
-    --star-2: #9d4edd;
+    --star-color: #ff69b4;
+
+    --ui-active-glow: rgba(255, 0, 128, 0.6);
 }
 
 
-body[data-theme="golden"] {
-    --bg-1: #130b03;
-    --bg-2: #2b1604;
-    --bg-glow: rgba(255, 153, 0, 0.20);
+[data-theme="golden"] {
+    --bg-color: #0d0502;
 
-    --text-main: #ffd166;
-    --text-soft: #ffcf70;
+    --bg-glow-1: rgba(255, 153, 0, 0.22);
+    --bg-glow-2: rgba(255, 80, 0, 0.18);
 
-    --heart-1: #ff9900;
-    --heart-2: #ff4d00;
-    --heart-glow: rgba(255, 153, 0, 0.80);
+    --text-1: #ffcc00;
+    --text-2: #ff6600;
 
-    --star-1: #ffd166;
-    --star-2: #ff8c00;
+    --heart-1: #ffcc00;
+    --heart-2: #ff9900;
+    --heart-3: #ff0055;
+
+    --star-color: #ffcc00;
+
+    --ui-active-glow: rgba(255, 153, 0, 0.6);
 }
 
 
-body[data-theme="cyber"] {
-    --bg-1: #050b18;
-    --bg-2: #101a2e;
-    --bg-glow: rgba(0, 242, 254, 0.18);
+[data-theme="cyber"] {
+    --bg-color: #020817;
 
-    --text-main: #72d8ff;
-    --text-soft: #9bdfff;
+    --bg-glow-1: rgba(0, 242, 254, 0.22);
+    --bg-glow-2: rgba(79, 172, 254, 0.18);
+
+    --text-1: #00f2fe;
+    --text-2: #4facfe;
 
     --heart-1: #00f2fe;
     --heart-2: #4facfe;
-    --heart-glow: rgba(0, 242, 254, 0.75);
+    --heart-3: #7928ca;
 
-    --star-1: #00f2fe;
-    --star-2: #4facfe;
+    --star-color: #00d9ff;
+
+    --ui-active-glow: rgba(0, 242, 254, 0.65);
 }
 
 
-body[data-theme="emerald"] {
-    --bg-1: #03130f;
-    --bg-2: #08251e;
-    --bg-glow: rgba(0, 210, 150, 0.18);
+[data-theme="emerald"] {
+    --bg-color: #02120e;
 
-    --text-main: #72f2c5;
-    --text-soft: #a0f5d8;
+    --bg-glow-1: rgba(0, 176, 155, 0.22);
+    --bg-glow-2: rgba(150, 201, 61, 0.18);
 
-    --heart-1: #00b09b;
-    --heart-2: #96c93d;
-    --heart-glow: rgba(0, 210, 150, 0.75);
+    --text-1: #00e6a8;
+    --text-2: #96c93d;
 
-    --star-1: #5fffd2;
-    --star-2: #96c93d;
+    --heart-1: #00e6a8;
+    --heart-2: #2ecc71;
+    --heart-3: #96c93d;
+
+    --star-color: #55efc4;
+
+    --ui-active-glow: rgba(0, 176, 155, 0.6);
 }
 
 
-body[data-theme="velvet"] {
-    --bg-1: #140308;
-    --bg-2: #2b0712;
-    --bg-glow: rgba(255, 40, 90, 0.18);
+[data-theme="velvet"] {
+    --bg-color: #120006;
 
-    --text-main: #ff7190;
-    --text-soft: #ff9fb0;
+    --bg-glow-1: rgba(255, 8, 68, 0.22);
+    --bg-glow-2: rgba(180, 0, 40, 0.2);
+
+    --text-1: #ff0844;
+    --text-2: #e84393;
 
     --heart-1: #ff0844;
-    --heart-2: #ff6a88;
-    --heart-glow: rgba(255, 8, 68, 0.75);
+    --heart-2: #e84393;
+    --heart-3: #c0392b;
 
-    --star-1: #ff5278;
-    --star-2: #ffb199;
+    --star-color: #ff4d7d;
+
+    --ui-active-glow: rgba(255, 8, 68, 0.6);
 }
 
 
@@ -112,46 +121,47 @@ body[data-theme="velvet"] {
 ========================= */
 
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
+
 
 html,
 body {
     width: 100%;
-    min-height: 100%;
-    margin: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
+
 body {
-    min-height: 100vh;
-    overflow: hidden;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     position: relative;
 
     background:
         radial-gradient(
-            circle at 50% 38%,
-            var(--bg-glow),
-            transparent 38%
+            circle at 50% 45%,
+            var(--bg-glow-1) 0%,
+            transparent 45%
         ),
-        linear-gradient(
-            135deg,
-            var(--bg-1),
-            var(--bg-2)
-        );
-
-    font-family:
-        "Trebuchet MS",
-        "Segoe UI",
-        sans-serif;
+        radial-gradient(
+            circle at 20% 80%,
+            var(--bg-glow-2) 0%,
+            transparent 50%
+        ),
+        var(--bg-color);
 
     transition:
         background 0.8s ease,
         color 0.8s ease;
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
 }
 
 
@@ -159,7 +169,7 @@ body {
    BACKGROUND
 ========================= */
 
-.background-glow {
+.background {
     position: fixed;
     inset: 0;
 
@@ -167,12 +177,193 @@ body {
 
     background:
         radial-gradient(
-            ellipse at center,
-            var(--bg-glow),
-            transparent 62%
+            circle at 50% 58%,
+            var(--heart-1),
+            transparent 22%
         );
 
-    opacity: 0.9;
+    opacity: 0.07;
+
+    filter: blur(45px);
+
+    transition: background 0.8s ease;
+
+    z-index: 0;
+}
+
+
+/* =========================
+   MAIN SCENE
+========================= */
+
+.scene {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 2;
+}
+
+
+/* =========================
+   TEXT
+========================= */
+
+.text-overlay {
+    position: absolute;
+
+    top: 7%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(90%, 800px);
+
+    text-align: center;
+
+    color: white;
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--text-1),
+            var(--text-2),
+            var(--text-1)
+        );
+
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    animation: text-shine 5s linear infinite;
+
+    filter:
+        drop-shadow(
+            0 0 12px var(--ui-active-glow)
+        );
+
+    transition: filter 0.8s ease;
+}
+
+
+.recipient-name {
+    font-size: clamp(22px, 3vw, 34px);
+
+    font-weight: 800;
+
+    line-height: 1.25;
+
+    margin-bottom: 14px;
+
+    letter-spacing: 0.5px;
+
+    animation:
+        name-pulse 3s ease-in-out infinite alternate;
+}
+
+
+.message {
+    font-size: clamp(15px, 1.8vw, 22px);
+
+    font-weight: 600;
+
+    line-height: 1.55;
+}
+
+
+.message div {
+    margin: 2px 0;
+}
+
+
+.small-heart {
+    margin-top: 10px;
+
+    font-size: 18px;
+
+    animation:
+        small-heart-pulse 2s ease-in-out infinite;
+}
+
+
+@keyframes small-heart-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+
+/* =========================
+   TEXT ANIMATIONS
+========================= */
+
+@keyframes text-shine {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+
+@keyframes name-pulse {
+
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    100% {
+        transform: scale(1.035);
+        filter: brightness(1.3);
+    }
+}
+
+
+/* =========================
+   CENTRAL HEART
+========================= */
+
+.heart-container {
+    position: absolute;
+
+    left: 50%;
+    top: 58%;
+
+    transform: translate(-50%, -50%);
+
+    /* Thu nhỏ trái tim */
+    width: min(38vw, 380px);
+    height: min(32vw, 320px);
+
+    z-index: 4;
+
+    pointer-events: none;
+}
+
+
+#heartCanvas {
+    display: block;
+
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -182,12 +373,14 @@ body {
 
 .stars {
     position: fixed;
+
     inset: 0;
 
-    overflow: hidden;
+    z-index: 1;
 
     pointer-events: none;
 }
+
 
 .star {
     position: absolute;
@@ -195,173 +388,77 @@ body {
     width: var(--size);
     height: var(--size);
 
-    background: linear-gradient(
-        135deg,
-        var(--star-1),
-        var(--star-2)
-    );
-
-    clip-path: polygon(
-        50% 0%,
-        61% 35%,
-        100% 50%,
-        61% 65%,
-        50% 100%,
-        39% 65%,
-        0% 50%,
-        39% 35%
-    );
+    left: var(--x);
+    top: var(--y);
 
     opacity: var(--opacity);
 
-    filter:
-        drop-shadow(
-            0 0 7px var(--star-1)
-        );
+    transform: rotate(45deg);
 
     animation:
-        starFloat var(--duration) ease-in-out infinite alternate,
-        starTwinkle var(--twinkle) ease-in-out infinite;
+        star-float var(--duration) ease-in-out infinite,
+        star-glow 2.5s ease-in-out infinite alternate;
+
+    animation-delay: var(--delay);
 }
 
-@keyframes starFloat {
-    from {
-        transform:
-            translate3d(0, 0, 0)
-            rotate(0deg);
-    }
 
-    to {
-        transform:
-            translate3d(
-                var(--move-x),
-                var(--move-y),
-                0
-            )
-            rotate(25deg);
-    }
+.star::before,
+.star::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: var(--star-color);
+
+    border-radius: 2px;
+
+    box-shadow:
+        0 0 6px var(--star-color),
+        0 0 18px var(--star-color),
+        0 0 35px var(--star-color);
 }
 
-@keyframes starTwinkle {
+
+.star::after {
+    transform: rotate(90deg);
+}
+
+
+.star.small {
+    transform: scale(0.55) rotate(45deg);
+}
+
+
+.star.large {
+    transform: scale(1.25) rotate(45deg);
+}
+
+
+@keyframes star-float {
+
     0%,
     100% {
-        opacity: var(--opacity);
+        translate: 0 0;
     }
 
     50% {
-        opacity: calc(var(--opacity) * 0.35);
+        translate: 0 -14px;
     }
 }
 
 
-/* =========================
-   MAIN CARD
-========================= */
+@keyframes star-glow {
 
-.birthday-card {
-    width: min(700px, 92vw);
-    height: min(720px, 84vh);
+    from {
+        opacity: 0.35;
+    }
 
-    position: relative;
-    z-index: 2;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    text-align: center;
-}
-
-
-/* =========================
-   TEXT
-========================= */
-
-.text-overlay {
-    width: 100%;
-
-    padding-top: 4px;
-
-    color: var(--text-main);
-
-    text-shadow:
-        0 0 8px var(--heart-glow),
-        0 0 20px rgba(0, 0, 0, 0.25);
-
-    position: relative;
-    z-index: 5;
-}
-
-.recipient-name {
-    font-family:
-        "Segoe UI",
-        "Trebuchet MS",
-        sans-serif;
-
-    font-size: clamp(25px, 3vw, 34px);
-
-    font-weight: 700;
-
-    line-height: 1.2;
-
-    margin-bottom: 14px;
-
-    letter-spacing: 0.3px;
-}
-
-.message {
-    font-size: clamp(16px, 1.7vw, 20px);
-
-    font-weight: 600;
-
-    line-height: 1.55;
-
-    color: var(--text-soft);
-
-    text-shadow:
-        0 0 8px var(--heart-glow);
-}
-
-.happy {
-    margin-top: 8px;
-
-    font-weight: 700;
-
-    color: var(--text-main);
-}
-
-
-/* =========================
-   CENTRAL HEART
-========================= */
-
-.heart-container {
-    width: 270px;
-    height: 270px;
-
-    margin-top: 20px;
-
-    position: relative;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    flex-shrink: 0;
-}
-
-#heartCanvas {
-    width: 270px;
-    height: 270px;
-
-    display: block;
-
-    aspect-ratio: 1 / 1;
-
-    filter:
-        drop-shadow(
-            0 0 10px var(--heart-glow)
-        );
+    to {
+        opacity: 1;
+    }
 }
 
 
@@ -377,82 +474,109 @@ body {
 
     transform: translateX(-50%);
 
-    z-index: 20;
+    z-index: 100;
 
     display: flex;
     align-items: center;
+
     gap: 4px;
 
-    padding: 7px;
+    padding: 6px 8px;
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
 
-    border-radius: 999px;
+    border-radius: 40px;
 
     background:
-        rgba(5, 10, 22, 0.72);
+        rgba(10, 12, 25, 0.62);
 
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 
     box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.35);
+        0 12px 35px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12);
 
-    transition:
-        border-color 0.5s ease;
+    white-space: nowrap;
 }
 
+
 .theme-btn {
-    border: 0;
+    border: none;
 
     background: transparent;
 
-    color: rgba(255, 255, 255, 0.7);
-
-    padding: 8px 12px;
-
-    border-radius: 999px;
-
-    display: flex;
-    align-items: center;
-    gap: 7px;
+    color: rgba(255, 255, 255, 0.72);
 
     cursor: pointer;
 
-    font: inherit;
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    border-radius: 30px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 600;
 
     transition:
         background 0.3s ease,
         color 0.3s ease,
-        transform 0.3s ease;
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
+
 
 .theme-btn:hover {
-    transform: translateY(-1px);
-
     color: white;
+
+    background:
+        rgba(255, 255, 255, 0.1);
+
+    transform: translateY(-1px);
 }
+
 
 .theme-btn.active {
     color: white;
 
     background:
-        rgba(255, 255, 255, 0.12);
+        rgba(255, 255, 255, 0.18);
 
     box-shadow:
-        inset 0 0 12px rgba(255, 255, 255, 0.08);
+        0 0 18px var(--ui-active-glow);
 }
 
-.theme-dot {
-    width: 15px;
-    height: 15px;
 
-    border-radius: 50%;
+.theme-dot {
+    width: 13px;
+    height: 13px;
 
     display: inline-block;
 
+    border-radius: 50%;
+
     box-shadow:
         0 0 8px currentColor;
+
+    transition:
+        transform 0.3s ease;
 }
+
+
+.theme-btn:hover .theme-dot,
+.theme-btn.active .theme-dot {
+    transform: scale(1.25);
+}
+
 
 .midnight-dot {
     background:
@@ -463,14 +587,16 @@ body {
         );
 }
 
+
 .golden-dot {
     background:
         linear-gradient(
             135deg,
             #ff9900,
-            #ff0055
+            #ffcc00
         );
 }
+
 
 .cyber-dot {
     background:
@@ -481,6 +607,7 @@ body {
         );
 }
 
+
 .emerald-dot {
     background:
         linear-gradient(
@@ -490,107 +617,74 @@ body {
         );
 }
 
+
 .velvet-dot {
     background:
         linear-gradient(
             135deg,
             #ff0844,
-            #ffb199
+            #e84393
         );
-}
-
-.theme-name {
-    font-size: 14px;
-    font-weight: 600;
 }
 
 
 /* =========================
-   RESPONSIVE
+   MOBILE
 ========================= */
 
-@media (max-height: 760px) {
-    .birthday-card {
-        height: 680px;
+@media (max-width: 700px) {
+
+    .text-overlay {
+        top: 6%;
+
+        width: 94%;
     }
+
 
     .recipient-name {
-        font-size: 28px;
+        font-size: 22px;
     }
+
 
     .message {
-        font-size: 17px;
-        line-height: 1.45;
+        font-size: 14px;
+
+        line-height: 1.5;
     }
+
 
     .heart-container {
-        width: 225px;
-        height: 225px;
+        top: 56%;
 
-        margin-top: 12px;
+        /* Trái tim nhỏ hơn trên mobile */
+        width: 62vw;
+        height: 50vw;
     }
 
-    #heartCanvas {
-        width: 225px;
-        height: 225px;
-    }
 
     .theme-switcher {
         bottom: 12px;
-    }
-}
 
+        gap: 1px;
 
-@media (max-width: 600px) {
-    body {
-        overflow: hidden;
+        padding: 5px 6px;
     }
 
-    .birthday-card {
-        width: 94vw;
-        height: 76vh;
-    }
 
-    .recipient-name {
-        font-size: 25px;
-    }
-
-    .message {
-        font-size: 15px;
-        line-height: 1.45;
-    }
-
-    .heart-container {
-        width: 210px;
-        height: 210px;
-
-        margin-top: 15px;
-    }
-
-    #heartCanvas {
-        width: 210px;
-        height: 210px;
-    }
-
-    .theme-switcher {
-        width: auto;
-        max-width: 95vw;
-
-        padding: 5px;
+    .theme-btn {
+        padding: 8px;
 
         gap: 0;
     }
 
-    .theme-btn {
-        padding: 7px 8px;
-    }
 
     .theme-name {
         display: none;
     }
 
+
     .theme-dot {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
     }
 }
