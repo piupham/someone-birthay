@@ -2,16 +2,19 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* =========================================
+    /* =========================
        THEME
-    ========================================= */
+    ========================= */
 
-    const themeButtons = document.querySelectorAll(".theme-btn");
+    const themeButtons =
+        document.querySelectorAll(".theme-btn");
 
-    const savedTheme = localStorage.getItem("heartfill_theme");
+    const savedTheme =
+        localStorage.getItem("birthday_theme");
 
-    const defaultTheme =
+    const initialTheme =
         savedTheme || "midnight";
+
 
     function applyTheme(theme) {
 
@@ -21,77 +24,74 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         localStorage.setItem(
-            "heartfill_theme",
+            "birthday_theme",
             theme
         );
 
         themeButtons.forEach(function (button) {
 
-            if (button.dataset.theme === theme) {
-                button.classList.add("active");
-            } else {
-                button.classList.remove("active");
-            }
+            button.classList.toggle(
+                "active",
+                button.dataset.theme === theme
+            );
 
         });
 
-        updateHeartColors();
-        updateStarColors();
+        updateColors();
     }
 
 
     themeButtons.forEach(function (button) {
 
-        button.addEventListener("click", function () {
+        button.addEventListener(
+            "click",
+            function () {
 
-            applyTheme(
-                button.dataset.theme
-            );
+                applyTheme(
+                    button.dataset.theme
+                );
 
-        });
+            }
+        );
 
     });
 
 
-    applyTheme(defaultTheme);
-
-
-    /* =========================================
-       STARS AROUND THE HEART
-    ========================================= */
+    /* =========================
+       STARS
+    ========================= */
 
     const starsContainer =
         document.getElementById("stars");
 
-    const STAR_COUNT = 70;
+    const STAR_COUNT = 75;
+
 
     function createStars() {
 
         starsContainer.innerHTML = "";
 
-        for (let i = 0; i < STAR_COUNT; i++) {
+        for (
+            let i = 0;
+            i < STAR_COUNT;
+            i++
+        ) {
 
             const star =
                 document.createElement("div");
 
-            star.classList.add("star");
+            star.className = "star";
 
-            /*
-             * Random size
-             */
-            const randomSize =
-                Math.random();
 
-            if (randomSize < 0.65) {
+            if (Math.random() < 0.65) {
                 star.classList.add("small");
-            } else if (randomSize > 0.92) {
+            }
+
+            if (Math.random() > 0.9) {
                 star.classList.add("large");
             }
 
 
-            /*
-             * Random position
-             */
             const x =
                 Math.random() * 100;
 
@@ -99,79 +99,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 Math.random() * 100;
 
 
-            /*
-             * Keep stars away from
-             * the text and central heart
-             */
-            const centerDistance =
-                Math.sqrt(
-                    Math.pow(x - 50, 2) +
-                    Math.pow(y - 55, 2)
-                );
+            star.style.left =
+                x + "%";
 
-            if (centerDistance < 23) {
-                star.style.left =
-                    (x < 50 ? x - 22 : x + 22) + "%";
+            star.style.top =
+                y + "%";
 
-                star.style.top =
-                    (y < 55 ? y - 15 : y + 15) + "%";
-            } else {
-
-                star.style.left =
-                    x + "%";
-
-                star.style.top =
-                    y + "%";
-            }
-
-
-            /*
-             * CSS variables
-             */
-            star.style.setProperty(
-                "--x",
-                star.style.left
-            );
-
-            star.style.setProperty(
-                "--y",
-                star.style.top
-            );
-
-
-            const size =
-                (Math.random() * 8 + 4) + "px";
 
             star.style.setProperty(
                 "--size",
-                size
+                (Math.random() * 7 + 4) + "px"
             );
-
-
-            const opacity =
-                Math.random() * 0.65 + 0.25;
 
             star.style.setProperty(
                 "--opacity",
-                opacity
+                Math.random() * 0.6 + 0.3
             );
-
-
-            const duration =
-                (Math.random() * 4 + 3) + "s";
 
             star.style.setProperty(
                 "--duration",
-                duration
+                (Math.random() * 4 + 3) + "s"
             );
-
-
-            const delay =
-                (Math.random() * -5) + "s";
 
             star.style.setProperty(
                 "--delay",
-                delay
+                (Math.random() * -5) + "s"
             );
 
 
@@ -185,29 +137,9 @@ document.addEventListener("DOMContentLoaded", function () {
     createStars();
 
 
-    function updateStarColors() {
-
-        const color =
-            getComputedStyle(document.body)
-                .getPropertyValue("--star-color");
-
-        document
-            .querySelectorAll(".star")
-            .forEach(function (star) {
-
-                star.style.setProperty(
-                    "--star-color",
-                    color
-                );
-
-            });
-
-    }
-
-
-    /* =========================================
-       CENTRAL HEART
-    ========================================= */
+    /* =========================
+       HEART CANVAS
+    ========================= */
 
     const canvas =
         document.getElementById("heartCanvas");
@@ -224,12 +156,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let particles = [];
 
-    let animationTime = 0;
+    let time = 0;
 
 
-    /*
-     * Resize canvas
-     */
     function resizeCanvas() {
 
         const rect =
@@ -253,6 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
         canvas.style.height =
             height + "px";
 
+
         ctx.setTransform(
             dpr,
             0,
@@ -263,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
 
-        createHeartParticles();
+        createHeart();
 
     }
 
@@ -274,26 +204,25 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    /*
-     * Heart mathematical equation
-     *
-     * x = 16 sin³(t)
-     * y = 13 cos(t)
-     *     - 5 cos(2t)
-     *     - 2 cos(3t)
-     *     - cos(4t)
-     */
+    /* =========================
+       HEART EQUATION
+    ========================= */
+
     function heartPoint(t, scale) {
 
         const x =
             16 *
-            Math.pow(Math.sin(t), 3);
+            Math.pow(
+                Math.sin(t),
+                3
+            );
 
         const y =
-            13 * Math.cos(t) -
-            5 * Math.cos(2 * t) -
-            2 * Math.cos(3 * t) -
-            Math.cos(4 * t);
+            13 * Math.cos(t)
+            - 5 * Math.cos(2 * t)
+            - 2 * Math.cos(3 * t)
+            - Math.cos(4 * t);
+
 
         return {
             x: x * scale,
@@ -303,64 +232,62 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /*
-     * Create particles inside heart
-     */
-    function createHeartParticles() {
+    /* =========================
+       CREATE HEART PARTICLES
+    ========================= */
+
+    function createHeart() {
 
         particles = [];
+
 
         const centerX =
             width / 2;
 
         const centerY =
-            height / 2 + 5;
+            height / 2;
 
 
         const scale =
             Math.min(
-                width / 43,
-                height / 35
+                width / 42,
+                height / 34
             );
 
 
-        /*
-         * Main heart particles
-         */
         for (
             let i = 0;
-            i < 900;
+            i < 1000;
             i++
         ) {
 
-            const t =
+            const angle =
                 Math.random() *
                 Math.PI *
                 2;
 
 
             const point =
-                heartPoint(t, scale);
+                heartPoint(
+                    angle,
+                    scale
+                );
 
 
-            const inside =
-                Math.random();
+            const distance =
+                Math.sqrt(
+                    Math.random()
+                );
 
 
             const x =
-                point.x * Math.sqrt(inside);
+                point.x * distance;
 
             const y =
-                point.y * Math.sqrt(inside);
+                point.y * distance;
 
 
             particles.push({
-
-                baseX:
-                    centerX + x,
-
-                baseY:
-                    centerY + y,
 
                 x:
                     centerX + x,
@@ -368,18 +295,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 y:
                     centerY + y,
 
+                baseX:
+                    centerX + x,
+
+                baseY:
+                    centerY + y,
+
                 size:
-                    Math.random() * 1.7 + 0.5,
+                    Math.random() * 1.8 + 0.5,
 
                 phase:
                     Math.random() *
-                    Math.PI *
-                    2,
+                    Math.PI * 2,
 
                 speed:
                     Math.random() *
-                    0.025 +
-                    0.008
+                    2 + 1
 
             });
 
@@ -388,239 +319,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /*
-     * Get theme colors
-     */
-    function getHeartColors() {
+    /* =========================
+       THEME COLORS
+    ========================= */
+
+    function getColors() {
 
         const style =
             getComputedStyle(document.body);
 
         return [
 
-            style.getPropertyValue(
-                "--heart-1"
-            ).trim(),
+            style
+                .getPropertyValue("--heart-1")
+                .trim(),
 
-            style.getPropertyValue(
-                "--heart-2"
-            ).trim(),
+            style
+                .getPropertyValue("--heart-2")
+                .trim(),
 
-            style.getPropertyValue(
-                "--heart-3"
-            ).trim()
+            style
+                .getPropertyValue("--heart-3")
+                .trim()
 
         ];
 
     }
 
 
-    let heartColors =
-        getHeartColors();
+    let colors =
+        getColors();
 
 
-    function updateHeartColors() {
+    function updateColors() {
 
-        heartColors =
-            getHeartColors();
+        colors =
+            getColors();
 
     }
 
 
-    /*
-     * Draw glowing heart
-     */
-    function drawHeart() {
+    /* =========================
+       DRAW HEART
+    ========================= */
 
-        ctx.clearRect(
-            0,
-            0,
-            width,
-            height
-        );
-
-
-        animationTime += 0.016;
-
-
-        /*
-         * Heart pulse
-         */
-        const pulse =
-            1 +
-            Math.sin(
-                animationTime * 2.2
-            ) * 0.035;
-
-
-        const centerX =
-            width / 2;
-
-        const centerY =
-            height / 2 + 5;
-
-
-        /*
-         * Glow
-         */
-        ctx.save();
-
-        ctx.globalAlpha = 0.15;
-
-        ctx.shadowBlur = 45;
-
-        ctx.shadowColor =
-            heartColors[0];
-
-
-        ctx.fillStyle =
-            heartColors[0];
-
-
-        drawHeartShape(
-            centerX,
-            centerY,
-            Math.min(
-                width / 43,
-                height / 35
-            ) * pulse
-        );
-
-
-        ctx.fill();
-
-        ctx.restore();
-
-
-        /*
-         * Particles
-         */
-        particles.forEach(
-            function (particle, index) {
-
-                const wave =
-                    Math.sin(
-                        animationTime *
-                        particle.speed *
-                        30 +
-                        particle.phase
-                    );
-
-
-                particle.x =
-                    particle.baseX +
-                    wave * 1.4;
-
-
-                particle.y =
-                    particle.baseY +
-                    Math.cos(
-                        animationTime *
-                        particle.speed *
-                        25 +
-                        particle.phase
-                    ) * 1.2;
-
-
-                /*
-                 * Pulsing particle
-                 */
-                const particlePulse =
-                    0.75 +
-                    Math.sin(
-                        animationTime * 3 +
-                        particle.phase
-                    ) * 0.25;
-
-
-                const color =
-                    heartColors[
-                        index %
-                        heartColors.length
-                    ];
-
-
-                ctx.save();
-
-                ctx.globalAlpha =
-                    0.65 +
-                    particlePulse * 0.35;
-
-
-                ctx.fillStyle =
-                    color;
-
-
-                ctx.shadowBlur =
-                    8;
-
-
-                ctx.shadowColor =
-                    color;
-
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    particle.x,
-                    particle.y,
-                    particle.size *
-                    particlePulse,
-                    0,
-                    Math.PI * 2
-                );
-
-                ctx.fill();
-
-                ctx.restore();
-
-            }
-        );
-
-
-        /*
-         * Bright heart outline
-         */
-        ctx.save();
-
-        ctx.strokeStyle =
-            heartColors[1];
-
-        ctx.lineWidth = 1.5;
-
-        ctx.globalAlpha = 0.35;
-
-        ctx.shadowBlur = 15;
-
-        ctx.shadowColor =
-            heartColors[1];
-
-
-        drawHeartShape(
-            centerX,
-            centerY,
-            Math.min(
-                width / 43,
-                height / 35
-            ) * pulse
-        );
-
-
-        ctx.stroke();
-
-        ctx.restore();
-
-
-        requestAnimationFrame(
-            drawHeart
-        );
-
-    }
-
-
-    /*
-     * Draw mathematical heart
-     */
     function drawHeartShape(
         centerX,
         centerY,
@@ -641,8 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const t =
                 (i / steps) *
-                Math.PI *
-                2;
+                Math.PI * 2;
 
 
             const point =
@@ -653,25 +394,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             const x =
-                centerX +
-                point.x;
-
+                centerX + point.x;
 
             const y =
-                centerY +
-                point.y;
+                centerY + point.y;
 
 
             if (i === 0) {
+
                 ctx.moveTo(
                     x,
                     y
                 );
+
             } else {
+
                 ctx.lineTo(
                     x,
                     y
                 );
+
             }
 
         }
@@ -682,15 +424,210 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /*
-     * Start
-     */
+    /* =========================
+       ANIMATION
+    ========================= */
+
+    function animate() {
+
+        ctx.clearRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        time += 0.016;
+
+
+        const centerX =
+            width / 2;
+
+        const centerY =
+            height / 2;
+
+
+        const baseScale =
+            Math.min(
+                width / 42,
+                height / 34
+            );
+
+
+        /*
+         * Heart pulse
+         */
+        const pulse =
+            1 +
+            Math.sin(
+                time * 2.5
+            ) * 0.035;
+
+
+        const scale =
+            baseScale * pulse;
+
+
+        /* =====================
+           OUTER GLOW
+        ===================== */
+
+        ctx.save();
+
+        ctx.globalAlpha = 0.12;
+
+        ctx.shadowBlur = 50;
+
+        ctx.shadowColor =
+            colors[0];
+
+        ctx.fillStyle =
+            colors[0];
+
+
+        drawHeartShape(
+            centerX,
+            centerY,
+            scale
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+
+
+        /* =====================
+           HEART PARTICLES
+        ===================== */
+
+        particles.forEach(
+            function (particle, index) {
+
+                const movement =
+                    Math.sin(
+                        time *
+                        particle.speed +
+                        particle.phase
+                    );
+
+
+                particle.x =
+                    particle.baseX +
+                    movement * 1.5;
+
+
+                particle.y =
+                    particle.baseY +
+                    Math.cos(
+                        time *
+                        particle.speed +
+                        particle.phase
+                    ) * 1.2;
+
+
+                const pulseSize =
+                    0.75 +
+                    Math.sin(
+                        time * 3 +
+                        particle.phase
+                    ) * 0.25;
+
+
+                const color =
+                    colors[
+                        index %
+                        colors.length
+                    ];
+
+
+                ctx.save();
+
+
+                ctx.globalAlpha =
+                    0.65 +
+                    pulseSize * 0.3;
+
+
+                ctx.fillStyle =
+                    color;
+
+
+                ctx.shadowBlur = 9;
+
+                ctx.shadowColor =
+                    color;
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    particle.x,
+                    particle.y,
+                    particle.size *
+                    pulseSize,
+                    0,
+                    Math.PI * 2
+                );
+
+
+                ctx.fill();
+
+                ctx.restore();
+
+            }
+        );
+
+
+        /* =====================
+           HEART OUTLINE
+        ===================== */
+
+        ctx.save();
+
+        ctx.strokeStyle =
+            colors[1];
+
+        ctx.lineWidth = 1.5;
+
+        ctx.globalAlpha = 0.45;
+
+        ctx.shadowBlur = 15;
+
+        ctx.shadowColor =
+            colors[1];
+
+
+        drawHeartShape(
+            centerX,
+            centerY,
+            scale
+        );
+
+
+        ctx.stroke();
+
+        ctx.restore();
+
+
+        requestAnimationFrame(
+            animate
+        );
+
+    }
+
+
+    /* =========================
+       START
+    ========================= */
+
+    applyTheme(
+        initialTheme
+    );
+
     resizeCanvas();
 
-    updateHeartColors();
-
-    updateStarColors();
-
-    drawHeart();
+    animate();
 
 });
