@@ -1,278 +1,749 @@
+"use strict";
+
 /* =========================================================
-   STAR FIELD
+   MATTER.JS
    ========================================================= */
 
-const starsContainer = document.getElementById("stars");
-
-const STAR_COUNT = 110;
-
-for (let i = 0; i < STAR_COUNT; i++) {
-
-    const star = document.createElement("div");
-
-    star.className = "star";
-
-    const size = Math.random() < 0.85
-        ? Math.random() * 2 + 1
-        : Math.random() * 3 + 2;
-
-    const opacity = Math.random() * 0.55 + 0.25;
-
-    const duration = Math.random() * 2.5 + 1.5;
-    const floatDuration = Math.random() * 20 + 15;
-
-    const delay = Math.random() * -8;
-
-    const moveX = (Math.random() - 0.5) * 80;
-    const moveY = (Math.random() - 0.5) * 80;
-
-    star.style.left = `${Math.random() * 100}%`;
-    star.style.top = `${Math.random() * 100}%`;
-
-    star.style.setProperty("--size", `${size}px`);
-    star.style.setProperty("--opacity", opacity);
-    star.style.setProperty("--duration", `${duration}s`);
-    star.style.setProperty("--float-duration", `${floatDuration}s`);
-    star.style.setProperty("--delay", `${delay}s`);
-    star.style.setProperty("--move-x", `${moveX}px`);
-    star.style.setProperty("--move-y", `${moveY}px`);
-
-    starsContainer.appendChild(star);
-}
+const {
+    Engine,
+    Render,
+    Runner,
+    Bodies,
+    Body,
+    Composite,
+    Mouse,
+    MouseConstraint,
+    Common,
+    Events
+} = Matter;
 
 
 /* =========================================================
-   HEART CANVAS
+   GLOBAL
    ========================================================= */
 
-const canvas = document.getElementById("heartCanvas");
-const ctx = canvas.getContext("2d");
+const container =
+    document.getElementById("heartCanvas");
 
-let width = 0;
-let height = 0;
+const width =
+    container.clientWidth;
 
-let particles = [];
+const height =
+    container.clientHeight;
 
-const heartContainer = document.getElementById("heartContainer");
+
+/* =========================================================
+   ENGINE
+   ========================================================= */
+
+const engine = Engine.create();
+
+const world = engine.world;
+
+engine.gravity.scale = 0;
+
+engine.gravity.x = 0;
+
+engine.gravity.y = 0;
 
 
-function resizeCanvas() {
+/* =========================================================
+   RENDERER
+   ========================================================= */
 
-    const rect = heartContainer.getBoundingClientRect();
+const render = Render.create({
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    element: container,
 
-    width = rect.width;
-    height = rect.height;
+    engine: engine,
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    options: {
 
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+        width: width,
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        height: height,
 
-    createHeart();
+        wireframes: false,
+
+        background: "transparent",
+
+        pixelRatio:
+            window.devicePixelRatio || 1
+
+    }
+
+});
+
+Render.run(render);
+
+const runner = Runner.create();
+
+Runner.run(runner, engine);
+
+
+/* =========================================================
+   HEART SHAPE
+   ========================================================= */
+
+function heartPoint(t, scale) {
+
+    const x =
+        16 *
+        Math.pow(
+            Math.sin(t),
+            3
+        );
+
+    const y =
+        13 *
+            Math.cos(t)
+        - 5 *
+            Math.cos(2 * t)
+        - 2 *
+            Math.cos(3 * t)
+        - Math.cos(4 * t);
+
+    return {
+
+        x: x * scale,
+
+        y: -y * scale
+
+    };
 }
 
 
-function heartX(t) {
-
-    return 16 * Math.pow(Math.sin(t), 3);
-}
-
-
-function heartY(t) {
-
-    return (
-        13 * Math.cos(t)
-        - 5 * Math.cos(2 * t)
-        - 2 * Math.cos(3 * t)
-        - Math.cos(4 * t)
-    );
-}
-
+/* =========================================================
+   CREATE HEART
+   ========================================================= */
 
 function createHeart() {
 
-    particles = [];
+    const scale =
+        Math.min(width, height) / 38;
 
-    /*
-     * Giữ hình trái tim lớn, cân đối.
-     * Không ép scale quá nhỏ để tránh mất phần đáy.
-     */
+    const points = [];
 
-    const scale = Math.min(width, height) / 35;
+    const count = 70;
 
-    const centerX = width / 2;
-    const centerY = height / 2 + scale * 1.5;
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
 
-    const particleCount = Math.min(
-        950,
-        Math.max(500, Math.floor(width * 1.15))
+        const t =
+            (Math.PI * 2 * i) /
+            count;
+
+        points.push(
+            heartPoint(
+                t,
+                scale
+            )
+        );
+    }
+
+    const heart =
+        Bodies.fromVertices(
+
+            width / 2,
+
+            height / 2,
+
+            [points],
+
+            {
+
+                restitution: 0.75,
+
+                friction: 0.02,
+
+                frictionAir: 0.008,
+
+                density: 0.002,
+
+                render: {
+
+                    fillStyle:
+                        getHeartColor(),
+
+                    strokeStyle:
+                        getHeartColor(),
+
+                    lineWidth: 1
+
+                }
+
+            },
+
+            true
+
+        );
+
+    Body.setMass(
+        heart,
+        20
     );
 
-
-    /* Viền trái tim */
-
-    for (let i = 0; i < 280; i++) {
-
-        const t = Math.random() * Math.PI * 2;
-
-        const x = centerX + heartX(t) * scale;
-        const y = centerY - heartY(t) * scale;
-
-        particles.push({
-            x,
-            y,
-            baseX: x,
-            baseY: y,
-
-            size: Math.random() * 1.5 + 0.8,
-
-            alpha: Math.random() * 0.5 + 0.35,
-
-            speed: Math.random() * 0.015 + 0.005,
-
-            phase: Math.random() * Math.PI * 2,
-
-            edge: true
-        });
-    }
-
-
-    /* Hạt bên trong trái tim */
-
-    let created = 0;
-
-    while (created < particleCount) {
-
-        const t = Math.random() * Math.PI * 2;
-
-        const fill = Math.sqrt(Math.random());
-
-        const x =
-            centerX +
-            heartX(t) * scale * fill;
-
-        const y =
-            centerY -
-            heartY(t) * scale * fill;
-
-        particles.push({
-            x,
-            y,
-            baseX: x,
-            baseY: y,
-
-            size: Math.random() * 1.7 + 0.7,
-
-            alpha: Math.random() * 0.65 + 0.2,
-
-            speed: Math.random() * 0.02 + 0.004,
-
-            phase: Math.random() * Math.PI * 2,
-
-            edge: false
-        });
-
-        created++;
-    }
+    return heart;
 }
 
 
-function getParticleColor(index) {
+/* =========================================================
+   HEART COLOR
+   ========================================================= */
 
-    const theme = document.body.dataset.theme;
+function getHeartColor() {
+
+    const theme =
+        document.body.dataset.theme;
 
     if (theme === "golden") {
-        return index % 2
-            ? "255, 211, 106"
-            : "255, 153, 0";
+
+        return Common.choose([
+            "#ff9900",
+            "#ffaa00",
+            "#ff0055",
+            "#ff6600",
+            "#ffcc00",
+            "#ff7733"
+        ]);
+
     }
 
     if (theme === "cyber") {
-        return index % 2
-            ? "105, 239, 255"
-            : "79, 172, 254";
+
+        return Common.choose([
+            "#00f2fe",
+            "#4facfe",
+            "#7928ca",
+            "#00d2ff",
+            "#a18cd1",
+            "#38f9d7"
+        ]);
+
     }
 
     if (theme === "emerald") {
-        return index % 2
-            ? "102, 245, 196"
-            : "150, 201, 61";
+
+        return Common.choose([
+            "#00b09b",
+            "#96c93d",
+            "#00e6a8",
+            "#2ecc71",
+            "#1abc9c",
+            "#10ac84"
+        ]);
+
     }
 
-    return index % 2
-        ? "255, 123, 200"
-        : "255, 0, 128";
+    return Common.choose([
+
+        "#ff0080",
+        "#7928ca",
+        "#ff1493",
+        "#ff69b4",
+        "#da70d6",
+        "#c71585",
+        "#ff007f"
+
+    ]);
 }
 
 
-let time = 0;
+/* =========================================================
+   HEART
+   ========================================================= */
+
+let heart =
+    createHeart();
+
+Composite.add(
+    world,
+    heart
+);
 
 
-function animateHeart() {
+/* =========================================================
+   KEEP HEART IN PLACE
+   ========================================================= */
 
-    requestAnimationFrame(animateHeart);
+Body.setVelocity(
+    heart,
+    {
+        x: 0,
+        y: 0
+    }
+);
 
-    time += 0.015;
+Body.setAngularVelocity(
+    heart,
+    0
+);
 
-    ctx.clearRect(0, 0, width, height);
+
+/* =========================================================
+   BOUNDED AREA
+   ========================================================= */
+
+const wallThickness = 80;
 
 
-    particles.forEach((p, index) => {
+/* bottom */
 
-        const pulse =
-            Math.sin(time * 1.8 + p.phase) * 0.8;
+const ground =
+    Bodies.rectangle(
 
-        const driftX =
-            Math.sin(time * p.speed * 40 + p.phase) * 1.2;
+        width / 2,
 
-        const driftY =
-            Math.cos(time * p.speed * 35 + p.phase) * 1.2;
+        height +
+            wallThickness / 2,
 
-        const x =
-            p.baseX +
-            driftX +
-            pulse * 0.25;
+        width,
 
-        const y =
-            p.baseY +
-            driftY;
+        wallThickness,
 
-        const color = getParticleColor(index);
+        {
 
-        const alpha =
-            Math.max(
-                0.08,
-                Math.min(1, p.alpha + pulse * 0.05)
-            );
+            isStatic: true,
 
-        ctx.beginPath();
+            render: {
+                visible: false
+            }
 
-        ctx.arc(
+        }
+
+    );
+
+
+/* left */
+
+const leftWall =
+    Bodies.rectangle(
+
+        -wallThickness / 2,
+
+        height / 2,
+
+        wallThickness,
+
+        height,
+
+        {
+
+            isStatic: true,
+
+            render: {
+                visible: false
+            }
+
+        }
+
+    );
+
+
+/* right */
+
+const rightWall =
+    Bodies.rectangle(
+
+        width +
+            wallThickness / 2,
+
+        height / 2,
+
+        wallThickness,
+
+        height,
+
+        {
+
+            isStatic: true,
+
+            render: {
+                visible: false
+            }
+
+        }
+
+    );
+
+
+Composite.add(
+    world,
+    [
+        ground,
+        leftWall,
+        rightWall
+    ]
+);
+
+
+/* =========================================================
+   MOUSE
+   ========================================================= */
+
+const mouse =
+    Mouse.create(
+        render.canvas
+    );
+
+const mouseConstraint =
+    MouseConstraint.create(
+
+        engine,
+
+        {
+
+            mouse: mouse,
+
+            constraint: {
+
+                stiffness: 0.2,
+
+                render: {
+                    visible: false
+                }
+
+            }
+
+        }
+
+    );
+
+Composite.add(
+    world,
+    mouseConstraint
+);
+
+render.mouse = mouse;
+
+
+/* =========================================================
+   EXTRA HEART EFFECT
+   ========================================================= */
+
+const extraColors = {
+
+    midnight: [
+        "#c71585",
+        "#dc143c",
+        "#fa8072"
+    ],
+
+    golden: [
+        "#d35400",
+        "#e74c3c",
+        "#f39c12"
+    ],
+
+    cyber: [
+        "#2575fc",
+        "#6a11cb",
+        "#00c6ff"
+    ],
+
+    emerald: [
+        "#009432",
+        "#05c46b",
+        "#10ac84"
+    ]
+
+};
+
+
+/* =========================================================
+   CREATE SMALL STAR
+   ========================================================= */
+
+function createStarBody() {
+
+    const theme =
+        document.body.dataset.theme;
+
+    let color;
+
+    if (theme === "golden") {
+
+        color =
+            Common.choose([
+                "#ffd36a",
+                "#ff9900",
+                "#ffcc00"
+            ]);
+
+    } else if (theme === "cyber") {
+
+        color =
+            Common.choose([
+                "#00f2fe",
+                "#4facfe",
+                "#69efff"
+            ]);
+
+    } else if (theme === "emerald") {
+
+        color =
+            Common.choose([
+                "#66f5c4",
+                "#96c93d",
+                "#00e6a8"
+            ]);
+
+    } else {
+
+        color =
+            Common.choose([
+                "#ff7bc8",
+                "#ff0080",
+                "#c77dff",
+                "#ffffff"
+            ]);
+
+    }
+
+
+    const x =
+        Math.random() * width;
+
+    const y =
+        height + 20;
+
+
+    const star =
+        Bodies.polygon(
+
             x,
+
             y,
-            p.size + pulse * 0.15,
-            0,
-            Math.PI * 2
+
+            5,
+
+            5 + Math.random() * 4,
+
+            {
+
+                restitution: 0.8,
+
+                friction: 0,
+
+                frictionAir: 0.01,
+
+                render: {
+
+                    fillStyle: color,
+
+                    strokeStyle: color,
+
+                    lineWidth: 1
+
+                }
+
+            }
+
         );
 
-        ctx.fillStyle =
-            `rgba(${color}, ${alpha})`;
 
-        ctx.fill();
-    });
+    Body.setVelocity(
+
+        star,
+
+        {
+
+            x:
+                Common.random(
+                    -1.8,
+                    1.8
+                ),
+
+            y:
+                Common.random(
+                    -5,
+                    -2
+                )
+
+        }
+
+    );
+
+
+    Body.setAngularVelocity(
+
+        star,
+
+        Common.random(
+            -0.08,
+            0.08
+        )
+
+    );
+
+
+    Composite.add(
+        world,
+        star
+    );
+
+
+    setTimeout(
+        () => {
+
+            Composite.remove(
+                world,
+                star
+            );
+
+        },
+        7000
+    );
 }
 
 
-window.addEventListener("resize", resizeCanvas);
+/* =========================================================
+   CREATE PHYSICS STARS
+   ========================================================= */
 
-resizeCanvas();
+setInterval(
+    () => {
 
-animateHeart();
+        for (
+            let i = 0;
+            i < 2;
+            i++
+        ) {
+
+            createStarBody();
+
+        }
+
+    },
+    900
+);
+
+
+/* =========================================================
+   BACKGROUND CSS STARS
+   ========================================================= */
+
+const starsContainer =
+    document.getElementById(
+        "stars"
+    );
+
+const STAR_COUNT = 100;
+
+
+for (
+    let i = 0;
+    i < STAR_COUNT;
+    i++
+) {
+
+    const star =
+        document.createElement(
+            "div"
+        );
+
+    star.className =
+        "star";
+
+
+    if (
+        Math.random() < 0.18
+    ) {
+
+        star.classList.add(
+            "star-cross"
+        );
+
+    }
+
+
+    const size =
+        Math.random() < 0.85
+
+            ? Math.random() * 2 + 1
+
+            : Math.random() * 3 + 2;
+
+
+    const opacity =
+        Math.random() * 0.55 +
+        0.25;
+
+
+    const duration =
+        Math.random() * 2.5 +
+        1.5;
+
+
+    const floatDuration =
+        Math.random() * 20 +
+        15;
+
+
+    const delay =
+        Math.random() * -8;
+
+
+    const moveX =
+        (Math.random() - 0.5) *
+        80;
+
+
+    const moveY =
+        (Math.random() - 0.5) *
+        80;
+
+
+    star.style.left =
+        `${Math.random() * 100}%`;
+
+    star.style.top =
+        `${Math.random() * 100}%`;
+
+
+    star.style.setProperty(
+        "--size",
+        `${size}px`
+    );
+
+    star.style.setProperty(
+        "--opacity",
+        opacity
+    );
+
+    star.style.setProperty(
+        "--duration",
+        `${duration}s`
+    );
+
+    star.style.setProperty(
+        "--float-duration",
+        `${floatDuration}s`
+    );
+
+    star.style.setProperty(
+        "--delay",
+        `${delay}s`
+    );
+
+    star.style.setProperty(
+        "--move-x",
+        `${moveX}px`
+    );
+
+    star.style.setProperty(
+        "--move-y",
+        `${moveY}px`
+    );
+
+
+    starsContainer.appendChild(
+        star
+    );
+}
 
 
 /* =========================================================
@@ -280,27 +751,62 @@ animateHeart();
    ========================================================= */
 
 const themeButtons =
-    document.querySelectorAll(".theme-btn");
+    document.querySelectorAll(
+        ".theme-btn"
+    );
 
 
-themeButtons.forEach(button => {
+themeButtons.forEach(
+    button => {
 
-    button.addEventListener("click", () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-        const theme =
-            button.dataset.theme;
-
-        document.body.dataset.theme =
-            theme;
+                const theme =
+                    button.dataset.theme;
 
 
-        themeButtons.forEach(btn => {
-            btn.classList.remove("active");
-        });
+                document.body.dataset.theme =
+                    theme;
 
-        button.classList.add("active");
-    });
-});
+
+                themeButtons.forEach(
+                    btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                /* Recolor main heart */
+
+                if (heart) {
+
+                    const color =
+                        getHeartColor();
+
+                    heart.render.fillStyle =
+                        color;
+
+                    heart.render.strokeStyle =
+                        color;
+
+                }
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================================================
@@ -308,13 +814,19 @@ themeButtons.forEach(button => {
    ========================================================= */
 
 const music =
-    document.getElementById("birthdayMusic");
+    document.getElementById(
+        "birthdayMusic"
+    );
 
 const musicButton =
-    document.getElementById("musicButton");
+    document.getElementById(
+        "musicButton"
+    );
 
 const musicIcon =
-    document.getElementById("musicIcon");
+    document.getElementById(
+        "musicIcon"
+    );
 
 
 let musicStarted = false;
@@ -324,16 +836,24 @@ function updateMusicUI() {
 
     if (!music.paused) {
 
-        musicButton.classList.add("playing");
+        musicButton.classList.add(
+            "playing"
+        );
 
-        musicIcon.textContent = "♫";
+        musicIcon.textContent =
+            "♫";
 
     } else {
 
-        musicButton.classList.remove("playing");
+        musicButton.classList.remove(
+            "playing"
+        );
 
-        musicIcon.textContent = "♪";
+        musicIcon.textContent =
+            "♪";
+
     }
+
 }
 
 
@@ -349,60 +869,102 @@ async function startMusic() {
 
     } catch (error) {
 
-        /*
-         * Trình duyệt chặn autoplay.
-         * Khi người dùng click lần đầu,
-         * nhạc sẽ được bật.
-         */
-
         updateMusicUI();
+
     }
+
 }
 
 
-musicButton.addEventListener("click", async () => {
+musicButton.addEventListener(
+    "click",
+    async () => {
 
-    if (music.paused) {
+        if (music.paused) {
 
-        await startMusic();
+            await startMusic();
 
-    } else {
+        } else {
 
-        music.pause();
+            music.pause();
 
-        updateMusicUI();
+            updateMusicUI();
+
+        }
+
     }
-});
+);
 
 
-/*
- * Thử autoplay khi mở trang.
- * Nếu trình duyệt chặn thì nút nhạc vẫn hoạt động.
- */
+/* =========================================================
+   AUTOPLAY
+   ========================================================= */
 
-window.addEventListener("load", () => {
+window.addEventListener(
+    "load",
+    () => {
 
-    setTimeout(() => {
-        startMusic();
-    }, 500);
-});
+        setTimeout(
+            () => {
+
+                startMusic();
+
+            },
+            500
+        );
+
+    }
+);
 
 
-/*
- * Một số trình duyệt cho phép phát nhạc
- * ngay sau tương tác đầu tiên của người dùng.
- */
+/* First user interaction */
 
 document.addEventListener(
     "pointerdown",
     () => {
 
         if (!musicStarted) {
+
             startMusic();
+
         }
 
     },
     {
         once: true
+    }
+);
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        const newWidth =
+            container.clientWidth;
+
+        const newHeight =
+            container.clientHeight;
+
+
+        render.canvas.width =
+            newWidth *
+            (window.devicePixelRatio || 1);
+
+        render.canvas.height =
+            newHeight *
+            (window.devicePixelRatio || 1);
+
+
+        render.options.width =
+            newWidth;
+
+        render.options.height =
+            newHeight;
+
     }
 );
